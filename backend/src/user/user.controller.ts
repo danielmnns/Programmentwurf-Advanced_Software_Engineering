@@ -1,25 +1,29 @@
 import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Post,
-    Put,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserService } from './user.service';
+import { User } from './entities/user.entity';
 
 @Controller('user')
 export class UserController {
+  constructor(private readonly userService: UserService) {}
+
   @Get()
-  findAll(): string {
-    return 'Get all users';
+  findAll(): User[] {
+    return this.userService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id): string {
-    return `User ${id}`;
+  findOne(@Param('id') id): User {
+    return this.userService.findOne(id);
   }
 
   @Post()
