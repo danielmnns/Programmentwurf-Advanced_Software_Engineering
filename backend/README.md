@@ -1,99 +1,112 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Dokumentationen
+- Nodejs: https://docs.nestjs.com/
+- Angular: https://angular.dev/overview
+    - Angular Internationalization (localisation) (https://angular.dev/guide/i18n)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Extensions 
+- Prettier - Code formatter
+- ESLint
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-## Description
+# LMS Backend
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Ein Lernmanagementsystem (LMS) Backend, entwickelt mit Node.js. Es unterstützt mehrere Benutzerrollen (Admin, Kursleiter, Dozent, Sekretärin, Student) und bietet Funktionen wie Benutzerverwaltung, Kursmanagement, Materialmanagement und Aufgabenmanagement.
 
-## Project setup
+## Anforderungen
 
-```bash
-$ npm install
-```
+- Node.js (Version 16 oder höher)
+- npm (Node Package Manager)
+- MongoDB
 
-## Compile and run the project
+## Installation
 
-```bash
-# development
-$ npm run start
+1. **Projekt klonen**:
+   ```bash
+   git clone <REPOSITORY_URL>
+   cd lms-backend
 
-# watch mode
-$ npm run start:dev
+2. **Abhängigkeiten installieren**
+    #
+    ```bach
+    npm install
+    npm install bcryptjs @types/bcryptjs
+    npm install @nestjs/testing
+    npm install jsonwebtoken
+    npm install --save-dev @types/jsonwebtoken
+    npm install mongoose @types/mongoose
+    npm install @types/supertest --save-dev
+    npm i --save-dev @types/jest
+    npm install dotenv
+    npm install --save-dev @types/dotenv
 
-# production mode
-$ npm run start:prod
-```
 
-## Run tests
+3. **Umgebungsvariablen konfigurieren: Erstellen Sie eine .env-Datei im Projektverzeichnis und fügen Sie die folgenden Variablen hinzu**
+    ```bash
+    PORT=3000
+    MONGO_URI=mongodb://localhost:27017/lms
+    JWT_SECRET=your_secret_key
 
-```bash
-# unit tests
-$ npm run test
+4. **Datenbank starten: Stellen Sie sicher, dass MongoDB ausgeführt wird.**
 
-# e2e tests
-$ npm run test:e2e
+5. **Server starten:**
+    ```bash
+    npm start
 
-# test coverage
-$ npm run test:cov
-```
 
-## Deployment
+#  Features
+## Rollenbasierter Zugriff
+- Admin:
+    - Benutzerverwaltung, Hinzufügen/Löschen von Kursen, Exportieren von Daten.
+- Kursleiter:
+    - Erstellung und Verwaltung von Kursen, Bewertung von Aufgaben.
+- Dozent:
+    - Hochladen von Lernmaterialien, Verwaltung von Aufgaben.
+- Sekretärin:
+    - Verwaltung von Studentenprofilen, Organisation von Semesterplänen.
+- Student:
+    - Zugriff auf Kurse und Inhalte, Abgabe von Aufgaben.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+## Endpunkte
+#### Authentifizierung
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+`POST /api/auth/register`: Registrierung eines Benutzers.
 
-```bash
-$ npm install -g mau
-$ mau deploy
-```
+`POST /api/auth/login`: Anmeldung eines Benutzers.
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+#### Benutzerverwaltung (Admin)
 
-## Resources
+`GET /api/users`: Liste aller Benutzer abrufen.
 
-Check out a few resources that may come in handy when working with NestJS:
+`POST /api/users`: Neuen Benutzer erstellen.
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+`PUT /api/users/:id`: Benutzerinformationen aktualisieren.
 
-## Support
+`DELETE /api/users/:id`: Benutzer löschen.
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+#### Kursmanagement
+`GET /api/courses`: Alle Kurse abrufen.
 
-## Stay in touch
+`POST /api/courses`: Neuen Kurs erstellen.
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+`PUT /api/courses/:id`: Kursinformationen aktualisieren.
 
-## License
+`DELETE /api/courses/:id`: Kurs löschen.
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+#### Materialmanagement (Dozent, Kursleiter)
+`POST /api/materials`: Materialien hochladen.
+
+`GET /api/materials`: Materialien abrufen.
+
+#### Aufgabenmanagement
+`POST /api/tasks`: Aufgabe erstellen.
+
+`GET /api/tasks`: Aufgaben abrufen.
+
+`POST /api/tasks/:id/submit`: Aufgabe einreichen.
+
+# Tests
+## Führen Sie Tests aus, um die Funktionalität zu überprüfen:
+    npm test
+
+## Lizenz
+Dieses Projekt steht unter der MIT-Lizenz.
