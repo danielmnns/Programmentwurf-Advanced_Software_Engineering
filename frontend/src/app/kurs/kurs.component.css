@@ -1,0 +1,78 @@
+/* Container für die gesamte Seite */
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+  
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .sprache {
+    font-size: 18px;
+  }
+  
+  .benutzer-icon {
+    font-size: 24px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .benutzer-icon:hover {
+    transform: scale(1.2);
+  }
+  
+  
+  /* Content-Bereich */
+  .content {
+    display: flex;
+    flex: 1;
+    gap: 20px;
+    margin-top: 10px;
+  }
+  
+  /* Users-Bereich */
+  .users {
+    flex: 1;
+    border: 1px solid #007bff;
+    padding: 10px;
+    background-color: #e7f3ff;
+    border-radius: 5px;
+  }
+  
+  .users h2 {
+    margin-top: 0;
+  }
+  
+  .users ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .users li {
+    padding: 5px 0;
+  }
+  
+  /* Teilnehmer-Bereich */
+  .teilnehmer {
+    flex: 1;
+    border: 1px solid #28a745;
+    padding: 10px;
+    background-color: #e8f5e9;
+    border-radius: 5px;
+  }
+  
+  .teilnehmer h2 {
+    margin-top: 0;
+  }
+  
