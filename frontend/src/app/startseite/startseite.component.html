@@ -1,10 +1,41 @@
-<!-- startseite.component.html -->
-<div class="startseite-header">
-  <div class="logo">Saugiels Lernmanagementplattform</div>
-  <a routerLink="/account" class="account-link">Konto</a>
-</div>
-
-<div class="startseite-container">
-  <h1>Willkommen auf Saugiels Lernmanagementplattform!</h1>
-  <p>Dies ist der Startbereich, den du nach erfolgreichem Login siehst.</p>
-</div>
+<!-- Header -->
+<div class="header">
+    <div class="date-time">
+      <p>{{ currentDate }}</p>
+      <p>{{ currentTime }}</p>
+    </div>
+  
+    <div class="user-section">
+      <span class="icon">🔔</span>
+      <span class="icon">💬<span class="badge">1</span></span>
+      <span class="language">🌍 Deutsch (de) ▼</span>
+  
+      <div class="user-info" (click)="navigateToAccount()">
+        <p>{{ userName }}</p>
+        <div class="benutzer-icon">👤</div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Kursliste -->
+  <div class="kurse-container">
+    <h2>Kursübersicht</h2>
+    <ul>
+      <li *ngFor="let kurs of kurse">
+        <span>{{ kurs.name }}</span>
+        <span *ngIf="!kurs.eingeschrieben" class="schluessel-icon" (click)="oeffnePopup(kurs.id)">🔑</span>
+      </li>
+    </ul>
+  </div>
+  
+  <!-- Popup für Einschreibeschlüssel -->
+  <div class="popup" *ngIf="showPopup">
+    <div class="popup-content">
+      <h3>Kurs einschreiben</h3>
+      <p>Bitte Einschreibeschlüssel eingeben:</p>
+      <input type="text" [(ngModel)]="einschreibeschluessel">
+      <button (click)="einschreiben()">Bestätigen</button>
+      <button (click)="showPopup = false">Abbrechen</button>
+    </div>
+  </div>
+  

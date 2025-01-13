@@ -4,6 +4,7 @@ import { LoginComponent } from './login/login.component';
 import { StartseiteComponent } from './startseite/startseite.component';
 import { AccountComponent } from './account/account.component';  // AccountComponent importieren
 import { KursComponent } from './kurs/kurs.component';
+import { FormsModule } from '@angular/forms';
 
 export const routes: Routes = [
     { path: '', loadComponent: () => import('./login/login.component').then(m => m.LoginComponent)},
@@ -14,7 +15,7 @@ export const routes: Routes = [
   ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [FormsModule,RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
