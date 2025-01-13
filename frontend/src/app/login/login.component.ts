@@ -1,30 +1,36 @@
 import { Component } from '@angular/core';
-import { FormsModule, NgForm } from '@angular/forms';
-import { Router } from '@angular/router'; // Router importieren
+import { FormsModule } from '@angular/forms'; // Für [(ngModel)] und ngForm
 
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [FormsModule],
+  standalone: true, // Standalone-Komponente
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
+  styleUrls: ['./login.component.css'],
+  imports: [FormsModule] // FormsModule wird benötigt für ngModel
 })
 export class LoginComponent {
   username: string = '';
   password: string = '';
-  loginError: boolean = false;
+  selectedLanguage: string = 'de'; // Standard: Deutsch
 
-  constructor(private router: Router) {}
+  // Formular absenden
+  onSubmit(): void {
+    console.log('Anmeldung:');
+    console.log('Benutzername:', this.username);
+    console.log('Passwort:', this.password);
+  }
 
-  onSubmit(form: NgForm) {
-    if (form.valid) {
-      if (this.username === 'admin' && this.password === 'admin') {
-        this.loginError = false;
-        // Weiterleitung zur Startseite
-        this.router.navigate(['/startseite']);
-      } else {
-        this.loginError = true;
-      }
-    }
+  // Sprache ändern
+  changeLanguage(language: string): void {
+    this.selectedLanguage = language;
+    console.log('Sprache gewechselt zu:', this.selectedLanguage);
+    // Hier kannst du weitere Logik hinzufügen
+  }
+
+  // Registrieren-Button
+  onRegister(): void {
+    console.log('Registrierung aufgerufen');
+    // Hier kannst du eine Weiterleitung zur Registrierungsseite einfügen
+    // z.B.: this.router.navigate(['/register']);
   }
 }
