@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +10,10 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./kurs.component.css'],
   imports: [CommonModule, FormsModule],
 })
-export class KursComponent {
+export class KursComponent implements OnInit {
+  currentDate: string = '';
+  currentTime: string = '';
+  userName: string = '';
   courseName: string = '';
   textContent: string = '';
   aufgabeContent: string = '';
@@ -24,35 +27,55 @@ export class KursComponent {
 
   constructor(private route: ActivatedRoute, private router: Router) {}
 
-  ngOnInit() {
-    // Dynamischen Kursnamen aus der URL extrahieren
+  ngOnInit(): void {
+    this.initializeHeaderFunctions();
     this.courseName = this.route.snapshot.paramMap.get('courseName')!;
+  }
+
+  initializeHeaderFunctions() {
+    this.updateDateTime();
+    setInterval(() => this.updateDateTime(), 1000);
+    this.loadUserData();
+  }
+
+  updateDateTime() {
+    const now = new Date();
+    this.currentDate = now.toLocaleDateString();
+    this.currentTime = now.toLocaleTimeString();
+  }
+
+  loadUserData() {
+    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
+    if (userData.name) {
+      this.userName = userData.name;
+    }
   }
 
   navigateToAccount() {
     this.router.navigate(['/account']);
   }
 
+  navigateToHome(): void {
+    this.router.navigate(['/startseite']);
+  }
+
   handleFileUpload(event: Event, category: 'documents' | 'aufgaben' | 'abgaben') {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
-      const fileUrl = URL.createObjectURL(file); // Temporäre URL erstellen
+      const fileUrl = URL.createObjectURL(file);
       this.uploadedFiles[category].push({ name: file.name, url: fileUrl });
     }
   }
 
   saveText() {
-    console.log('Text gespeichert:', this.textContent);
     alert('Text wurde gespeichert!');
   }
 
   saveAufgabe() {
-    console.log('Aufgabe gespeichert:', this.aufgabeContent);
     alert('Aufgabe wurde gespeichert!');
   }
 
   saveFeedback() {
-    console.log('Feedback gespeichert:', this.feedbackContent);
     alert('Feedback wurde gespeichert!');
   }
 }
