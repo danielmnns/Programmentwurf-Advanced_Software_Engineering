@@ -78,10 +78,5 @@ export class LoginComponent {
     // Hier kannst du weitere Logik hinzufügen
   }
 
-  // Registrieren-Button
-  onRegister(): void {
-    console.log('Registrierung aufgerufen');
-    // Hier kannst du eine Weiterleitung zur Registrierungsseite einfügen
-    // z.B.: this.router.navigate(['/register']);
-  }
+ 
 }
