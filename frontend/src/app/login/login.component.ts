@@ -1,21 +1,30 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms'; // Importieren für ngModel und ngForm
+import { FormsModule, NgForm } from '@angular/forms';
+import { Router } from '@angular/router'; // Router importieren
 
 @Component({
   selector: 'app-login',
-  standalone: true, // Standalone-Komponente
+  standalone: true,
+  imports: [FormsModule],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
-  imports: [FormsModule] // FormsModule direkt importieren
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
   username: string = '';
   password: string = '';
+  loginError: boolean = false;
 
-  onSubmit(): void {
-    console.log('Benutzername:', this.username);
-    console.log('Passwort:', this.password);
+  constructor(private router: Router) {}
+
+  onSubmit(form: NgForm) {
+    if (form.valid) {
+      if (this.username === 'admin' && this.password === 'admin') {
+        this.loginError = false;
+        // Weiterleitung zur Startseite
+        this.router.navigate(['/startseite']);
+      } else {
+        this.loginError = true;
+      }
+    }
   }
 }
-
-
