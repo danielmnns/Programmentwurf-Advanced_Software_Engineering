@@ -1,78 +1,86 @@
-/* Container für die gesamte Seite */
+/* Allgemeine Container-Stile */
 .container {
+    width: 80%;
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    height: 100vh;
-    padding: 10px;
-    box-sizing: border-box;
+    font-family: Arial, sans-serif;
   }
   
-  /* Header */
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  .sprache {
-    font-size: 18px;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
   }
   
   .benutzer-icon {
-    font-size: 24px;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    font-size: 1.5em;
   }
   
-  .benutzer-icon:hover {
-    transform: scale(1.2);
-  }
-  
-  
-  /* Content-Bereich */
+  /* Content-Stil */
   .content {
     display: flex;
-    flex: 1;
     gap: 20px;
-    margin-top: 10px;
   }
   
-  /* Users-Bereich */
-  .users {
+  .users, .teilnehmer {
     flex: 1;
-    border: 1px solid #007bff;
-    padding: 10px;
-    background-color: #e7f3ff;
-    border-radius: 5px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
   
-  .users h2 {
-    margin-top: 0;
+  .users {
+    background-color: #f0f8ff;
+  }
+  
+  .teilnehmer {
+    background-color: #ffebcd;
   }
   
   .users ul {
-    list-style: none;
+    list-style-type: none;
     padding: 0;
-    margin: 0;
   }
   
   .users li {
-    padding: 5px 0;
+    margin-bottom: 20px;
   }
   
-  /* Teilnehmer-Bereich */
-  .teilnehmer {
-    flex: 1;
-    border: 1px solid #28a745;
+  .form-group {
+    margin-top: 10px;
+  }
+  
+  textarea.form-control, input.form-control {
+    width: 100%;
+    resize: vertical;
+    min-height: 50px;
     padding: 10px;
-    background-color: #e8f5e9;
-    border-radius: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1em;
   }
   
-  .teilnehmer h2 {
-    margin-top: 0;
+  a {
+    color: #007bff;
+    text-decoration: none;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Button-Stil */
+  input[type="file"] {
+    margin-top: 10px;
+    display: block;
   }
   
