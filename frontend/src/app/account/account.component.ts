@@ -34,4 +34,8 @@ export class AccountComponent {
     // Weiterleitung zur Login-Seite
     this.router.navigate(['/login']);
   }
+
+  navigateToHome(): void {
+    this.router.navigate(['/startseite']); // Navigiert zur Startseite
+  }
 }

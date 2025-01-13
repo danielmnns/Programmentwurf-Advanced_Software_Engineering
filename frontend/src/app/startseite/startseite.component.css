@@ -61,9 +61,18 @@
 }
 
 .benutzer-icon:hover {
-  transform: scale(1.1);
+  transform: scale(1.5);
 }
 
+.home-icon {
+  font-size: 24px;
+  cursor: pointer;
+  transition: transform 0.3s;
+}
+
+.home-icon:hover{
+  transform: scale(1.5);
+}
 /* Kursübersicht */
 .kurse-container {
   padding: 20px;

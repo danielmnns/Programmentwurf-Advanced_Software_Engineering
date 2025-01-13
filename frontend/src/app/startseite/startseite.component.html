@@ -1,9 +1,10 @@
 <!-- Header -->
 <div class="header">
+    <div class="home-icon" (click)="navigateToHome()">🏠</div>
+  
     <div class="date-time">
-      <p>{{ currentDate }}</p>
-      <p>{{ currentTime }}</p>
-    </div>
+        <p>📅 {{ currentDate }} &nbsp; ⏰ {{ currentTime }}</p>
+      </div>
   
     <div class="user-section">
       <span class="icon">🔔</span>
@@ -16,6 +17,7 @@
       </div>
     </div>
   </div>
+  
   
   <!-- Kursliste -->
   <div class="kurse-container">

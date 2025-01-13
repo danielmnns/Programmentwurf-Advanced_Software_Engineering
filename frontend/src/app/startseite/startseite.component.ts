@@ -52,6 +52,10 @@ export class StartseiteComponent implements OnInit {
     this.router.navigate(['/account']);
   }
 
+  navigateToHome(): void {
+    this.router.navigate(['/startseite']); // Navigiert zur Startseite
+  }
+
   ladeKurse() {
     // ✅ **DUMMY-DATEN**
     this.kurse = [
