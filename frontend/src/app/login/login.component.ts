@@ -26,7 +26,7 @@ export class LoginComponent {
     // Dummy-Datenprüfung (Vorabprüfung)
     const users: { [key: string]: string } = {
       admin: 'cisco',
-      kursleiter: 'cisco',
+      studiengangsleiter: 'cisco',
       student: 'cisco',
       dozent: 'cisco',
     };
