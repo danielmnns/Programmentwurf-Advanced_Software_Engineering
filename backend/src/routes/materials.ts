@@ -1,5 +1,8 @@
 import { Router } from 'express';
-import { uploadMaterial, getMaterials } from '../controllers/materialControllers';
+import {
+  getMaterials,
+  uploadMaterial,
+} from '../controllers/materialControllers';
 
 const router = Router();
 
