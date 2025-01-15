@@ -25,10 +25,6 @@ export class LoginComponent {
 
     // Dummy-Datenprüfung (Vorabprüfung)
     const users: { [key: string]: string } = {
-      admin: 'cisco',
-      kursleiter: 'cisco',
-      student: 'cisco',
-      dozent: 'cisco',
     };
 
     if (users[this.username] === this.password) {
@@ -42,7 +38,7 @@ export class LoginComponent {
     }
 
     // API-URL (angepasst an dein Backend)
-    const apiUrl = 'http://localhost:8080/api/login';
+    const apiUrl = 'http://localhost:3000/api/login';
 
     // Login-Daten für den API-Aufruf
     const loginData = {
