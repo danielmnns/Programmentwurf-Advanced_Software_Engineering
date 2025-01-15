@@ -4,8 +4,7 @@
     - Angular Internationalization (localisation) (https://angular.dev/guide/i18n)
 
 ## Extensions 
-- Prettier - Code formatter
-- ESLint
+
 
 
 # LMS Backend

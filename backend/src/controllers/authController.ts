@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
-import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/Users';
+import { Request, Response, NextFunction } from "express";
 
 export const register = async (req: Request, res: Response) => {
   const { username, password } = req.body;
@@ -11,15 +11,16 @@ export const register = async (req: Request, res: Response) => {
   res.status(201).send('User registered');
 };
 
-export const login = async (req: Request, res: Response) => {
-  const { username, password } = req.body;
-  const user = await User.findOne({ username });
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    return res.status(401).send('Invalid credentials');
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // Deine Login-Logik hier
+    res.status(200).json({ message: "Login erfolgreich" });
+  } catch (error) {
+    next(error); // Fehler an den Error-Handler weitergeben
   }
-  const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, { 
-    expiresIn: '1h',
-  });
-  res.json({ token });
 };
 
