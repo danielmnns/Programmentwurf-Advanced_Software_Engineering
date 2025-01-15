@@ -11,9 +11,10 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use('/api', routes);
 
-mongoose.connect(process.env.MONGO_URI!, {
-  useUnifiedTopology: true
-})
+mongoose
+  .connect(process.env.MONGO_URI!, {
+    useNewUrlParser: true,
+  })
   .then(() => {
     console.log('Connected to MongoDB');
     app.listen(PORT, () => {
