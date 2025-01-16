@@ -14,13 +14,15 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
+import { HeadbarComponent } from './headbar/headbar.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     AdminDashboardComponent,
-    UserDashboardComponent
+    UserDashboardComponent,
+    HeadbarComponent
   ],
   imports: [
     BrowserModule,
