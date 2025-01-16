@@ -1,78 +1,30 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router'; // Für die Navigation
-import { FormsModule } from '@angular/forms'; // Für [(ngModel)] und ngForm
-import { HttpClient, HttpClientModule } from '@angular/common/http'; // Für die Kommunikation mit dem Backend
+import { AuthService } from '../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css'],
-  imports: [FormsModule, HttpClientModule],
+  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  username: string = '';
-  password: string = '';
-  selectedLanguage: string = 'de'; // Standard: Deutsch
+  username = '';
+  password = '';
 
-  constructor(private router: Router, private http: HttpClient) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
-  // Formular absenden
-  onSubmit(): void {
-    console.log('Anmeldung:');
-    console.log('Benutzername:', this.username);
-    console.log('Passwort:', this.password);
-
-    // Dummy-Datenprüfung (Vorabprüfung)
-    const users: { [key: string]: string } = {
-    };
-
-    if (users[this.username] === this.password) {
-      console.log('Login erfolgreich (Dummy-Datenprüfung)');
-      this.router.navigate(['/startseite']);
-    } else {
-      console.log('Benutzername oder Passwort falsch (Dummy-Datenprüfung)');
-      this.password = '';
-      alert('Benutzername oder Passwort falsch'); // Popup-Meldung
-      return; // Beende die Methode hier, um keine Backend-Anfrage zu senden
-    }
-
-    // API-URL (angepasst an dein Backend)
-    const apiUrl = 'http://localhost:3000/api/login';
-
-    // Login-Daten für den API-Aufruf
-    const loginData = {
-      username: this.username,
-      password: this.password,
-    };
-
-    // POST-Anfrage an das Backend
-    this.http.post(apiUrl, loginData).subscribe(
-      (response: any) => {
-        // Verarbeite die Backend-Antwort
-        if (response.loginSuccess) {
-          console.log('Login erfolgreich:', response.userType);
-          // Je nach Benutzertyp auf die Startseite weiterleiten
-          this.router.navigate(['/startseite']);
+  onSubmit() {
+    this.authService.login(this.username, this.password).subscribe(response => {
+      if (response.success) {
+        this.authService.storeUserData(response.username, response.userType);
+        if (response.userType === 'admin' || response.userType === 'studiengangsleiter') {
+          this.router.navigate(['/dashboard/admin']);
         } else {
-          console.log('Ungültige Anmeldedaten');
-          this.password = ''; // Passwortfeld leeren
-          alert('Benutzername oder Passwort falsch'); // Popup-Meldung
+          this.router.navigate(['/dashboard/user']);
         }
-      },
-      (error) => {
-        console.error('Fehler bei der Anmeldung:', error);
-        alert('Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.');
+      } else {
+        alert('Login fehlgeschlagen');
       }
-    );
+    });
   }
-
-  // Sprache ändern
-  changeLanguage(language: string): void {
-    this.selectedLanguage = language;
-    console.log('Sprache gewechselt zu:', this.selectedLanguage);
-    // Hier kannst du weitere Logik hinzufügen
-  }
-
- 
 }

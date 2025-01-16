@@ -3,29 +3,27 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/auth/login'; // Backend-URL
-  private username: string = ''; // Speichern des Benutzernamens
+  private apiUrl = 'https://your-backend-url.com/api';
+  private user: { username: string; userType: string } | null = null;
 
   constructor(private http: HttpClient) {}
 
-  // Login-Methode zur Kommunikation mit dem Backend
   login(username: string, password: string): Observable<any> {
-    const payload = { username, password };
-    return this.http.post<any>(this.apiUrl, payload);
+    return this.http.post(`${this.apiUrl}/login`, { username, password });
   }
 
-  // Setzen des Benutzernamens nach erfolgreichem Login
-  setUsername(username: string): void {
-    this.username = username;
+  storeUserData(username: string, userType: string): void {
+    this.user = { username, userType };
   }
 
-  // Abrufen des Benutzernamens
-  getUsername(): string {
-    return this.username;
+  getUserType(): string | null {
+    return this.user?.userType || null;
+  }
+
+  isAuthenticated(): boolean {
+    return this.user !== null;
   }
 }
-
-

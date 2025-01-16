@@ -1,11 +1,14 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';  // RouterModule hier importieren
+import { RouterOutlet } from '@angular/router';
+
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterModule],  // Importiere das RouterModule hier
-  template: `<router-outlet></router-outlet>`,
-  styleUrls: ['./app.component.css']
+  imports: [RouterOutlet],
+  templateUrl: './app.component.html',
+  styleUrl: './app.component.css',
 })
-export class AppComponent {}
+export class AppComponent {
+  title = 'LMS-Dashboard';
+}
