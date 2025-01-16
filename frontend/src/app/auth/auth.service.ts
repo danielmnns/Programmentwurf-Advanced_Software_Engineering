@@ -55,4 +55,14 @@ export class AuthService {
     console.log('AuthService: getUserName aufgerufen', this.userName);
     return this.userName;
   }
+
+  // Neue Methode: Passwort ändern
+  changePassword(payload: { userName: string | null; password: string; newPassword: string }): Observable<{ passwordChangeSuccess: boolean }> {
+    console.log('AuthService: Passwortänderung gestartet');
+    return this.http.post<{ passwordChangeSuccess: boolean }>('http://localhost:3000/api/change-password', payload).pipe(
+      tap(response => {
+        console.log('AuthService: Passwortänderung-Antwort erhalten', response);
+      })
+    );
+  }
 }

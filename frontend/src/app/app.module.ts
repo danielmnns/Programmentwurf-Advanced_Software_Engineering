@@ -15,6 +15,7 @@ import { LoginComponent } from './login/login.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 import { HeadbarComponent } from './headbar/headbar.component';
+import { AccountComponent } from './account/account.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,8 @@ import { HeadbarComponent } from './headbar/headbar.component';
     LoginComponent,
     AdminDashboardComponent,
     UserDashboardComponent,
-    HeadbarComponent
+    HeadbarComponent,
+    AccountComponent
   ],
   imports: [
     BrowserModule,
