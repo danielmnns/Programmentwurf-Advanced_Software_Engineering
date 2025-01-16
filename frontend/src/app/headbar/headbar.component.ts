@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../auth/auth.service'; // AuthService importieren
 import { Router } from '@angular/router';
 
 @Component({
@@ -9,16 +10,20 @@ import { Router } from '@angular/router';
 export class HeadbarComponent implements OnInit {
   currentDate: string = '';
   currentTime: string = '';
-  userName: string = 'Max Mustermann'; // Beispiel-Name, dies sollte vom AuthService kommen
+  userName: string | null = '';
+  userType: string | null = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private authService: AuthService) {}
 
   ngOnInit(): void {
-    // Datum und Uhrzeit regelmäßig aktualisieren
     this.updateDateTime();
     setInterval(() => {
       this.updateDateTime();
-    }, 60000); // jede Minute aktualisieren
+    }, 60000); // Jede Minute aktualisieren
+
+    // Benutzername und Nutzertyp aus dem AuthService holen
+    this.userName = this.authService.getUserName();
+    this.userType = this.authService.getUserType();
   }
 
   updateDateTime(): void {
@@ -28,10 +33,16 @@ export class HeadbarComponent implements OnInit {
   }
 
   navigateToHome(): void {
-    this.router.navigate(['/home']);  // Beispiel-URL für die Home-Seite
+    if (this.userType === 'admin' || this.userType === 'studiengangsleiter') {
+      this.router.navigate(['/admin-dashboard']);  // Weiterleitung zur Admin- oder Studiengangsleiter-Dashboard-Seite
+    } else if (this.userType === 'student' || this.userType === 'dozent') {
+      this.router.navigate(['/user-dashboard']);  // Weiterleitung zur Benutzer-Dashboard-Seite
+    } else {
+      this.router.navigate(['/']);  // Standard-Route, wenn der Benutzertyp nicht erkannt wird
+    }
   }
 
   navigateToAccount(): void {
-    this.router.navigate(['/account']);  // Beispiel-URL für das Benutzerkonto
+    this.router.navigate(['/account']);
   }
 }

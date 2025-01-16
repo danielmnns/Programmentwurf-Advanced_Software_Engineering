@@ -1,17 +1,17 @@
+<!-- Header -->
 <div class="header">
-    <!-- Home Icon -->
-    <div class="home-icon" (click)="navigateToHome()">🏠</div>
-  
-    <!-- Benutzer-Sektion -->
-    <div class="user-section">
-    
-      <span class="language">🌍 Deutsch (de) ▼</span>
-  
-      <!-- Benutzerinfo -->
-      <div class="user-info" (click)="navigateToAccount()">
-        <p>{{ userName }}</p>
-        <div class="benutzer-icon">👤</div>
-      </div>
+  <div class="home-icon" (click)="navigateToHome()">🏠</div>
+
+  <div class="date-time">
+    <p>📅 {{ currentDate }} &nbsp; ⏰ {{ currentTime }}</p>
+  </div>
+
+  <div class="user-section">
+    <span class="language">🌍 Deutsch (de) ▼</span>
+
+    <div class="user-info" (click)="navigateToAccount()">
+      <p>{{ userName }} ({{ userType }})</p> <!-- Benutzername und Typ anzeigen -->
+      <div class="benutzer-icon">👤</div>
     </div>
   </div>
-  
+</div>
