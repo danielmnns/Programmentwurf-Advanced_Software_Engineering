@@ -1,70 +1,81 @@
+<div class="container">
+  <!-- Hauptbereich (Kursinhalt) -->
+  <div class="users">
+    <h2>{{ courseName }}</h2>
+    <ul>
+      <!-- Textanzeige (nur sichtbar) -->
+      <li>
+        <mat-card>
+          <mat-card-title>Text</mat-card-title>
+          <mat-card-content>
+            <p>{{ textContent }}</p>
+          </mat-card-content>
+        </mat-card>
+      </li>
 
-  
-    
-  
+      <!-- Dokumente-Anzeige (nur sichtbar) -->
+      <li>
+        <mat-card>
+          <mat-card-title>Dokumente</mat-card-title>
+          <mat-card-content>
+            <ul>
+              <li *ngFor="let file of uploadedFiles.documents">
+                <a [href]="file.url" target="_blank">{{ file.name }}</a>
+              </li>
+            </ul>
+          </mat-card-content>
+        </mat-card>
+      </li>
 
-  
- 
-  <div class="container">
-    <div class="content">
-      <div class="users">
-        <h2>{{ courseName }}</h2>
-        <ul>
-          <li>
-            Text
-            <div class="form-group">
-              <textarea class="form-control" [(ngModel)]="textContent" placeholder="Text hier eingeben"></textarea>
-              <button class="btn" (click)="saveText()">Speichern</button>
-            </div>
-          </li>
-          <li>
-            Dokumente
-            <div class="form-group">
-              <input type="file" accept="application/pdf" (change)="handleFileUpload($event, 'documents')" />
-              <ul>
-                <li *ngFor="let file of uploadedFiles.documents">
-                  <a [href]="file.url" target="_blank">{{ file.name }}</a>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li>
-            Aufgabe
-            <div class="form-group">
-              <textarea class="form-control" [(ngModel)]="aufgabeContent" placeholder="Aufgabe beschreiben"></textarea>
-              <button class="btn" (click)="saveAufgabe()">Speichern</button>
-              <input type="file" accept="application/pdf" (change)="handleFileUpload($event, 'aufgaben')" />
-              <ul>
-                <li *ngFor="let file of uploadedFiles.aufgaben">
-                  <a [href]="file.url" target="_blank">{{ file.name }}</a>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li>
-            Abgabefeld
-            <div class="form-group">
-              <input type="file" accept="application/pdf" (change)="handleFileUpload($event, 'abgaben')" />
-              <ul>
-                <li *ngFor="let file of uploadedFiles.abgaben">
-                  <a [href]="file.url" target="_blank">{{ file.name }}</a>
-                </li>
-              </ul>
-            </div>
-          </li>
-          <li>
-            Feedback
-            <div class="form-group">
-              <textarea class="form-control" [(ngModel)]="feedbackContent" placeholder="Feedback hier eingeben"></textarea>
-              <button class="btn" (click)="saveFeedback()">Speichern</button>
-            </div>
-          </li>
-        </ul>
-      </div>
-  
-      <div class="teilnehmer">
-        <h2>Teilnehmer</h2>
-        <p>Teilnehmer-Liste</p>
-      </div>
-    </div>
+      <!-- Aufgabenanzeige (nur sichtbar) -->
+      <li>
+        <mat-card>
+          <mat-card-title>Aufgabe</mat-card-title>
+          <mat-card-content>
+            <p>{{ aufgabeContent }}</p>
+            <ul>
+              <li *ngFor="let file of uploadedFiles.aufgaben">
+                <a [href]="file.url" target="_blank">{{ file.name }}</a>
+              </li>
+            </ul>
+          </mat-card-content>
+        </mat-card>
+      </li>
+
+      <!-- Abgabefeld (interaktiv) -->
+      <li>
+        <mat-card>
+          <mat-card-title>Abgabefeld</mat-card-title>
+          <mat-card-content>
+            <input type="file" accept="application/pdf" (change)="handleFileUpload($event, 'abgaben')" />
+            <ul>
+              <li *ngFor="let file of uploadedFiles.abgaben">
+                <a [href]="file.url" target="_blank">{{ file.name }}</a>
+              </li>
+            </ul>
+          </mat-card-content>
+        </mat-card>
+      </li>
+
+      <!-- Feedbackanzeige (nur sichtbar) -->
+      <li>
+        <mat-card>
+          <mat-card-title>Feedback</mat-card-title>
+          <mat-card-content>
+            <p>{{ feedbackContent }}</p>
+          </mat-card-content>
+        </mat-card>
+      </li>
+    </ul>
   </div>
+
+  <!-- Teilnehmerliste -->
+  <div class="teilnehmer">
+    <h2>Teilnehmer</h2>
+    <ul>
+      <li *ngFor="let participant of participants">
+        {{ participant }}
+      </li>
+    </ul>
+  </div>
+</div>
