@@ -1,0 +1,70 @@
+
+  
+    
+  
+
+  
+ 
+  <div class="container">
+    <div class="content">
+      <div class="users">
+        <h2>{{ courseName }}</h2>
+        <ul>
+          <li>
+            Text
+            <div class="form-group">
+              <textarea class="form-control" [(ngModel)]="textContent" placeholder="Text hier eingeben"></textarea>
+              <button class="btn" (click)="saveText()">Speichern</button>
+            </div>
+          </li>
+          <li>
+            Dokumente
+            <div class="form-group">
+              <input type="file" accept="application/pdf" (change)="handleFileUpload($event, 'documents')" />
+              <ul>
+                <li *ngFor="let file of uploadedFiles.documents">
+                  <a [href]="file.url" target="_blank">{{ file.name }}</a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            Aufgabe
+            <div class="form-group">
+              <textarea class="form-control" [(ngModel)]="aufgabeContent" placeholder="Aufgabe beschreiben"></textarea>
+              <button class="btn" (click)="saveAufgabe()">Speichern</button>
+              <input type="file" accept="application/pdf" (change)="handleFileUpload($event, 'aufgaben')" />
+              <ul>
+                <li *ngFor="let file of uploadedFiles.aufgaben">
+                  <a [href]="file.url" target="_blank">{{ file.name }}</a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            Abgabefeld
+            <div class="form-group">
+              <input type="file" accept="application/pdf" (change)="handleFileUpload($event, 'abgaben')" />
+              <ul>
+                <li *ngFor="let file of uploadedFiles.abgaben">
+                  <a [href]="file.url" target="_blank">{{ file.name }}</a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li>
+            Feedback
+            <div class="form-group">
+              <textarea class="form-control" [(ngModel)]="feedbackContent" placeholder="Feedback hier eingeben"></textarea>
+              <button class="btn" (click)="saveFeedback()">Speichern</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+  
+      <div class="teilnehmer">
+        <h2>Teilnehmer</h2>
+        <p>Teilnehmer-Liste</p>
+      </div>
+    </div>
+  </div>
