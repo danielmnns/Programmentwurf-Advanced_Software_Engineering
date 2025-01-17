@@ -1,0 +1,96 @@
+<div class="container">
+    <!-- Hauptbereich (Kursinhalt) -->
+    <div class="users">
+      <h2>{{ courseName }}</h2>
+      <ul>
+        <li>
+          <mat-card>
+            <mat-card-title>Text</mat-card-title>
+            <mat-card-content>
+              <mat-form-field appearance="outline" class="full-width">
+                <textarea
+                  matInput
+                  placeholder="Text hier eingeben"
+                  [(ngModel)]="textContent"
+                ></textarea>
+              </mat-form-field>
+              <button mat-raised-button color="primary" (click)="saveText()">Speichern</button>
+            </mat-card-content>
+          </mat-card>
+        </li>
+        <li>
+          <mat-card>
+            <mat-card-title>Dokumente</mat-card-title>
+            <mat-card-content>
+              <input type="file" accept="application/pdf" (change)="handleFileUpload($event, 'documents')" />
+              <ul>
+                <li *ngFor="let file of uploadedFiles.documents">
+                  <a [href]="file.url" target="_blank">{{ file.name }}</a>
+                </li>
+              </ul>
+            </mat-card-content>
+          </mat-card>
+        </li>
+        <li>
+          <mat-card>
+            <mat-card-title>Aufgabe</mat-card-title>
+            <mat-card-content>
+              <mat-form-field appearance="outline" class="full-width">
+                <textarea
+                  matInput
+                  placeholder="Aufgabe beschreiben"
+                  [(ngModel)]="aufgabeContent"
+                ></textarea>
+              </mat-form-field>
+              <button mat-raised-button color="primary" (click)="saveAufgabe()">Speichern</button>
+              <input type="file" accept="application/pdf" (change)="handleFileUpload($event, 'aufgaben')" />
+              <ul>
+                <li *ngFor="let file of uploadedFiles.aufgaben">
+                  <a [href]="file.url" target="_blank">{{ file.name }}</a>
+                </li>
+              </ul>
+            </mat-card-content>
+          </mat-card>
+        </li>
+        <li>
+          <mat-card>
+            <mat-card-title>Abgabefeld</mat-card-title>
+            <mat-card-content>
+              <input type="file" accept="application/pdf" (change)="handleFileUpload($event, 'abgaben')" />
+              <ul>
+                <li *ngFor="let file of uploadedFiles.abgaben">
+                  <a [href]="file.url" target="_blank">{{ file.name }}</a>
+                </li>
+              </ul>
+            </mat-card-content>
+          </mat-card>
+        </li>
+        <li>
+          <mat-card>
+            <mat-card-title>Feedback</mat-card-title>
+            <mat-card-content>
+              <mat-form-field appearance="outline" class="full-width">
+                <textarea
+                  matInput
+                  placeholder="Feedback hier eingeben"
+                  [(ngModel)]="feedbackContent"
+                ></textarea>
+              </mat-form-field>
+              <button mat-raised-button color="primary" (click)="saveFeedback()">Speichern</button>
+            </mat-card-content>
+          </mat-card>
+        </li>
+      </ul>
+    </div>
+  
+    <!-- Teilnehmerliste -->
+    <div class="teilnehmer">
+      <h2>Teilnehmer</h2>
+      <ul>
+        <li *ngFor="let participant of participants">
+          {{ participant }}
+        </li>
+      </ul>
+    </div>
+  </div>
+  
