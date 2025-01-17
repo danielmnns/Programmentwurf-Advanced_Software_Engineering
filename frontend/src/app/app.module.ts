@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -17,8 +18,10 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 import { HeadbarComponent } from './headbar/headbar.component';
 import { AccountComponent } from './account/account.component';
+import { EnrollmentDialogComponent } from './user-dashboard/enrollment-dialog/enrollment-dialog.component';
 import { AdminKursComponent } from './admin-kurs/admin-kurs.component';
 import { KursComponent } from './user-kurs/user-kurs.component';
+
 
 @NgModule({
   declarations: [
@@ -29,19 +32,22 @@ import { KursComponent } from './user-kurs/user-kurs.component';
     HeadbarComponent,
     AccountComponent,
     AdminKursComponent,
-    KursComponent
+    KursComponent,
+    EnrollmentDialogComponent
+
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpClientModule,
-    BrowserAnimationsModule, // Pflicht für Angular Material
-    MatInputModule, // Material Input-Komponente
-    MatButtonModule, // Material Button-Komponente
-    MatSelectModule, // Material Select-Komponente
-    MatCardModule, // Material Card-Komponente
+    BrowserAnimationsModule,
+      MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatCardModule,
     AppRoutingModule,
-    // KursComponent removed from imports
+    MatDialogModule,// Pflicht für Angular Material
+
   ],
   providers: [],
   bootstrap: [AppComponent]

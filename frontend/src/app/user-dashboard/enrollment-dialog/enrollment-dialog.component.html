@@ -1,0 +1,13 @@
+<h2 mat-dialog-title>Einschreiben in den Kurs</h2>
+<mat-dialog-content>
+  <p>Gib den Einschreibeschlüssel für den Kurs ein:</p>
+  <mat-form-field appearance="fill" style="width: 100%;">
+    <mat-label>Einschreibeschlüssel</mat-label>
+    <input matInput [(ngModel)]="enrollmentKey" type="password" />
+  </mat-form-field>
+  <div *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</div>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="close()">Abbrechen</button>
+  <button mat-raised-button color="primary" (click)="enroll()">Einschreiben</button>
+</mat-dialog-actions>

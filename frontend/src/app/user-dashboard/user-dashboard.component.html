@@ -1,6 +1,26 @@
-<div class="dashboard">
-    <h1>Willkommen im Benutzer-Dashboard</h1>
-    <p>Hier finden Sie Ihre Informationen und Funktionen.</p>
-    <!-- Weitere Inhalte wie persönliche Daten, Kursübersicht, etc. -->
+<div class="course-container">
+  <div *ngFor="let course of courses" class="course-box">
+    <div class="course-content">
+      <span 
+        class="course-title unenrolled" 
+        *ngIf="!course.enrolled"
+      >
+        {{ course.title }}
+      </span>
+      <span 
+        class="course-title enrolled" 
+        *ngIf="course.enrolled" 
+        (click)="navigateToCourse(course)"
+      >
+        {{ course.title }}
+      </span>
+      <span 
+        *ngIf="!course.enrolled" 
+        class="lock-icon" 
+        (click)="openEnrollmentDialog(course)"
+      >
+        🔒
+      </span>
+    </div>
   </div>
-  
+</div>

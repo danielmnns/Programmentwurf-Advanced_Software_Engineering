@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
-import { LoginResponse } from '../models/login-response.model'; // Importiere die Schnittstelle
+import { LoginResponse } from '../models/login-response.model';
+import { UserDataService } from '../services/userdata.service';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   private loggedIn = false;
@@ -13,54 +14,75 @@ export class AuthService {
   private userName: string | null = null;
   private token: string | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private userDataService: UserDataService) {
+    this.restoreSession();
+  }
 
-  // Login-Methode, die die LoginResponse erwartet
+  private restoreSession(): void {
+    const token = localStorage.getItem('token');
+    const userType = localStorage.getItem('userType');
+    const userName = localStorage.getItem('userName');
+
+    if (token) {
+      this.loggedIn = true;
+      this.token = token;
+      this.userType = userType;
+      this.userName = userName;
+    }
+  }
+
   login(username: string, password: string): Observable<LoginResponse> {
     console.log('AuthService: Login gestartet');
     const payload = { username, password };
     return this.http.post<LoginResponse>('http://localhost:3000/api/login', payload).pipe(
-      tap(response => {
+      tap((response) => {
         console.log('AuthService: Login-Antwort erhalten', response);
 
-        // Überprüfe, ob response.user nicht undefined ist
         if (response.success && response.user) {
           this.loggedIn = true;
-          this.userName = response.user.username || null; // Benutzername wird jetzt aus 'username' gesetzt
-          this.userType = response.user.userType || null; // Benutzer-Typ korrekt zuweisen
-          this.token = response.user.token || null; // Token setzen, falls vorhanden
-          localStorage.setItem('token', this.token || ''); // Optionales Token in LocalStorage speichern
-          console.log('AuthService: Benutzer eingeloggt', this.userType);
+          this.userName = response.user.username || null;
+          this.userType = response.user.userType || null;
+          this.token = response.user.token || null;
+
+          localStorage.setItem('token', this.token || '');
+          localStorage.setItem('userType', this.userType || '');
+          localStorage.setItem('userName', this.userName || '');
+
+          this.userDataService.fetchUserData().subscribe();
         } else {
-          console.log('AuthService: Login fehlgeschlagen');
+          this.loggedIn = false;
         }
       })
     );
   }
 
-  // Gibt zurück, ob der Benutzer eingeloggt ist
   isLoggedIn(): boolean {
-    console.log('AuthService: isLoggedIn aufgerufen', this.loggedIn);
     return this.loggedIn;
   }
 
-  // Gibt den Benutzertyp zurück
   getUserType(): string | null {
-    console.log('AuthService: getUserType aufgerufen', this.userType);
     return this.userType;
   }
 
-  // Gibt den Benutzernamen zurück
   getUserName(): string | null {
-    console.log('AuthService: getUserName aufgerufen', this.userName);
     return this.userName;
   }
 
-  // Neue Methode: Passwort ändern
+  logout(): void {
+    this.loggedIn = false;
+    this.userType = null;
+    this.token = null;
+
+    localStorage.removeItem('token');
+    localStorage.removeItem('userType');
+    localStorage.removeItem('userName');
+    this.userDataService.clearUserData();
+  }
+
   changePassword(payload: { userName: string | null; password: string; newPassword: string }): Observable<{ passwordChangeSuccess: boolean }> {
     console.log('AuthService: Passwortänderung gestartet');
     return this.http.post<{ passwordChangeSuccess: boolean }>('http://localhost:3000/api/change-password', payload).pipe(
-      tap(response => {
+      tap((response) => {
         console.log('AuthService: Passwortänderung-Antwort erhalten', response);
       })
     );
