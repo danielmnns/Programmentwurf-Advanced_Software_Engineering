@@ -16,6 +16,8 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 import { HeadbarComponent } from './headbar/headbar.component';
 import { AccountComponent } from './account/account.component';
+import { AdminKursComponent } from './admin-kurs/admin-kurs.component';
+import { KursComponent } from './user-kurs/user-kurs.component';
 
 @NgModule({
   declarations: [
@@ -24,10 +26,12 @@ import { AccountComponent } from './account/account.component';
     AdminDashboardComponent,
     UserDashboardComponent,
     HeadbarComponent,
-    AccountComponent
+    AccountComponent,
+    AdminKursComponent
   ],
   imports: [
     BrowserModule,
+    KursComponent,
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule, // Pflicht für Angular Material
@@ -35,6 +39,7 @@ import { AccountComponent } from './account/account.component';
     MatButtonModule,
     MatSelectModule,
     MatCardModule,
+    KursComponent,
     AppRoutingModule
   ],
   providers: [],
