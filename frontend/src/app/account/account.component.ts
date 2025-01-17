@@ -32,10 +32,10 @@ export class AccountComponent {
     this.authService.changePassword(payload).subscribe(
       (response) => {
         if (response.passwordChangeSuccess) {
-          alert('Passwort erfolgreich geändert.');
+          alert(`${this.userName} Ihr Passwort wurde geändert.\nSie werden nun ausgeloggt.`);
           this.router.navigate(['/']); // Weiterleitung nach erfolgreicher Änderung
         } else {
-          alert('Passwortänderung fehlgeschlagen. Bitte überprüfen Sie Ihre Eingaben.');
+          alert(`Passwortänderung für Benutzer ${this.userName} fehlgeschlagen. Bitte überprüfen Sie Ihre Eingaben.`);
         }
       },
       (error) => {
