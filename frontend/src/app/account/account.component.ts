@@ -17,6 +17,11 @@ export class AccountComponent {
     this.userName = this.authService.getUserName(); // Benutzername aus AuthService holen
   }
 
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
+
   changePassword(): void {
     if (!this.oldPassword || !this.newPassword) {
       alert('Bitte füllen Sie alle Felder aus.');
