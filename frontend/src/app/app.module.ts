@@ -2,8 +2,9 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Pflicht für Angular Material
 
+// Angular Material Module Imports
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
@@ -27,22 +28,22 @@ import { KursComponent } from './user-kurs/user-kurs.component';
     UserDashboardComponent,
     HeadbarComponent,
     AccountComponent,
-    AdminKursComponent
+    AdminKursComponent,
+    KursComponent
   ],
   imports: [
     BrowserModule,
-    KursComponent,
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule, // Pflicht für Angular Material
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatCardModule,
-    KursComponent,
-    AppRoutingModule
+    MatInputModule, // Material Input-Komponente
+    MatButtonModule, // Material Button-Komponente
+    MatSelectModule, // Material Select-Komponente
+    MatCardModule, // Material Card-Komponente
+    AppRoutingModule,
+    // KursComponent removed from imports
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {}

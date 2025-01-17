@@ -1,14 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-kurs',
-  standalone: true,
+  selector: 'app-user-kurs',
   templateUrl: './user-kurs.component.html',
-  styleUrls: ['./user-kurs.component.css'],
-  imports: [CommonModule, FormsModule],
+  styleUrls: ['./user-kurs.component.css']
 })
 export class KursComponent implements OnInit {
   currentDate: string = '';
@@ -18,11 +14,12 @@ export class KursComponent implements OnInit {
   textContent: string = '';
   aufgabeContent: string = '';
   feedbackContent: string = '';
+  participants: string[] = ['Max Mustermann', 'Erika Musterfrau', 'Hans Schmidt'];
 
   uploadedFiles = {
     documents: [] as { name: string; url: string }[],
     aufgaben: [] as { name: string; url: string }[],
-    abgaben: [] as { name: string; url: string }[],
+    abgaben: [] as { name: string; url: string }[]
   };
 
   constructor(private route: ActivatedRoute, private router: Router) {}
@@ -59,23 +56,11 @@ export class KursComponent implements OnInit {
     this.router.navigate(['/startseite']);
   }
 
-  handleFileUpload(event: Event, category: 'documents' | 'aufgaben' | 'abgaben') {
+  handleFileUpload(event: Event, category: 'abgaben') {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
       const fileUrl = URL.createObjectURL(file);
       this.uploadedFiles[category].push({ name: file.name, url: fileUrl });
     }
-  }
-
-  saveText() {
-    alert('Text wurde gespeichert!');
-  }
-
-  saveAufgabe() {
-    alert('Aufgabe wurde gespeichert!');
-  }
-
-  saveFeedback() {
-    alert('Feedback wurde gespeichert!');
   }
 }
