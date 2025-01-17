@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -41,13 +42,13 @@ import { KursComponent } from './user-kurs/user-kurs.component';
     FormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-      MatInputModule,
+    MatInputModule,
     MatButtonModule,
     MatSelectModule,
     MatCardModule,
     AppRoutingModule,
-    MatDialogModule,// Pflicht für Angular Material
-
+    MatDialogModule,
+    MatSnackBarModule
   ],
   providers: [],
   bootstrap: [AppComponent]
