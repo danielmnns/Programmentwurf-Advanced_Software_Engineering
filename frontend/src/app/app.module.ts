@@ -8,6 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -16,6 +17,7 @@ import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.compo
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 import { HeadbarComponent } from './headbar/headbar.component';
 import { AccountComponent } from './account/account.component';
+import { EnrollmentDialogComponent } from './user-dashboard/enrollment-dialog/enrollment-dialog.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,8 @@ import { AccountComponent } from './account/account.component';
     AdminDashboardComponent,
     UserDashboardComponent,
     HeadbarComponent,
-    AccountComponent
+    AccountComponent,
+    EnrollmentDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -35,7 +38,8 @@ import { AccountComponent } from './account/account.component';
     MatButtonModule,
     MatSelectModule,
     MatCardModule,
-    AppRoutingModule
+    AppRoutingModule,
+    MatDialogModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
