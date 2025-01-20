@@ -47,8 +47,8 @@ export class UserDashboardComponent implements OnInit {
       }
     });
   }
-  navigateToCourse(courseId: number): void {
-    // Navigiert zur Kursseite mit der entsprechenden ID
-    this.router.navigate([`/course/${courseId}`]);
+  navigateToCourse(courseName: string): void {
+    // Navigation zur Kursseite mit Kursnamen in der URL
+    this.router.navigate(['/user-kurs', encodeURIComponent(courseName)]);
   }
 }

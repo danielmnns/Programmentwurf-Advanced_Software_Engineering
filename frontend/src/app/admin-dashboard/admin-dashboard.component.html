@@ -1,6 +1,12 @@
-<div class="dashboard">
-    <h1>Willkommen im Admin-Dashboard</h1>
-    <p>Hier können Sie Benutzer und Systemeinstellungen verwalten.</p>
-    <!-- Weitere Inhalte wie Benutzerverwaltung, Berichte, etc. -->
+<div class="course-container">
+  <div *ngFor="let course of courses" class="course-box">
+    <div class="course-content">
+      <span 
+        class="course-title" 
+        (click)="navigateToCourse(course.title)"
+      >
+        {{ course.title }}
+      </span>
+    </div>
   </div>
-  
+</div>
