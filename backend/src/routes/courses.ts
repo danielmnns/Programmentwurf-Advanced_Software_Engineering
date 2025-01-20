@@ -1,16 +1,53 @@
-import { Router } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import {
-  getCourses,
   createCourse,
+  getAllCourses,
+  getCourseById,
   updateCourse,
   deleteCourse,
 } from '../controllers/courseControllers';
 
-const router = Router();
+const router = express.Router();
 
-router.get('/', getCourses);
-router.post('/', createCourse);
-router.put('/:id', updateCourse);
-router.delete('/:id', deleteCourse);
+
+router.post('/courses', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await createCourse(req, res); 
+  } catch (err) {
+    next(err); 
+  }
+});
+
+router.get('/courses', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await getAllCourses(req, res);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.get('/courses/:id', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await getCourseById(req, res);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.put('/courses/:id', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await updateCourse(req, res);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.delete('/courses/:id', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    await deleteCourse(req, res);
+  } catch (err) {
+    next(err);
+  }
+});
 
 export default router;
