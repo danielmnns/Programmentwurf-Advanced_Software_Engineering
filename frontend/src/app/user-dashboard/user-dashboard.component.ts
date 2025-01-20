@@ -51,5 +51,4 @@ export class UserDashboardComponent implements OnInit {
     // Navigation zur Kursseite mit Kursnamen in der URL
     this.router.navigate(['/user-kurs', encodeURIComponent(courseName)]);
   }
-  
 }
