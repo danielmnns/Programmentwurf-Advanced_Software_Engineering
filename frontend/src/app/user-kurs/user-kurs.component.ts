@@ -1,53 +1,47 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CourseService } from '../services/course.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-user-kurs',
   templateUrl: './user-kurs.component.html',
-  styleUrls: ['./user-kurs.component.css']
+  styleUrls: ['./user-kurs.component.css'],
 })
 export class KursComponent implements OnInit, OnDestroy {
   courseName: string = '';
-  courseData: any = null; // Daten des Kurses vom Backend
-  participants: string[] = ['Max Mustermann', 'Erika Musterfrau', 'Hans Schmidt'];
-  
+  courseData: any = null; // Kursdaten, die vom Backend geladen werden
   uploadedFiles = {
     documents: [] as { name: string; url: string }[],
     aufgaben: [] as { name: string; url: string }[],
-    abgaben: [] as { name: string; url: string }[]
+    abgaben: [] as { name: string; url: string }[],
   };
+
+  private apiUrl = 'http://localhost:3000/api/courses'; // Backend-API-URL
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private courseService: CourseService // Für Backend-Abfragen
+    private http: HttpClient
   ) {}
 
   ngOnInit(): void {
-    // Immer bei einem Seitenrefresh wird eine neue Anfrage ans Backend gesendet
+    this.courseName = this.route.snapshot.paramMap.get('courseName')!;
     this.loadCourseData();
   }
 
   loadCourseData(): void {
-    this.courseService.getCourseData().subscribe(
-      (response) => {
-        console.log('Kursdaten vom Backend geladen:', response);
+    this.http.get(`${this.apiUrl}/user-kurs`).subscribe(
+      (response: any) => {
         this.courseData = response;
-        // Speichern der Kursdaten im LocalStorage für die Dauer des Seitenaufrufs
-        localStorage.setItem('currentCourseData', JSON.stringify(response));
 
         if (response.courseName) {
-          this.courseName = response.courseName; // Kursname setzen
+          //this.courseName = response.courseName; Wenn kursname aus Backend Angezeigt werden soll einkommentieren 
           this.updateUrlWithCourseName(this.courseName);
-        } else {
-          console.error('Kursname im Backend-Response nicht gefunden.');
         }
-        this.participants = response.participants || [];
+
+        localStorage.setItem('currentCourseData', JSON.stringify(response));
       },
-      (error) => {
-        console.error('Fehler beim Laden der Kursdaten:', error);
-      }
+      (error) => console.error('Fehler beim Abrufen der Kursdaten:', error)
     );
   }
 
@@ -56,32 +50,17 @@ export class KursComponent implements OnInit, OnDestroy {
     this.router.navigate(['/user-kurs', encodedName], { replaceUrl: true });
   }
 
-  ngOnDestroy(): void {
-    // Löschen der Kursdaten aus dem LocalStorage, wenn die Seite verlassen wird
-    localStorage.removeItem('currentCourseData');
-  }
-
   handleFileUpload(event: Event, type: 'abgaben'): void {
     const input = event.target as HTMLInputElement;
 
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      const fileUrl = URL.createObjectURL(file); // Erstellen eines temporären URL-Links
-      const newFile = { name: file.name, url: fileUrl };
-
-      if (type === 'abgaben') {
-        this.uploadedFiles.abgaben.push(newFile);
-      }
-
-      // Optional: Senden der Datei an das Backend (nur wenn erforderlich)
-      // this.uploadFileToBackend(file, type);
+      const fileUrl = URL.createObjectURL(file);
+      this.uploadedFiles.abgaben.push({ name: file.name, url: fileUrl });
     }
   }
 
-  downloadFile(fileUrl: string): void {
-    const a = document.createElement('a');
-    a.href = fileUrl;
-    a.download = fileUrl.split('/').pop()!;
-    a.click();
+  ngOnDestroy(): void {
+    localStorage.removeItem('currentCourseData');
   }
 }

@@ -1,22 +1,29 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-user-kurs',
-  templateUrl: './user-kurs.component.html',
-  styleUrls: ['./user-kurs.component.css'],
+  selector: 'app-admin-kurs',
+  templateUrl: './admin-kurs.component.html',
+  styleUrls: ['./admin-kurs.component.css']
 })
-export class UserKursComponent implements OnInit, OnDestroy {
+export class AdminKursComponent implements OnInit {
+  currentDate: string = '';
+  currentTime: string = '';
+  userName: string = '';
   courseName: string = '';
-  courseData: any = null; // Kursdaten, die vom Backend geladen werden
+  textContent: string = '';
+  aufgabeContent: string = '';
+  feedbackContent: string = '';
+  participants: string[] = [];
+
   uploadedFiles = {
     documents: [] as { name: string; url: string }[],
     aufgaben: [] as { name: string; url: string }[],
-    abgaben: [] as { name: string; url: string }[],
+    abgaben: [] as { name: string; url: string }[]
   };
 
-  private apiUrl = 'http://localhost:3000/api/courses'; // Backend-API-URL
+  private apiUrl = 'http://localhost:3000/api/admin-kurs';
 
   constructor(
     private route: ActivatedRoute,
@@ -29,38 +36,68 @@ export class UserKursComponent implements OnInit, OnDestroy {
     this.loadCourseData();
   }
 
-  loadCourseData(): void {
-    this.http.get(`${this.apiUrl}/${encodeURIComponent(this.courseName)}`).subscribe(
-      (response: any) => {
-        this.courseData = response;
-
-        if (response.courseName) {
-          this.courseName = response.courseName;
-          this.updateUrlWithCourseName(this.courseName);
-        }
-
-        localStorage.setItem('currentCourseData', JSON.stringify(response));
-      },
-      (error) => console.error('Fehler beim Abrufen der Kursdaten:', error)
-    );
-  }
-
-  updateUrlWithCourseName(courseName: string): void {
-    const encodedName = encodeURIComponent(courseName);
-    this.router.navigate(['/user-kurs', encodedName], { replaceUrl: true });
-  }
-
-  handleFileUpload(event: Event, type: 'abgaben'): void {
-    const input = event.target as HTMLInputElement;
-
-    if (input.files && input.files.length > 0) {
-      const file = input.files[0];
+  handleFileUpload(event: Event, category: 'documents' | 'aufgaben' | 'abgaben') {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
       const fileUrl = URL.createObjectURL(file);
-      this.uploadedFiles.abgaben.push({ name: file.name, url: fileUrl });
+      this.uploadedFiles[category].push({ name: file.name, url: fileUrl });
     }
   }
 
+  loadCourseData(): void {
+    const url = `http://localhost:3000/api/courses/user-kurs`;
+    this.http.get(url).subscribe(
+      (response: any) => {
+        this.textContent = response.textContent || '';
+        this.aufgabeContent = response.aufgabeContent || '';
+        this.feedbackContent = response.feedbackContent || '';
+        this.participants = response.participants || [];
+      },
+      (error) => {
+        console.error('Fehler beim Abrufen der Kursdaten:', error);
+      }
+    );
+  }
+
+  
+  updateUrlWithCourseName(courseName: string): void {
+  
+    // Kodierung des bereinigten Namens
+    const encodedName = encodeURIComponent(courseName);
+  
+    // Navigiere zur Zielseite mit korrekt kodiertem Namen
+    this.router.navigate(['/user-kurs', encodedName], { replaceUrl: true })
+      .catch((error) => {
+        console.error('Fehler beim Navigieren zur Kursseite:', error);
+      });
+  }
+
   ngOnDestroy(): void {
+    // Löschen der Kursdaten aus dem LocalStorage, wenn die Seite verlassen wird
     localStorage.removeItem('currentCourseData');
+  }
+
+  saveText() {
+    const payload = { courseName: this.courseName, textContent: this.textContent };
+    this.http.post(this.apiUrl, payload).subscribe(
+      () => alert('Text wurde erfolgreich gespeichert!'),
+      (error) => console.error('Fehler beim Speichern des Textes:', error)
+    );
+  }
+
+  saveAufgabe() {
+    const payload = { courseName: this.courseName, aufgabeContent: this.aufgabeContent };
+    this.http.post(this.apiUrl, payload).subscribe(
+      () => alert('Aufgabe wurde erfolgreich gespeichert!'),
+      (error) => console.error('Fehler beim Speichern der Aufgabe:', error)
+    );
+  }
+
+  saveFeedback() {
+    const payload = { courseName: this.courseName, feedbackContent: this.feedbackContent };
+    this.http.post(this.apiUrl, payload).subscribe(
+      () => alert('Feedback wurde erfolgreich gespeichert!'),
+      (error) => console.error('Fehler beim Speichern des Feedbacks:', error)
+    );
   }
 }
