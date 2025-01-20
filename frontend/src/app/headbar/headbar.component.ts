@@ -19,7 +19,7 @@ export class HeadbarComponent implements OnInit {
     this.updateDateTime();
     setInterval(() => {
       this.updateDateTime();
-    }, 60000); // Jede Minute aktualisieren
+    }, 1000); // Jede Minute aktualisieren
 
     // Benutzername und Nutzertyp aus dem AuthService holen
     this.userName = this.authService.getUserName();

@@ -14,7 +14,7 @@ const routes: Routes = [
   { path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [AuthGuard] },
   { path: 'user-dashboard', component: UserDashboardComponent, canActivate: [AuthGuard] },
   { path: 'account', component: AccountComponent }, 
-  { path: 'user-kurs', component: KursComponent },
+  { path: 'user-kurs/:name', component: KursComponent },
   { path: 'admin-kurs', component: AdminKursComponent },
 ];
 

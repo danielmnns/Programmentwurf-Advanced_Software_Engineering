@@ -4,22 +4,22 @@
     <h2>{{ courseName }}</h2>
     <ul>
       <!-- Textanzeige (nur sichtbar) -->
-      <li>
+      <li *ngIf="courseData?.textContent">
         <mat-card>
           <mat-card-title>Text</mat-card-title>
           <mat-card-content>
-            <p>{{ textContent }}</p>
+            <p>{{ courseData.textContent }}</p>
           </mat-card-content>
         </mat-card>
       </li>
 
       <!-- Dokumente-Anzeige (nur sichtbar) -->
-      <li>
+      <li *ngIf="courseData?.documents?.length">
         <mat-card>
           <mat-card-title>Dokumente</mat-card-title>
           <mat-card-content>
             <ul>
-              <li *ngFor="let file of uploadedFiles.documents">
+              <li *ngFor="let file of courseData.documents">
                 <a [href]="file.url" target="_blank">{{ file.name }}</a>
               </li>
             </ul>
@@ -28,13 +28,12 @@
       </li>
 
       <!-- Aufgabenanzeige (nur sichtbar) -->
-      <li>
+      <li *ngIf="courseData?.aufgaben?.length">
         <mat-card>
           <mat-card-title>Aufgabe</mat-card-title>
           <mat-card-content>
-            <p>{{ aufgabeContent }}</p>
             <ul>
-              <li *ngFor="let file of uploadedFiles.aufgaben">
+              <li *ngFor="let file of courseData.aufgaben">
                 <a [href]="file.url" target="_blank">{{ file.name }}</a>
               </li>
             </ul>
@@ -47,7 +46,11 @@
         <mat-card>
           <mat-card-title>Abgabefeld</mat-card-title>
           <mat-card-content>
-            <input type="file" accept="application/pdf" (change)="handleFileUpload($event, 'abgaben')" />
+            <input
+              type="file"
+              accept="application/pdf"
+              (change)="handleFileUpload($event, 'abgaben')"
+            />
             <ul>
               <li *ngFor="let file of uploadedFiles.abgaben">
                 <a [href]="file.url" target="_blank">{{ file.name }}</a>
@@ -58,11 +61,11 @@
       </li>
 
       <!-- Feedbackanzeige (nur sichtbar) -->
-      <li>
+      <li *ngIf="courseData?.feedbackContent">
         <mat-card>
           <mat-card-title>Feedback</mat-card-title>
           <mat-card-content>
-            <p>{{ feedbackContent }}</p>
+            <p>{{ courseData.feedbackContent }}</p>
           </mat-card-content>
         </mat-card>
       </li>
@@ -73,7 +76,7 @@
   <div class="teilnehmer">
     <h2>Teilnehmer</h2>
     <ul>
-      <li *ngFor="let participant of participants">
+      <li *ngFor="let participant of courseData?.participants">
         {{ participant }}
       </li>
     </ul>

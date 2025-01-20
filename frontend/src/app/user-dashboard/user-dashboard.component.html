@@ -10,14 +10,14 @@
       <span 
         class="course-title enrolled" 
         *ngIf="course.enrolled" 
-        (click)="navigateToCourse(course)"
+        (click)="navigateToCourse(course.name)"
       >
         {{ course.title }}
       </span>
       <span 
         *ngIf="!course.enrolled" 
         class="lock-icon" 
-        (click)="openEnrollmentDialog(course)"
+        (click)="openEnrollmentDialog(course.name)"
       >
         🔒
       </span>

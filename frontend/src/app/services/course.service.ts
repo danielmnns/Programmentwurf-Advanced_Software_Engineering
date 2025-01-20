@@ -17,4 +17,9 @@ export class CourseService {
   enrollInCourse(payload: { username: string; courseName: string; enrollmentKey: string }): Observable<any> {
     return this.http.post<any>('http://localhost:3000/api/enroll', payload);
   }
+  
+  getCourseByName(courseName: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/${courseName}`);
+  }
+  
 }
