@@ -1,20 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
-  selector: 'app-user-kurs',
+  selector: 'app-admin-kurs',
   templateUrl: './admin-kurs.component.html',
   styleUrls: ['./admin-kurs.component.css']
 })
-export class AdminKursComponent implements OnInit {
-  currentDate: string = '';
-  currentTime: string = '';
+export class AdminKursComponent implements OnInit, OnDestroy {
   userName: string = '';
   courseName: string = '';
   textContent: string = '';
   aufgabeContent: string = '';
   feedbackContent: string = '';
-  participants: string[] = ['Max Mustermann', 'Erika Musterfrau', 'Hans Schmidt'];
+  participants: string[] = [];
 
   uploadedFiles = {
     documents: [] as { name: string; url: string }[],
@@ -22,38 +21,21 @@ export class AdminKursComponent implements OnInit {
     abgaben: [] as { name: string; url: string }[]
   };
 
-  constructor(private route: ActivatedRoute, private router: Router) {}
+  private apiUrl = 'http://localhost:3000/api/courses';
+
+  constructor(
+    private route: ActivatedRoute,
+    private router: Router,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
-    this.initializeHeaderFunctions();
-    this.courseName = this.route.snapshot.paramMap.get('courseName')!;
-  }
+    // Kursname aus der URL dekodieren
+    const encodedCourseName = this.route.snapshot.paramMap.get('courseName')!;
+    this.courseName = decodeURIComponent(encodedCourseName);
 
-  initializeHeaderFunctions() {
-    this.updateDateTime();
-    setInterval(() => this.updateDateTime(), 1000);
-    this.loadUserData();
-  }
-
-  updateDateTime() {
-    const now = new Date();
-    this.currentDate = now.toLocaleDateString();
-    this.currentTime = now.toLocaleTimeString();
-  }
-
-  loadUserData() {
-    const userData = JSON.parse(localStorage.getItem('userData') || '{}');
-    if (userData.name) {
-      this.userName = userData.name;
-    }
-  }
-
-  navigateToAccount() {
-    this.router.navigate(['/account']);
-  }
-
-  navigateToHome(): void {
-    this.router.navigate(['/startseite']);
+    // Kursdaten laden
+    this.loadCourseData();
   }
 
   handleFileUpload(event: Event, category: 'documents' | 'aufgaben' | 'abgaben') {
@@ -64,15 +46,78 @@ export class AdminKursComponent implements OnInit {
     }
   }
 
+  loadCourseData(): void {
+    // API-Endpunkt für Kursdaten
+    const url = `${this.apiUrl}/admin-kurs`;
+    this.http.get(url).subscribe(
+      (response: any) => {
+        this.textContent = response.textContent || '';
+        this.aufgabeContent = response.aufgabeContent || '';
+        this.feedbackContent = response.feedbackContent || '';
+        this.participants = response.participants || [];
+
+        if (response.documents) {
+          this.uploadedFiles.documents = response.documents.map((doc: any) => ({
+            name: doc.name,
+            url: doc.url,
+          }));
+        }
+  
+        // Backend-Aufgaben hinzufügen
+        if (response.aufgaben) {
+          this.uploadedFiles.aufgaben = response.aufgaben.map((task: any) => ({
+            name: task.name,
+            url: task.url,
+          }));
+        }
+  
+        // Backend-Abgaben hinzufügen
+        if (response.abgaben) {
+          this.uploadedFiles.abgaben = response.abgaben.map((submission: any) => ({
+            name: submission.name,
+            url: submission.url,
+          }));
+        }
+      },
+      (error) => {
+        console.error('Fehler beim Abrufen der Kursdaten:', error);
+      }
+    );
+  }
+
+  updateUrlWithCourseName(courseName: string): void {
+    const encodedName = encodeURIComponent(courseName);
+    this.router.navigate(['/admin-kurs', encodedName], { replaceUrl: true }).catch((error) => {
+      console.error('Fehler beim Navigieren zur Kursseite:', error);
+    });
+  }
+
+  ngOnDestroy(): void {
+    // Löschen der Kursdaten aus dem LocalStorage, wenn die Seite verlassen wird
+    localStorage.removeItem('currentCourseData');
+  }
+
   saveText() {
-    alert('Text wurde gespeichert!');
+    const payload = { courseName: this.courseName, textContent: this.textContent };
+    this.http.post(this.apiUrl, payload).subscribe(
+      () => alert('Text wurde erfolgreich gespeichert!'),
+      (error) => console.error('Fehler beim Speichern des Textes:', error)
+    );
   }
 
   saveAufgabe() {
-    alert('Aufgabe wurde gespeichert!');
+    const payload = { courseName: this.courseName, aufgabeContent: this.aufgabeContent };
+    this.http.post(this.apiUrl, payload).subscribe(
+      () => alert('Aufgabe wurde erfolgreich gespeichert!'),
+      (error) => console.error('Fehler beim Speichern der Aufgabe:', error)
+    );
   }
 
   saveFeedback() {
-    alert('Feedback wurde gespeichert!');
+    const payload = { courseName: this.courseName, feedbackContent: this.feedbackContent };
+    this.http.post(this.apiUrl, payload).subscribe(
+      () => alert('Feedback wurde erfolgreich gespeichert!'),
+      (error) => console.error('Fehler beim Speichern des Feedbacks:', error)
+    );
   }
 }

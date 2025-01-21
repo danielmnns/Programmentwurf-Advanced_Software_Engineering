@@ -30,4 +30,9 @@ export class AdminDashboardComponent implements OnInit {
     // Navigation zur Kursseite mit Kursnamen in der URL
     this.router.navigate(['/user-kurs', encodeURIComponent(courseName)]);
   }
+
+  navigateToAdminKurs(courseName: string): void {
+    // Navigation zur Admin-Kurs-Seite
+    this.router.navigate(['/admin-kurs', encodeURIComponent(courseName)]);
+  }
 }

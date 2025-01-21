@@ -15,7 +15,7 @@ const routes: Routes = [
   { path: 'user-dashboard', component: UserDashboardComponent, canActivate: [AuthGuard] },
   { path: 'account', component: AccountComponent }, 
   { path: 'user-kurs/:courseName', component: KursComponent },
-  { path: 'admin-kurs', component: AdminKursComponent },
+  { path: 'admin-kurs/:courseName', component: AdminKursComponent },
 ];
 
 @NgModule({
