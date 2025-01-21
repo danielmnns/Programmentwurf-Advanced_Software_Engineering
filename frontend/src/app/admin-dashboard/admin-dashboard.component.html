@@ -1,0 +1,19 @@
+<div class="course-container">
+  <div *ngFor="let course of courses" class="course-box">
+    <div class="course-content">
+      <span 
+        class="course-title" 
+        (click)="navigateToCourse(course.title)"
+      >
+        {{ course.title }}
+      </span>
+      <span 
+        class="edit-icon" 
+        (click)="navigateToAdminKurs(course.title)" 
+        title="Kurs bearbeiten"
+      >
+        ✏️
+      </span>
+    </div>
+  </div>
+</div>

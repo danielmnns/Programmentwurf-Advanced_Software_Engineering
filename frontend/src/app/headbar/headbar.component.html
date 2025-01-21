@@ -1,0 +1,13 @@
+<!-- Header -->
+<div class="header">
+  <div class="home-icon" (click)="navigateToHome()">🏠</div>
+
+  <div class="user-section">
+    <span class="language">🌍 Deutsch (de) ▼</span>
+
+    <div class="user-info" (click)="navigateToAccount()">
+      <p>{{ userName }} ({{ userType }})</p> <!-- Benutzername und Typ anzeigen -->
+      <div class="benutzer-icon">👤</div>
+    </div>
+  </div>
+</div>

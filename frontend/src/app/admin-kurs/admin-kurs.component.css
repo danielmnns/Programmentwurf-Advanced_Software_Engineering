@@ -1,0 +1,49 @@
+/* Container für die gesamte Seite */
+.container {
+    width: 90%;
+    margin: 20px auto;
+    display: flex;
+    gap: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Linker Bereich (Hauptinhalt) */
+  .users {
+    flex: 2;
+    padding: 20px;
+    background-color: #f5f5f5;
+    border-radius: 8px;
+  }
+  
+  /* Rechter Bereich (Teilnehmerliste) */
+  .teilnehmer {
+    flex: 1;
+    padding: 20px;
+    background-color: #e3f2fd;
+    border-radius: 8px;
+    max-height: 600px;
+    overflow-y: auto;
+  }
+  
+  /* Listen-Stil */
+  .users ul,
+  .teilnehmer ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .users li,
+  .teilnehmer li {
+    margin-bottom: 20px;
+  }
+  
+  .mat-card {
+    margin-bottom: 20px;
+  }
+  
+  /* Buttons */
+  .mat-raised-button {
+    margin-top: 10px;
+    width: 100%;
+  }
+  

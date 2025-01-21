@@ -1,12 +1,39 @@
-import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { UserDataService } from './services/userdata.service';
+import { AuthService } from './auth/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  styleUrls: ['./app.component.css'],
 })
-export class AppComponent {
-  title = 'frontend';
+export class AppComponent implements OnInit {
+  title = 'Saugiels Lernplattform';
+
+  constructor(
+    private userDataService: UserDataService,
+    private authService: AuthService,
+    private router: Router
+  ) {}
+
+  ngOnInit(): void {
+    const token = localStorage.getItem('token');
+    if (token) {
+      if (!this.userDataService.getUserData()) {
+        this.userDataService.fetchUserData().subscribe(
+          () => console.log('Benutzerdaten erfolgreich geladen.'),
+          (error) => {
+            console.error('Fehler beim Laden der Benutzerdaten:', error);
+            this.authService.logout();
+            this.router.navigate(['/login']);
+          }
+        );
+      }
+    }
+  }
+
+  isLoginPage(): boolean {
+    return this.router.url === '/login';
+  }
 }
