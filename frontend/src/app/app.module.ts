@@ -11,6 +11,12 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -22,6 +28,7 @@ import { AccountComponent } from './account/account.component';
 import { EnrollmentDialogComponent } from './user-dashboard/enrollment-dialog/enrollment-dialog.component';
 import { AdminKursComponent } from './admin-kurs/admin-kurs.component';
 import { KursComponent } from './user-kurs/user-kurs.component';
+import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.component';
 
 
 @NgModule({
@@ -34,7 +41,8 @@ import { KursComponent } from './user-kurs/user-kurs.component';
     AccountComponent,
     AdminKursComponent,
     KursComponent,
-    EnrollmentDialogComponent
+    EnrollmentDialogComponent,
+    UserVerwaltungComponent
 
   ],
   imports: [
@@ -48,7 +56,13 @@ import { KursComponent } from './user-kurs/user-kurs.component';
     MatCardModule,
     AppRoutingModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatCheckboxModule
   ],
   providers: [],
   bootstrap: [AppComponent]

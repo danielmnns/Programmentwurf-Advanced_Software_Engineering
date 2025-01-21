@@ -1,0 +1,55 @@
+<div class="user-management">
+    <h1>User-Verwaltung</h1>
+  
+    <!-- Add New User -->
+    <div class="add-user">
+      <h2>Neuen Benutzer hinzufügen</h2>
+      <form (ngSubmit)="addUser()">
+        <mat-form-field appearance="outline">
+          <mat-label>Benutzername</mat-label>
+          <input matInput [(ngModel)]="newUser.username" name="username" required />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Passwort</mat-label>
+          <input matInput [(ngModel)]="newUser.password" name="password" type="password" required />
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit">Hinzufügen</button>
+      </form>
+    </div>
+  
+    <!-- Manage Existing Users -->
+    <div class="user-list">
+      <h2>Benutzerliste</h2>
+      <mat-table [dataSource]="users" class="mat-elevation-z8">
+        <!-- Username Column -->
+        <ng-container matColumnDef="username">
+          <mat-header-cell *matHeaderCellDef> Benutzername </mat-header-cell>
+          <mat-cell *matCellDef="let user"> {{ user.username }} </mat-cell>
+        </ng-container>
+  
+        <!-- User Type Column -->
+        <ng-container matColumnDef="type">
+          <mat-header-cell *matHeaderCellDef> Typ </mat-header-cell>
+          <mat-cell *matCellDef="let user">
+            <mat-select [(ngModel)]="user.type" (selectionChange)="updateUserType(user)">
+              <mat-option *ngFor="let type of userTypes" [value]="type">{{ type }}</mat-option>
+            </mat-select>
+          </mat-cell>
+        </ng-container>
+  
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef> Aktionen </mat-header-cell>
+          <mat-cell *matCellDef="let user">
+            <button mat-icon-button color="warn" (click)="deleteUser(user.id)">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </mat-cell>
+        </ng-container>
+  
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </mat-table>
+    </div>
+  </div>
+  

@@ -8,8 +8,7 @@
         class="edit-icon" 
         *ngIf="isAuthorized"
         (click)="navigateToAdminCourse(courseName)" 
-        title="Kurs bearbeiten"
-        
+        title="Kurs bearbeiten" 
       >
         ✏️
       </span>
@@ -45,36 +44,19 @@
       </li>
 
       <!-- Abgabefeld -->
-<mat-card>
-  <mat-card-title>Abgabefeld</mat-card-title>
-  <mat-card-content>
-    <input type="file" accept="application/pdf" (change)="handleFileUpload($event, 'abgaben')" />
-    <ul>
-      <li *ngFor="let file of uploadedFiles.abgaben; let i = index">
-        <a [href]="file.url" target="_blank">{{ file.name }}</a>
-        <button
-          (click)="confirmDeletion('abgaben', i)"
-          style="color: red; border: none; background: none; cursor: pointer; margin-left: 10px;"
-          aria-label="Datei löschen bestätigen"
-        >
-          ✖
-        </button>
+      <li>
+        <mat-card>
+          <mat-card-title>Abgabefeld</mat-card-title>
+          <mat-card-content>
+            <input type="file" accept="application/pdf" (change)="handleFileUpload($event, 'abgaben')" />
+            <ul>
+              <li *ngFor="let file of uploadedFiles.abgaben">
+                <a [href]="file.url" target="_blank">{{ file.name }}</a>
+              </li>
+            </ul>
+          </mat-card-content>
+        </mat-card>
       </li>
-    </ul>
-  </mat-card-content>
-</mat-card>
-
-<!-- Bestätigungsdialog -->
-<div *ngIf="showConfirmationDialog" class="confirmation-dialog">
-  <div class="dialog-content">
-    <p>Möchten Sie die Datei "{{ fileToDelete?.name }}" wirklich löschen?</p>
-    <div class="dialog-actions">
-      <button (click)="deleteFile()" class="confirm-btn">Bestätigen</button>
-      <button (click)="cancelDeletion()" class="cancel-btn">Abbrechen</button>
-    </div>
-  </div>
-</div>
-
 
       <!-- Feedback-Anzeige -->
       <li *ngIf="feedbackContent">

@@ -7,6 +7,7 @@ import { AuthGuard } from './auth/auth.guard';
 import { AccountComponent } from './account/account.component';
 import { KursComponent } from './user-kurs/user-kurs.component';
 import { AdminKursComponent } from './admin-kurs/admin-kurs.component';
+import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -46,6 +47,14 @@ const routes: Routes = [
     canActivate: [AuthGuard], 
     data: { allowedRoles: ['admin', 'studiengangsleiter', 'dozent'] }
   },
+
+  { 
+    path: 'user-verwaltung', 
+    component: UserVerwaltungComponent, 
+    canActivate: [AuthGuard], 
+    data: { allowedRoles: ['admin'] } 
+  },
+  
 ];
 
 @NgModule({
