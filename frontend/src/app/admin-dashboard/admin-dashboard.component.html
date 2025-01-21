@@ -1,13 +1,12 @@
 <div class="course-container">
+  <!-- Vorhandene Kurse -->
   <div *ngFor="let course of courses" class="course-box">
     <div class="course-content">
-      <span 
-        class="course-title" 
-        (click)="navigateToCourse(course.title)"
-      >
+      <!-- Kursname, klickbar, um zur Kurs-Seite zu navigieren -->
+      <span class="course-title" (click)="navigateToCourse(course.title)">
         {{ course.title }}
       </span>
-      
+
       <!-- Container für Stift- und Mülleimer-Icons -->
       <div class="icon-container">
         <!-- Stift-Icon zur Admin-Kurs-Seite -->
@@ -32,7 +31,26 @@
   </div>
 </div>
 
-<!-- Button nur für Admin sichtbar -->
-<div *ngIf="isAdmin">
-  <button (click)="navigateToUserVerwaltung()">Zur User-Verwaltung</button>
+<!-- Plus-Symbol für Kurs hinzufügen -->
+<div class="add-course" (click)="openAddCourseModal()">
+  <span class="add-icon" title="Neuen Kurs hinzufügen">
+    ➕ Kurs hinzufügen
+  </span>
+</div>
+
+<!-- Modal für Kurs hinzufügen -->
+<div class="modal" *ngIf="showAddCourseModal">
+  <div class="modal-content">
+    <h3>Neuen Kurs erstellen</h3>
+    <input
+      type="text"
+      [(ngModel)]="newCourseTitle"
+      placeholder="Kursname eingeben"
+      class="course-input"
+    />
+    <div class="modal-buttons">
+      <button (click)="addCourse()">Hinzufügen</button>
+      <button (click)="closeAddCourseModal()">Abbrechen</button>
+    </div>
+  </div>
 </div>
