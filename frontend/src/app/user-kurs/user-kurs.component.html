@@ -16,6 +16,17 @@
     </h2>
     <ul>
 
+      <!-- Text-Anzeige -->
+<li *ngIf="textContent">
+  <mat-card>
+    <mat-card-title>Text</mat-card-title>
+    <mat-card-content>
+      <p>{{ textContent }}</p>
+    </mat-card-content>
+  </mat-card>
+</li>
+
+
       <!-- Dokumente-Anzeige -->
       <li *ngIf="uploadedFiles.documents.length">
         <mat-card>

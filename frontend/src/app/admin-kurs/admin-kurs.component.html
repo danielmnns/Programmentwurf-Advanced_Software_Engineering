@@ -1,7 +1,17 @@
 <div class="container">
     <!-- Hauptbereich (Kursinhalt) -->
     <div class="users">
-      <h2>{{ courseName }}</h2>
+      <h2>
+        {{ courseName }}
+        <!-- Stift-Icon -->
+        <span 
+          class="edit-icon"
+          (click)="navigateToUserCourse(courseName)" 
+          title="Bearbeitung abgeschlossen"
+        >
+        ✔️
+        </span>
+      </h2>
       <ul>
         <li>
           <mat-card>
