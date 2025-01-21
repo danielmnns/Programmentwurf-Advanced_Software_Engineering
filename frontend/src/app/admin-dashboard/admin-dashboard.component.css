@@ -39,3 +39,39 @@
 .edit-icon:hover {
   color: #0056b3; /* Dunkleres Blau beim Hover */
 }
+
+.course-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.course-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.course-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.icon-container {
+  display: flex;
+  justify-content: flex-end; /* Rechtsbündig */
+  align-items: center;
+}
+
+.edit-icon,
+.delete-icon {
+  margin-left: 10px; /* Abstand zwischen den Icons */
+  cursor: pointer;
+  font-size: 20px; /* Größe der Icons */
+}
+
+.delete-icon {
+  color: red; /* Mülleimer rot */
+}

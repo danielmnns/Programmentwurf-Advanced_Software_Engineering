@@ -49,4 +49,20 @@ export class AdminDashboardComponent implements OnInit {
   navigateToUserVerwaltung(): void {
     this.router.navigate(['/user-verwaltung']);  // Hier zur User-Verwaltung navigieren
   }
+
+  deleteCourse(courseTitle: string): void {
+    if (confirm(`Möchten Sie den Kurs "${courseTitle}" wirklich löschen?`)) {
+      this.courseService.deleteCourse(courseTitle).subscribe(
+        (response) => {
+          // Kurs erfolgreich gelöscht, die Liste aktualisieren
+          this.courses = this.courses.filter(course => course.title !== courseTitle);
+          alert(`Kurs "${courseTitle}" wurde erfolgreich gelöscht.`);
+        },
+        (error) => {
+          console.error('Fehler beim Löschen des Kurses:', error);
+          alert(`Fehler beim Löschen des Kurses "${courseTitle}".`);
+        }
+      );
+    }
+  }
 }
