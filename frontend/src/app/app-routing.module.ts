@@ -29,7 +29,7 @@ const routes: Routes = [
   },
 
   // Account Seite, für alle Benutzer zugänglich
-  { path: 'account', component: AccountComponent, canActivate: [AuthGuard] },
+  { path: 'account', component: AccountComponent},
 
   // User Kurs, für alle Benutzer zugänglich
   { 
