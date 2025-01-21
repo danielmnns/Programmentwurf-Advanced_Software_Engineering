@@ -23,4 +23,13 @@ export class CourseService {
     return this.http.get<any>(url);
   }
   
+  deleteCourse(courseTitle: string): Observable<void> {
+    return this.http.
+    delete<void>(`${this.apiUrl}/${encodeURIComponent(courseTitle)}`);
+  }
+
+  addCourse(course: { title: string }): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}`, course);
+  }
+  
 }
