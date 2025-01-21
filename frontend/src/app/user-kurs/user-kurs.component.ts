@@ -43,6 +43,29 @@ export class KursComponent implements OnInit, OnDestroy {
         this.aufgabeContent = response.aufgabeContent || '';
         this.feedbackContent = response.feedbackContent || '';
         this.participants = response.participants || [];
+
+        if (response.documents) {
+          this.uploadedFiles.documents = response.documents.map((doc: any) => ({
+            name: doc.name,
+            url: doc.url,
+          }));
+        }
+  
+        // Backend-Aufgaben hinzufügen
+        if (response.aufgaben) {
+          this.uploadedFiles.aufgaben = response.aufgaben.map((task: any) => ({
+            name: task.name,
+            url: task.url,
+          }));
+        }
+  
+        // Backend-Abgaben hinzufügen
+        if (response.abgaben) {
+          this.uploadedFiles.abgaben = response.abgaben.map((submission: any) => ({
+            name: submission.name,
+            url: submission.url,
+          }));
+        }
       },
       (error) => {
         console.error('Fehler beim Abrufen der Kursdaten:', error);
