@@ -127,31 +127,16 @@ export class KursComponent implements OnInit, OnDestroy {
 
   deleteFile(): void {
     if (this.fileToDelete && this.fileToDeleteIndex !== null) {
-      const payload = {
-        name: this.fileToDelete.name,
-        url: this.fileToDelete.url,
-        userName: this.userName,
-        courseName: this.courseName,
-      };
-  
-      this.http.delete(`${this.apiUrl}/abgaben`, { body: payload }).subscribe(
-        () => {
-          // Erfolgreich gelöscht
-          this.uploadedFiles.abgaben.splice(this.fileToDeleteIndex!, 1);
-          alert(`Datei "${this.fileToDelete?.name}" wurde erfolgreich entfernt.`);
-        },
-        (error) => {
-          console.error(`Fehler beim Löschen der Datei "${this.fileToDelete?.name}":`, error);
-          alert(`Fehler beim Löschen der Datei "${this.fileToDelete?.name}".`);
-        }
-      );
+      // Datei löschen
+      this.uploadedFiles.abgaben.splice(this.fileToDeleteIndex, 1); // Lösche die Datei mit dem richtigen Index
+      alert(`Datei "${this.fileToDelete?.name}" wurde erfolgreich entfernt.`);
     } else {
-      console.error('Datei oder Index zum Löschen nicht gesetzt.');
+      alert("Fehler: Keine Datei ausgewählt.");
     }
   
     this.cancelDeletion();
   }
-
+  
   cancelDeletion(): void {
     this.showConfirmationDialog = false;
     this.fileToDelete = null;
