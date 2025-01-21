@@ -42,7 +42,7 @@ export class KursComponent implements OnInit, OnDestroy {
 
   checkAuthorization(): void {
     const userRoles = ['admin', 'dozent', 'studiengangsleiter']; // Erlaubte Rollen
-    this.http.get('http://localhost:3000/api/userdata').subscribe(
+    this.http.get('http://localhost:3000/api/user/userdata').subscribe(
       (response: any) => {
         if (response.success && response.user) {
           this.isAuthorized = userRoles.includes(response.user.userType); // Benutzerrolle prüfen

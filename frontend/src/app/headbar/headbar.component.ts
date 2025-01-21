@@ -26,14 +26,14 @@ export class HeadbarComponent implements OnInit {
   }
   
   loadUserData(): void {
-    this.http.get('http://localhost:3000/api/userdata').subscribe(
+    this.http.get('http://localhost:3000/api/user/userdata').subscribe(
       (response: any) => {
         if (response.success && response.user) {
           this.userName = response.user.username;
           this.userType = response.user.userType;
           console.log('Benutzerdaten erfolgreich geladen:', response.user);
         } else {
-          console.error('Ungültige Antwort von /api/userdata:', response);
+          console.error('Ungültige Antwort von /api/user/userdata:', response);
         }
       },
       (error) => {
