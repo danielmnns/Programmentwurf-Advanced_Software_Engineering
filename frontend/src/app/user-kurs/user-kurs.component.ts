@@ -20,6 +20,7 @@ export class KursComponent implements OnInit, OnDestroy {
     abgaben: [] as { name: string; url: string }[],
   };
 
+  isAuthorized: boolean = false; // Sichtbarkeitsbedingung für das Icon
   private apiUrl = 'http://localhost:3000/api/courses'; // Backend-API-URL
 
   constructor(
@@ -31,11 +32,40 @@ export class KursComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const encodedCourseName = this.route.snapshot.paramMap.get('courseName')!;
     this.courseName = decodeURIComponent(encodedCourseName);
+
+    this.checkAuthorization(); // Überprüfung der Rolle
     this.loadCourseData();
   }
 
+  checkAuthorization(): void {
+    const userRoles = ['admin', 'dozent', 'studiengangsleiter']; // Erlaubte Rollen
+    this.http.get('http://localhost:3000/api/userdata').subscribe(
+      (response: any) => {
+        if (response.success && response.user) {
+          this.isAuthorized = userRoles.includes(response.user.userType); // Benutzerrolle prüfen
+          console.log('Benutzerrolle:', response.user.userType); // Debug
+          console.log('isAuthorized:', this.isAuthorized); // Debug
+        } else {
+          console.error('Ungültige API-Antwort:', response);
+        }
+      },
+      (error) => {
+        console.error('Fehler beim Abrufen der Benutzerrolle:', error);
+      }
+    );
+  }
+  
+  
+
+  // Navigation zur Admin-Kursseite
+  navigateToAdminCourse(courseName: string): void {
+    const encodedName = encodeURIComponent(courseName);
+    this.router.navigate(['/admin-kurs', encodedName]).catch((error) => {
+      console.error('Fehler beim Navigieren zur Admin-Kursseite:', error);
+    });
+  }
+
   loadCourseData(): void {
-    // API-Endpunkt für Kursdaten
     const url = `${this.apiUrl}/user-kurs`;
     this.http.get(url).subscribe(
       (response: any) => {
@@ -50,16 +80,14 @@ export class KursComponent implements OnInit, OnDestroy {
             url: doc.url,
           }));
         }
-  
-        // Backend-Aufgaben hinzufügen
+
         if (response.aufgaben) {
           this.uploadedFiles.aufgaben = response.aufgaben.map((task: any) => ({
             name: task.name,
             url: task.url,
           }));
         }
-  
-        // Backend-Abgaben hinzufügen
+
         if (response.abgaben) {
           this.uploadedFiles.abgaben = response.abgaben.map((submission: any) => ({
             name: submission.name,
@@ -73,20 +101,18 @@ export class KursComponent implements OnInit, OnDestroy {
     );
   }
 
-  updateUrlWithCourseName(courseName: string): void {
-    const encodedName = encodeURIComponent(courseName);
-    this.router.navigate(['/user-kurs', encodedName], { replaceUrl: true }).catch((error) => {
-      console.error('Fehler beim Navigieren zur Kursseite:', error);
-    });
-  }
-
-  handleFileUpload(event: Event, type: 'abgaben'): void {
+  handleFileUpload(event: Event, type: string): void {
     const input = event.target as HTMLInputElement;
-
+  
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       const fileUrl = URL.createObjectURL(file);
-      this.uploadedFiles.abgaben.push({ name: file.name, url: fileUrl });
+  
+      if (type === 'abgaben') {
+        this.uploadedFiles.abgaben.push({ name: file.name, url: fileUrl });
+      } else {
+        console.error('Ungültiger Dateityp:', type);
+      }
     }
   }
 
@@ -94,3 +120,5 @@ export class KursComponent implements OnInit, OnDestroy {
     localStorage.removeItem('currentCourseData');
   }
 }
+
+
