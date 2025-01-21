@@ -36,17 +36,23 @@ export class UserDashboardComponent implements OnInit {
   }
 
   openEnrollmentDialog(course: any): void {
+    if (!course) {
+      console.error('Kurs ist nicht verfügbar!');
+      return;
+    }
+  
     const dialogRef = this.dialog.open(EnrollmentDialogComponent, {
       width: '400px',
-      data: { course }
+      data: { course }  // Kurs wird hier korrekt weitergegeben
     });
-
+  
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.success) {
-        this.loadCourses();
+        this.loadCourses();  // Kurse neu laden, falls Einschreibung erfolgreich war
       }
     });
   }
+  
   navigateToCourse(courseName: string): void {
     // Navigation zur Kursseite mit Kursnamen in der URL
     this.router.navigate(['/user-kurs', encodeURIComponent(courseName)]);

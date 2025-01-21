@@ -28,23 +28,24 @@ export class EnrollmentDialogComponent {
 
   enroll(): void {
     const username = this.authService.getUserName() || '';
-
+  
     if (!this.enrollmentKey.trim()) {
       this.showSnackbar('Bitte geben Sie einen Einschreibeschlüssel ein.', 'error');
       return;
     }
-
+  
     const payload = {
       username,
       courseName: this.data.course.name,
       enrollmentKey: this.enrollmentKey,
     };
-
+  
     this.courseService.enrollInCourse(payload).subscribe(
       (response) => {
         if (response.enrolled) {
-          this.successMessage = `${username} wurde erfolgreich in den Kurs ${this.data.course.name} eingeschrieben.`;
-          this.showSnackbar(this.successMessage, 'success');
+          // Sicherstellen, dass successMessage immer ein string ist
+          this.successMessage = response.message || `${username} wurde erfolgreich in den Kurs ${this.data.course.name} eingeschrieben.`;
+          this.showSnackbar(this.successMessage || '', 'success');
           this.dialogRef.close({ success: true });
         } else {
           this.errorMessage = 'Falscher Einschreibeschlüssel.';
@@ -57,6 +58,8 @@ export class EnrollmentDialogComponent {
       }
     );
   }
+  
+  
 
   private showSnackbar(message: string, type: 'success' | 'error'): void {
     this.snackBar.open(message, 'OK', {

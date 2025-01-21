@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth/auth.service'; // AuthService importieren
 import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-headbar',
@@ -13,7 +14,7 @@ export class HeadbarComponent implements OnInit {
   userName: string | null = '';
   userType: string | null = '';
 
-  constructor(private router: Router, private authService: AuthService) {}
+  constructor(private router: Router, private authService: AuthService, private http: HttpClient) {}
 
   ngOnInit(): void {
     this.updateDateTime();
@@ -21,16 +22,31 @@ export class HeadbarComponent implements OnInit {
       this.updateDateTime();
     }, 1000); // Jede Minute aktualisieren
 
-    // Benutzername und Nutzertyp aus dem AuthService holen
-    this.userName = this.authService.getUserName();
-    this.userType = this.authService.getUserType();
+    this.loadUserData();
   }
-
-  updateDateTime(): void {
+  
+  loadUserData(): void {
+    this.http.get('http://localhost:3000/api/userdata').subscribe(
+      (response: any) => {
+        if (response.success && response.user) {
+          this.userName = response.user.username;
+          this.userType = response.user.userType;
+          console.log('Benutzerdaten erfolgreich geladen:', response.user);
+        } else {
+          console.error('Ungültige Antwort von /api/userdata:', response);
+        }
+      },
+      (error) => {
+        console.error('Fehler beim Abrufen der Benutzerdaten:', error);
+      }
+    );
+  }
+  
+    updateDateTime(): void {
     const now = new Date();
     this.currentDate = now.toLocaleDateString();
     this.currentTime = now.toLocaleTimeString();
-  }
+    }
 
   navigateToHome(): void {
     if (this.userType === 'admin' || this.userType === 'studiengangsleiter') {
