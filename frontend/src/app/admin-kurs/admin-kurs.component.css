@@ -47,3 +47,13 @@
     width: 100%;
   }
   
+  .edit-icon {
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 20px;
+    color: #007bff;
+  }
+  
+  .edit-icon:hover {
+    color: #0056b3;
+  }

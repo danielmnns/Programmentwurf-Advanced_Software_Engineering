@@ -38,6 +38,13 @@ export class AdminKursComponent implements OnInit, OnDestroy {
     this.loadCourseData();
   }
 
+  navigateToUserCourse(courseName: string): void {
+    const encodedName = encodeURIComponent(courseName);
+    this.router.navigate(['/user-kurs', encodedName]).catch((error) => {
+      console.error('Fehler beim Navigieren zur User-Kurs-Seite:', error);
+    });
+  }
+  
   handleFileUpload(event: Event, category: 'documents' | 'aufgaben' | 'abgaben') {
     const file = (event.target as HTMLInputElement).files?.[0];
     if (file) {
@@ -120,4 +127,7 @@ export class AdminKursComponent implements OnInit, OnDestroy {
       (error) => console.error('Fehler beim Speichern des Feedbacks:', error)
     );
   }
+
+  
 }
+
