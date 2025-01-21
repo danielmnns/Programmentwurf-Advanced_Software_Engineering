@@ -8,8 +8,12 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./user-kurs.component.css'],
 })
 export class KursComponent implements OnInit, OnDestroy {
+  userName: string = '';
   courseName: string = '';
-  courseData: any = null; // Kursdaten, die vom Backend geladen werden
+  textContent: string = '';
+  aufgabeContent: string = '';
+  feedbackContent: string = '';
+  participants: string[] = [];
   uploadedFiles = {
     documents: [] as { name: string; url: string }[],
     aufgaben: [] as { name: string; url: string }[],
@@ -25,29 +29,32 @@ export class KursComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.courseName = this.route.snapshot.paramMap.get('courseName')!;
+    const encodedCourseName = this.route.snapshot.paramMap.get('courseName')!;
+    this.courseName = decodeURIComponent(encodedCourseName);
     this.loadCourseData();
   }
 
   loadCourseData(): void {
-    this.http.get(`${this.apiUrl}/user-kurs`).subscribe(
+    // API-Endpunkt für Kursdaten
+    const url = `${this.apiUrl}/user-kurs`;
+    this.http.get(url).subscribe(
       (response: any) => {
-        this.courseData = response;
-
-        if (response.courseName) {
-          //this.courseName = response.courseName; Wenn kursname aus Backend Angezeigt werden soll einkommentieren 
-          this.updateUrlWithCourseName(this.courseName);
-        }
-
-        localStorage.setItem('currentCourseData', JSON.stringify(response));
+        this.textContent = response.textContent || '';
+        this.aufgabeContent = response.aufgabeContent || '';
+        this.feedbackContent = response.feedbackContent || '';
+        this.participants = response.participants || [];
       },
-      (error) => console.error('Fehler beim Abrufen der Kursdaten:', error)
+      (error) => {
+        console.error('Fehler beim Abrufen der Kursdaten:', error);
+      }
     );
   }
 
   updateUrlWithCourseName(courseName: string): void {
     const encodedName = encodeURIComponent(courseName);
-    this.router.navigate(['/user-kurs', encodedName], { replaceUrl: true });
+    this.router.navigate(['/user-kurs', encodedName], { replaceUrl: true }).catch((error) => {
+      console.error('Fehler beim Navigieren zur Kursseite:', error);
+    });
   }
 
   handleFileUpload(event: Event, type: 'abgaben'): void {

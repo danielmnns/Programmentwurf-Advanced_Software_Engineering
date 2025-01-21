@@ -4,22 +4,22 @@
     <h2>{{ courseName }}</h2>
     <ul>
       <!-- Textanzeige -->
-      <li *ngIf="courseData?.textContent">
+      <li *ngIf="textContent">
         <mat-card>
           <mat-card-title>Text</mat-card-title>
           <mat-card-content>
-            <p>{{ courseData.textContent }}</p>
+            <p>{{ textContent }}</p>
           </mat-card-content>
         </mat-card>
       </li>
 
       <!-- Dokumente-Anzeige -->
-      <li *ngIf="courseData?.documents?.length">
+      <li *ngIf="uploadedFiles.documents.length">
         <mat-card>
           <mat-card-title>Dokumente</mat-card-title>
           <mat-card-content>
             <ul>
-              <li *ngFor="let file of courseData.documents">
+              <li *ngFor="let file of uploadedFiles.documents">
                 <a [href]="file.url" target="_blank">{{ file.name }}</a>
               </li>
             </ul>
@@ -28,12 +28,12 @@
       </li>
 
       <!-- Aufgaben-Anzeige -->
-      <li *ngIf="courseData?.aufgaben?.length">
+      <li *ngIf="uploadedFiles.aufgaben.length">
         <mat-card>
-          <mat-card-title>Aufgabe</mat-card-title>
+          <mat-card-title>Aufgaben</mat-card-title>
           <mat-card-content>
             <ul>
-              <li *ngFor="let file of courseData.aufgaben">
+              <li *ngFor="let file of uploadedFiles.aufgaben">
                 <a [href]="file.url" target="_blank">{{ file.name }}</a>
               </li>
             </ul>
@@ -57,11 +57,11 @@
       </li>
 
       <!-- Feedback-Anzeige -->
-      <li *ngIf="courseData?.feedbackContent">
+      <li *ngIf="feedbackContent">
         <mat-card>
           <mat-card-title>Feedback</mat-card-title>
           <mat-card-content>
-            <p>{{ courseData.feedbackContent }}</p>
+            <p>{{ feedbackContent }}</p>
           </mat-card-content>
         </mat-card>
       </li>
@@ -72,7 +72,7 @@
   <div class="teilnehmer">
     <h2>Teilnehmer</h2>
     <ul>
-      <li *ngFor="let participant of courseData?.participants">
+      <li *ngFor="let participant of participants">
         {{ participant }}
       </li>
     </ul>

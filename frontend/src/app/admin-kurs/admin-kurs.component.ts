@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
@@ -7,9 +7,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './admin-kurs.component.html',
   styleUrls: ['./admin-kurs.component.css']
 })
-export class AdminKursComponent implements OnInit {
-  currentDate: string = '';
-  currentTime: string = '';
+export class AdminKursComponent implements OnInit, OnDestroy {
   userName: string = '';
   courseName: string = '';
   textContent: string = '';
@@ -23,7 +21,7 @@ export class AdminKursComponent implements OnInit {
     abgaben: [] as { name: string; url: string }[]
   };
 
-  private apiUrl = 'http://localhost:3000/api/admin-kurs';
+  private apiUrl = 'http://localhost:3000/api/courses';
 
   constructor(
     private route: ActivatedRoute,
@@ -32,7 +30,11 @@ export class AdminKursComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.courseName = this.route.snapshot.paramMap.get('courseName')!;
+    // Kursname aus der URL dekodieren
+    const encodedCourseName = this.route.snapshot.paramMap.get('courseName')!;
+    this.courseName = decodeURIComponent(encodedCourseName);
+
+    // Kursdaten laden
     this.loadCourseData();
   }
 
@@ -45,7 +47,8 @@ export class AdminKursComponent implements OnInit {
   }
 
   loadCourseData(): void {
-    const url = `http://localhost:3000/api/courses/user-kurs`;
+    // API-Endpunkt für Kursdaten
+    const url = `${this.apiUrl}/admin-kurs`;
     this.http.get(url).subscribe(
       (response: any) => {
         this.textContent = response.textContent || '';
@@ -59,17 +62,11 @@ export class AdminKursComponent implements OnInit {
     );
   }
 
-  
   updateUrlWithCourseName(courseName: string): void {
-  
-    // Kodierung des bereinigten Namens
     const encodedName = encodeURIComponent(courseName);
-  
-    // Navigiere zur Zielseite mit korrekt kodiertem Namen
-    this.router.navigate(['/user-kurs', encodedName], { replaceUrl: true })
-      .catch((error) => {
-        console.error('Fehler beim Navigieren zur Kursseite:', error);
-      });
+    this.router.navigate(['/admin-kurs', encodedName], { replaceUrl: true }).catch((error) => {
+      console.error('Fehler beim Navigieren zur Kursseite:', error);
+    });
   }
 
   ngOnDestroy(): void {
