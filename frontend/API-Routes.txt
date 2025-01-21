@@ -1,0 +1,212 @@
+POST api/login
+
+{
+  "success": true,
+  "message": "Login erfolgreich",
+  "user": {
+    "username": "Hannes Baum",
+    "userType": "admin",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
+
+________________________________________________________________________________________________
+
+POST api/change-password
+
+{
+  "userName": "Hannes Baum",
+  "passwordChangeSuccess": true
+}
+
+________________________________________________________________________________________________
+
+GET api/user/userdata
+
+{
+  "success": true,
+  "user": {
+    "username": "Hannes Baum",
+    "userType": "admin",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
+
+________________________________________________________________________________________________
+
+POST api/user/enroll
+
+
+{
+  "username": "Hannes Baum",
+  "courseName": "Fortgeschrittenes TypeScript",
+  "enrolled": true,
+  "message": "Benutzer Compilerbaum wurde erfolgreich im Kurs Angular Grundlagen eingeschrieben."
+}
+
+________________________________________________________________________________________________
+
+GET api/courses
+
+[
+  {
+    "id": 1,
+    "title": "Segelflieger",
+    "description": "Lerne die Grundlagen von Angular und erstelle moderne Webanwendungen.",
+    "enrolled": true,
+    "participants": ["Alice", "Bob"]
+  },
+  {
+    "id": 2,
+    "title": "Fortgeschrittenes TypeScript",
+    "description": "Vertiefe deine Kenntnisse in TypeScript mit fortgeschrittenen Konzepten.",
+    "enrolled": true,
+    "participants": ["Charlie", "Diana"]
+  },
+  {
+    "id": 3,
+    "title": "Datenbankdesign mit SQL",
+    "description": "Erfahre, wie du relationale Datenbanken entwirfst und effizient abfragst.",
+    "enrolled": false,
+    "participants": []
+  },
+  {
+    "id": 4,
+    "title": "Webentwicklung mit Node.js",
+    "description": "Erstelle performante Backend-Anwendungen mit Node.js.",
+    "enrolled": false,
+    "participants": ["Eve"]
+  },
+  {
+    "id": 5,
+    "title": "Einführung in Machine Learning",
+    "description": "Lerne die Grundlagen des Machine Learning und experimentiere mit Modellen.",
+    "enrolled": false,
+    "participants": ["Frank", "Grace"]
+  }
+]
+
+
+________________________________________________________________________________________________
+
+GET api/courses/user-kurs
+
+{
+  "courseName": "AnalkitzlerRolf",
+  "textContent": "Beschreibung und Inhalt des Kurses",
+  "aufgabeContent": "Details zu den Aufgaben",
+  "feedbackContent": "Feedback oder Bewertungen",
+  "participants": ["Irmgard Baum", "Alexander Manes", "Hannes Baum"],
+  "documents": [
+    { "name": "Dokument1.pdf", "url": "/files/dokument1.pdf" },
+    { "name": "Dokument2.pdf", "url": "/files/dokument2.pdf" }
+  ],
+  "aufgaben": [
+    { "name": "Aufgabe1.pdf", "url": "/files/aufgabe1.pdf" },
+    { "name": "Aufgabe2.pdf", "url": "/files/aufgabe2.pdf" }
+  ],
+  "abgaben": [
+    { "name": "Abgabe1.pdf", "url": "/files/abgabe1.pdf" },
+    { "name": "Abgabe2.pdf", "url": "/files/abgabe2.pdf" }
+  ]
+}
+
+
+________________________________________________________________________________________________
+
+GET api/courses/user-verwaltung
+
+[
+  { "id": 1, "courseName": "Segelflieger", "participants": ["Alice", "Bob"] },
+  { "id": 2, "courseName": "Fortgeschrittenes TypeScript", "participants": ["Charlie", "Diana"] }
+]
+
+
+________________________________________________________________________________________________ 
+
+GET  api/courses/admin-kurs
+ 
+{
+  "courseName": "AnalkitzlerRolf",
+  "textContent": "Beschreibung und Inhalt des Kurses",
+  "aufgabeContent": "Details zu den Aufgaben",
+  "feedbackContent": "Feedback oder Bewertungen",
+  "participants": ["Irmgard Baum", "Alexander Manes", "Hannes Baum"],
+  "documents": [
+    { "name": "Dokument1.pdf", "url": "/files/dokument1.pdf" },
+    { "name": "Dokument2.pdf", "url": "/files/dokument2.pdf" }
+  ],
+  "aufgaben": [
+    { "name": "Aufgabe1.pdf", "url": "/files/aufgabe1.pdf" },
+    { "name": "Aufgabe2.pdf", "url": "/files/aufgabe2.pdf" }
+  ],
+  "abgaben": [
+    { "name": "Abgabe1.pdf", "url": "/files/abgabe1.pdf" },
+    { "name": "Abgabe2.pdf", "url": "/files/abgabe2.pdf" }
+  ]
+}
+
+________________________________________________________________________________________________
+
+GET api/admin/user-verwaltung
+
+[
+  {
+    "user": {
+      "username": "Hannes Baum",
+      "userType": "admin",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+  },
+  {
+    "user": {
+      "username": "Dozent Max",
+      "userType": "Dozent",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+  },
+  {
+    "user": {
+      "username": "Student Lisa",
+      "userType": "Student",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+  },
+  {
+    "user": {
+      "username": "Studiengangsleiter Alex",
+      "userType": "Studiengangsleiter",
+      "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    }
+  }
+]
+
+________________________________________________________________________________________________
+
+POST api/admin/user-verwaltung
+
+{
+  "user": {
+    "username": "Neuer Benutzer",
+    "userType": "Student",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
+
+________________________________________________________________________________________________	
+
+DELETE api/user-verwaltung/:id
+
+{}
+
+________________________________________________________________________________________________
+
+PATCH api/user-verwaltung/:id
+
+{
+  "user": {
+    "username": "Dozent Max",
+    "userType": "Admin",
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}
