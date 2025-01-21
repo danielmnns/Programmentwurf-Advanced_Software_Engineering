@@ -1,17 +1,20 @@
 <div class="container">
   <!-- Hauptbereich (Kursinhalt) -->
   <div class="users">
-    <h2>{{ courseName }}</h2>
+    <h2>
+      {{ courseName }}
+      <!-- Stift-Icon -->
+      <span 
+        class="edit-icon" 
+        *ngIf="isAuthorized"
+        (click)="navigateToAdminCourse(courseName)" 
+        title="Kurs bearbeiten"
+        
+      >
+        ✏️
+      </span>
+    </h2>
     <ul>
-      <!-- Textanzeige -->
-      <li *ngIf="textContent">
-        <mat-card>
-          <mat-card-title>Text</mat-card-title>
-          <mat-card-content>
-            <p>{{ textContent }}</p>
-          </mat-card-content>
-        </mat-card>
-      </li>
 
       <!-- Dokumente-Anzeige -->
       <li *ngIf="uploadedFiles.documents.length">

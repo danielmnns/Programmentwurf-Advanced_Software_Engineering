@@ -17,3 +17,8 @@
     </div>
   </div>
 </div>
+
+<!-- Button nur für Admin sichtbar -->
+<div *ngIf="isAdmin">
+  <button (click)="navigateToUserVerwaltung()">Zur User-Verwaltung</button>
+</div>
