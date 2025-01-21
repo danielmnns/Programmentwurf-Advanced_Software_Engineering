@@ -22,6 +22,9 @@ export class KursComponent implements OnInit, OnDestroy {
 
   isAuthorized: boolean = false; // Sichtbarkeitsbedingung für das Icon
   private apiUrl = 'http://localhost:3000/api/courses'; // Backend-API-URL
+  showConfirmationDialog: boolean = false;
+  fileToDelete: { name: string; url: string } | null = null;
+  fileToDeleteIndex: number | null = null;
 
   constructor(
     private route: ActivatedRoute,
@@ -114,6 +117,45 @@ export class KursComponent implements OnInit, OnDestroy {
         console.error('Ungültiger Dateityp:', type);
       }
     }
+  }
+
+  confirmDeletion(type: 'abgaben', index: number): void {
+    this.fileToDelete = this.uploadedFiles[type][index];
+    this.fileToDeleteIndex = index;
+    this.showConfirmationDialog = true;
+  }
+
+  deleteFile(): void {
+    if (this.fileToDelete && this.fileToDeleteIndex !== null) {
+      const payload = {
+        name: this.fileToDelete.name,
+        url: this.fileToDelete.url,
+        userName: this.userName,
+        courseName: this.courseName,
+      };
+  
+      this.http.delete(`${this.apiUrl}/abgaben`, { body: payload }).subscribe(
+        () => {
+          // Erfolgreich gelöscht
+          this.uploadedFiles.abgaben.splice(this.fileToDeleteIndex!, 1);
+          alert(`Datei "${this.fileToDelete?.name}" wurde erfolgreich entfernt.`);
+        },
+        (error) => {
+          console.error(`Fehler beim Löschen der Datei "${this.fileToDelete?.name}":`, error);
+          alert(`Fehler beim Löschen der Datei "${this.fileToDelete?.name}".`);
+        }
+      );
+    } else {
+      console.error('Datei oder Index zum Löschen nicht gesetzt.');
+    }
+  
+    this.cancelDeletion();
+  }
+
+  cancelDeletion(): void {
+    this.showConfirmationDialog = false;
+    this.fileToDelete = null;
+    this.fileToDeleteIndex = null;
   }
 
   ngOnDestroy(): void {
