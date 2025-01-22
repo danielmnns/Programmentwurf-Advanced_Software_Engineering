@@ -1,0 +1,110 @@
+<div class="container">
+
+  <!-- Benutzerverwaltung: Hinzufügen von Benutzern -->
+  <div class="section user-management-container">
+    <h1>Benutzerverwaltung</h1>
+
+    <div class="form-container">
+      <mat-form-field appearance="fill" class="user-form-field">
+        <mat-label>Benutzername</mat-label>
+        <input matInput [(ngModel)]="newUser.username" placeholder="Benutzername" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="user-form-field">
+        <mat-label>Passwort</mat-label>
+        <input matInput type="password" [(ngModel)]="newUser.password" placeholder="Passwort" />
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="user-form-field">
+        <mat-label>Benutzertyp</mat-label>
+        <mat-select [(value)]="newUser.userType">
+          <mat-option *ngFor="let type of userTypes" [value]="type">{{ type }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="addUser()" class="action-button">
+        Benutzer hinzufügen
+      </button>
+    </div>
+
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="username">
+          <th mat-header-cell *matHeaderCellDef> Benutzername </th>
+          <td mat-cell *matCellDef="let user"> {{ user.username }} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="userType">
+          <th mat-header-cell *matHeaderCellDef> Benutzerrolle </th>
+          <td mat-cell *matCellDef="let user"> {{ user.userType }} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef> Aktionen </th>
+          <td mat-cell *matCellDef="let user" class="action-cell">
+            <button mat-button color="primary" (click)="updateUserType(user)" class="full-width">
+              Bearbeiten
+            </button>
+            <button mat-button color="warn" (click)="deleteUser(user.username)" class="full-width">
+              Löschen
+            </button>
+          </td>
+        </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Kursverwaltung: Kurse und Teilnehmer -->
+  <div class="section course-management-container">
+    <h2>Kursverwaltung</h2>
+
+    <div class="form-container">
+      <mat-form-field appearance="fill" class="course-form-field">
+        <mat-label>Kurs auswählen</mat-label>
+        <mat-select [(value)]="newCourse.name">
+          <mat-option *ngFor="let course of courses" [value]="course.courseName">
+            {{ course.courseName }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill" class="course-form-field">
+        <mat-label>Benutzer auswählen</mat-label>
+        <mat-select [(value)]="newCourse.user">
+          <mat-option *ngFor="let user of users" [value]="user.username">{{ user.username }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" (click)="addCourse()" class="action-button">
+        Benutzer hinzufügen
+      </button>
+    </div>
+
+    <table mat-table [dataSource]="courseDataSource" class="mat-elevation-z8">
+      <ng-container matColumnDef="courseName">
+        <th mat-header-cell *matHeaderCellDef> Kursname </th>
+        <td mat-cell *matCellDef="let course"> {{ course.courseName }} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="participants">
+        <th mat-header-cell *matHeaderCellDef> Teilnehmer </th>
+        <td mat-cell *matCellDef="let course"> {{ course.participants.join(', ') }} </td>
+      </ng-container>
+    
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Aktionen </th>
+        <td mat-cell *matCellDef="let course">
+          <button mat-button (click)="addParticipant(course)">Teilnehmer hinzufügen</button>
+          <button mat-button (click)="removeParticipant(course)">Teilnehmer entfernen</button>
+        </td>
+      </ng-container>
+    
+      <tr mat-header-row *matHeaderRowDef="courseDisplayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: courseDisplayedColumns;"></tr>
+    </table>
+    
+    </div>
+  </div>

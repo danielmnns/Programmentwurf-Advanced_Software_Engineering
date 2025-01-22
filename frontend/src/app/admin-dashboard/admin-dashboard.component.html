@@ -31,11 +31,23 @@
   </div>
 </div>
 
-<!-- Plus-Symbol für Kurs hinzufügen -->
-<div class="add-course" (click)="openAddCourseModal()">
-  <span class="add-icon" title="Neuen Kurs hinzufügen">
+<!-- Buttons nur für Admin sichtbar -->
+<div *ngIf="isAdmin" class="user-management-container">
+  <!-- "Kurs hinzufügen" links -->
+  <button 
+    class="button-standard" 
+    (click)="openAddCourseModal()"
+  >
     ➕ Kurs hinzufügen
-  </span>
+  </button>
+
+  <!-- "Zur User-Verwaltung" rechts -->
+  <button 
+    class="button-standard" 
+    (click)="navigateToUserVerwaltung()"
+  >
+    👥 Zur User-Verwaltung
+  </button>
 </div>
 
 <!-- Modal für Kurs hinzufügen -->
@@ -50,7 +62,7 @@
     />
     <div class="modal-buttons">
       <button (click)="addCourse()">Hinzufügen</button>
-      <button (click)="closeAddCourseModal()">Abbrechen</button>
+      <button class="cancel-button" (click)="closeAddCourseModal()">Abbrechen</button>
     </div>
   </div>
 </div>

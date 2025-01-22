@@ -7,7 +7,7 @@ import { tap } from 'rxjs/operators';
   providedIn: 'root',
 })
 export class UserDataService {
-  private apiUrl = 'http://localhost:3000/api/userdata';
+  private apiUrl = 'http://localhost:3000/api/user/userdata';
   private userDataSubject = new BehaviorSubject<any>(null);
   userData$ = this.userDataSubject.asObservable();
 
