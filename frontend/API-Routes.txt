@@ -211,15 +211,13 @@ PATCH api/user-verwaltung/:id
   }
 }
 
-________________________________
-
 DELETE api/courses/abgaben
 
 {
   "message": "Datei wurde erfolgreich gelöscht"
 }
 
-________________________________
+____________
 
 DELETE api/courses/:title 
 
