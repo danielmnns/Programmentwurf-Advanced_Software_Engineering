@@ -1,32 +1,26 @@
 <div class="container">
-  <!-- Hauptbereich (Kursinhalt) -->
   <div class="users">
     <h2>
       {{ courseName }}
-      <!-- Stift-Icon -->
-      <span 
-        class="edit-icon" 
+      <span
+        class="edit-icon"
         *ngIf="isAuthorized"
-        (click)="navigateToAdminCourse(courseName)" 
-        title="Kurs bearbeiten" 
+        (click)="navigateToAdminCourse(courseName)"
+        title="Kurs bearbeiten"
       >
         ✏️
       </span>
     </h2>
     <ul>
+      <li *ngIf="textContent">
+        <mat-card>
+          <mat-card-title>Text</mat-card-title>
+          <mat-card-content>
+            <p>{{ textContent }}</p>
+          </mat-card-content>
+        </mat-card>
+      </li>
 
-      <!-- Text-Anzeige -->
-<li *ngIf="textContent">
-  <mat-card>
-    <mat-card-title>Text</mat-card-title>
-    <mat-card-content>
-      <p>{{ textContent }}</p>
-    </mat-card-content>
-  </mat-card>
-</li>
-
-
-      <!-- Dokumente-Anzeige -->
       <li *ngIf="uploadedFiles.documents.length">
         <mat-card>
           <mat-card-title>Dokumente</mat-card-title>
@@ -40,7 +34,6 @@
         </mat-card>
       </li>
 
-      <!-- Aufgaben-Anzeige -->
       <li *ngIf="uploadedFiles.aufgaben.length">
         <mat-card>
           <mat-card-title>Aufgaben</mat-card-title>
@@ -54,7 +47,6 @@
         </mat-card>
       </li>
 
-      <!-- Abgabefeld -->
       <mat-card>
         <mat-card-title>Abgabefeld</mat-card-title>
         <mat-card-content>
@@ -62,29 +54,34 @@
           <ul>
             <li *ngFor="let file of uploadedFiles.abgaben; let i = index">
               <a [href]="file.url" target="_blank">{{ file.name }}</a>
-              <button
-                (click)="confirmDeletion('abgaben', i)"
-                style="color: red; border: none; background: none; cursor: pointer; margin-left: 10px;"
-                aria-label="Datei löschen bestätigen"
-              >
-                ✖
-              </button>
+              <div class="file-actions">
+                <button
+                  (click)="openPdfPreview(file.url)"
+                  class="preview-button"
+                >
+                  Vorschau
+                </button>
+                <button
+                  (click)="confirmDeletion('abgaben', i)"
+                  class="delete-button"
+                  aria-label="Datei löschen bestätigen"
+                >
+                  ✖
+                </button>
+              </div>
             </li>
           </ul>
         </mat-card-content>
       </mat-card>
-      <!-- Bestätigungsdialog -->
-      <div *ngIf="showConfirmationDialog" class="confirmation-dialog">
-        <div class="dialog-content">
-          <p>Möchten Sie die Datei "{{ fileToDelete?.name }}" wirklich löschen?</p>
-          <div class="dialog-actions">
-            <button (click)="deleteFile()" class="confirm-btn">Bestätigen</button>
-            <button (click)="cancelDeletion()" class="cancel-btn">Abbrechen</button>
-          </div>
+
+      <!-- PDF-Vorschau -->
+      <div class="modal" *ngIf="showPdfPreview">
+        <div class="modal-content">
+          <button class="close-btn" (click)="closePdfPreview()">✖</button>
+          <iframe [src]="currentPdfUrl" width="100%" height="600px" frameborder="0"></iframe>
         </div>
       </div>
-      
-      <!-- Feedback-Anzeige -->
+
       <li *ngIf="feedbackContent">
         <mat-card>
           <mat-card-title>Feedback</mat-card-title>
@@ -96,13 +93,21 @@
     </ul>
   </div>
 
-  <!-- Teilnehmerliste -->
   <div class="teilnehmer">
     <h2>Teilnehmer</h2>
     <ul>
-      <li *ngFor="let participant of participants">
-        {{ participant }}
-      </li>
+      <li *ngFor="let participant of participants">{{ participant }}</li>
     </ul>
+  </div>
+</div>
+
+<!-- Bestätigungsdialog -->
+<div *ngIf="showConfirmationDialog" class="confirmation-dialog">
+  <div class="dialog-content">
+    <p>Möchten Sie die Datei "{{ fileToDelete?.name }}" wirklich löschen?</p>
+    <div class="dialog-actions">
+      <button (click)="deleteFile()" class="confirm-btn">Bestätigen</button>
+      <button (click)="cancelDeletion()" class="cancel-btn">Abbrechen</button>
+    </div>
   </div>
 </div>
