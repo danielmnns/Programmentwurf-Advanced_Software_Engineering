@@ -56,3 +56,55 @@
 .edit-icon:hover {
   color: #0056b3;
 }
+
+
+
+
+
+.file-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.preview-button {
+  margin-left: 10px;
+}
+
+.delete-button {
+  color: red;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.modal-content {
+  position: relative;
+  background-color: white;
+  padding: 20px;
+}
+
+.confirmation-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.dialog-content {
+  text-align: center;
+}
+
+.dialog-actions button {
+  margin: 10px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
