@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import request from "supertest";
-import { app } from "../main";
+const { app } = require("../main"); // Benannter Export verwenden;
 import Task from "../models/Tasks";
 import User from "../models/Users";
 

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import request from "supertest";
-import { app } from "../main"; // Benannter Export verwenden
+const { app } = require("../main"); // Benannter Export verwenden; // Benannter Export verwenden
 import Course from "../models/Course";
 
 beforeAll(async () => {

@@ -14,10 +14,11 @@ export const getAllUsers = async (req: Request, res: Response) => {
 // Benutzer erstellen
 export const createUser = async (req: Request, res: Response) => {
   try {
-    const user = await User.create(req.body);
-    res.status(201).json(user);
+    const user = await User.create(req.body);  
+    res.status(201).json(user);  
   } catch (err) {
-    res.status(500).json({ error: (err as Error).message });
+    console.error(err);  
+    res.status(500).json({ error: (err as Error).message });  
   }
 };
 

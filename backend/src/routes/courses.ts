@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 
-router.post('/courses', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     await createCourse(req, res); 
   } catch (err) {
@@ -18,7 +18,7 @@ router.post('/courses', async (req: Request, res: Response, next: NextFunction) 
   }
 });
 
-router.get('/courses', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     await getAllCourses(req, res);
   } catch (err) {
@@ -26,7 +26,7 @@ router.get('/courses', async (req: Request, res: Response, next: NextFunction) =
   }
 });
 
-router.get('/courses/:id', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     await getCourseById(req, res);
   } catch (err) {
@@ -34,7 +34,7 @@ router.get('/courses/:id', async (req: Request, res: Response, next: NextFunctio
   }
 });
 
-router.put('/courses/:id', async (req: Request, res: Response, next: NextFunction) => {
+router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     await updateCourse(req, res);
   } catch (err) {
@@ -42,7 +42,7 @@ router.put('/courses/:id', async (req: Request, res: Response, next: NextFunctio
   }
 });
 
-router.delete('/courses/:id', async (req: Request, res: Response, next: NextFunction) => {
+router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     await deleteCourse(req, res);
   } catch (err) {

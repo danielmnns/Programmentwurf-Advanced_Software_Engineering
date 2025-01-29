@@ -10,7 +10,7 @@ import {
 const router = express.Router();
 
 // Benutzer erstellen
-router.post('/users', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     await createUser(req, res);
   } catch (err) {
@@ -19,7 +19,7 @@ router.post('/users', async (req: Request, res: Response, next: NextFunction) =>
 });
 
 // Alle Benutzer abrufen
-router.get('/users', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
     await getAllUsers(req, res);
   } catch (err) {
@@ -28,7 +28,7 @@ router.get('/users', async (req: Request, res: Response, next: NextFunction) => 
 });
 
 // Benutzer nach ID abrufen
-router.get('/users/:id', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     await getUserById(req, res);
   } catch (err) {
@@ -37,7 +37,7 @@ router.get('/users/:id', async (req: Request, res: Response, next: NextFunction)
 });
 
 // Benutzer aktualisieren
-router.put('/users/:id', async (req: Request, res: Response, next: NextFunction) => {
+router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     await updateUser(req, res);
   } catch (err) {
@@ -46,7 +46,7 @@ router.put('/users/:id', async (req: Request, res: Response, next: NextFunction)
 });
 
 // Benutzer löschen
-router.delete('/users/:id', async (req: Request, res: Response, next: NextFunction) => {
+router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
   try {
     await deleteUser(req, res);
   } catch (err) {

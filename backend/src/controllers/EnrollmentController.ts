@@ -1,5 +1,5 @@
-import Enrollment from '../models/Enrollment.js';
 import { Request, Response } from 'express';
+import Enrollment from '../models/Enrollment';
 
 // Neue Einschreibung erstellen
 export const createEnrollment = async (req: Request, res: Response) => {
