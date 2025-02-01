@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import request from "supertest";
-const { app } = require("../main"); // Benannter Export verwenden; // Benannter Export verwenden
+import { Material as MaterialType } from '../types/material';
+const { app } = require("../main");
 
 beforeAll(async () => {
   // Verbindung zur Datenbank herstellen
@@ -20,11 +21,15 @@ describe("Material Endpoints", () => {
   });
 
   it("should upload a new material", async () => {
-    const res = await request(app).post("/api/materials").send({
-      title: "New Material",
-      content: "Material Content",
-    });
+    const newMaterial: MaterialType = {
+      id: '1',
+      title: 'New Material',
+      content: 'Material Content',
+      courseId: 'course1'
+    };
+
+    const res = await request(app).post("/api/materials").send(newMaterial);
     expect(res.statusCode).toEqual(201);
-    expect(res.body).toHaveProperty("title", "New Material");
+    expect(res.body).toHaveProperty('title', 'New Material');
   });
 });

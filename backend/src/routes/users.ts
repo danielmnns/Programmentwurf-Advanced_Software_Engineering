@@ -1,4 +1,4 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import {
   createUser,
   deleteUser,
@@ -6,13 +6,14 @@ import {
   getUserById,
   updateUser,
 } from '../controllers/userController';
+import { User as UserType } from '../types/user';
 
 const router = express.Router();
 
 // Benutzer erstellen
-router.post('/', async (req: Request, res: Response, next: NextFunction) => {
+router.post('/', async (req: Request<{}, {}, UserType>, res: Response, next: NextFunction) => {
   try {
-    await createUser(req, res);
+    await createUser(req, res, next);
   } catch (err) {
     next(err);
   }
@@ -21,34 +22,34 @@ router.post('/', async (req: Request, res: Response, next: NextFunction) => {
 // Alle Benutzer abrufen
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   try {
-    await getAllUsers(req, res);
+    await getAllUsers(req, res, next);
   } catch (err) {
     next(err);
   }
 });
 
 // Benutzer nach ID abrufen
-router.get('/:id', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/:id', async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   try {
-    await getUserById(req, res);
+    await getUserById(req, res, next);
   } catch (err) {
     next(err);
   }
 });
 
 // Benutzer aktualisieren
-router.put('/:id', async (req: Request, res: Response, next: NextFunction) => {
+router.put('/:id', async (req: Request<{ id: string }, {}, UserType>, res: Response, next: NextFunction) => {
   try {
-    await updateUser(req, res);
+    await updateUser(req, res, next);
   } catch (err) {
     next(err);
   }
 });
 
 // Benutzer löschen
-router.delete('/:id', async (req: Request, res: Response, next: NextFunction) => {
+router.delete('/:id', async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   try {
-    await deleteUser(req, res);
+    await deleteUser(req, res, next);
   } catch (err) {
     next(err);
   }

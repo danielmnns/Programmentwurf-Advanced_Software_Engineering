@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/Users';
 import { Request, Response, NextFunction } from "express";
+import { AuthRequest, AuthResponse } from '../types/auth';
 
 export const register = async (req: Request, res: Response) => {
   const { username, password } = req.body;

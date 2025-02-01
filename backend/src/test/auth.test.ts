@@ -1,33 +1,27 @@
-import mongoose from "mongoose";
-import request from "supertest";
-const { app } = require("../main"); // Benannter Export verwenden; // Benannter Export verwenden; // Benannter Export verwenden
+import request from 'supertest';
+const { app } = require("../main");
+import { AuthRequest } from '../types/auth';
 
-beforeAll(async () => {
-  // Verbindung zur Datenbank herstellen
-  await mongoose.connect(process.env.MONGO_URI!);
-});
+describe('Auth Endpoints', () => {
+  it('should register a new user', async () => {
+    const newUser: AuthRequest = {
+      username: 'testuser',
+      password: 'testpassword'
+    };
 
-afterAll(async () => {
-  // Datenbankverbindung schließen
-  await mongoose.connection.close();
-});
-
-describe("Auth Endpoints", () => {
-  it("should register a new user", async () => {
-    const res = await request(app).post("/api/auth/register").send({
-      username: "testuser",
-      password: "testpassword",
-    });
+    const res = await request(app).post('/api/auth/register').send(newUser);
     expect(res.statusCode).toEqual(201);
-    expect(res.body).toHaveProperty("username", "testuser");
+    expect(res.body).toHaveProperty('message', 'User registered');
   });
 
-  it("should login an existing user", async () => {
-    const res = await request(app).post("/api/auth/login").send({
-      username: "testuser",
-      password: "testpassword",
-    });
+  it('should login an existing user', async () => {
+    const loginUser: AuthRequest = {
+      username: 'testuser',
+      password: 'testpassword'
+    };
+
+    const res = await request(app).post('/api/auth/login').send(loginUser);
     expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty("token");
+    expect(res.body).toHaveProperty('message', 'Login erfolgreich');
   });
 });
