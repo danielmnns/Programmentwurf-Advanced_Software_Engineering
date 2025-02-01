@@ -15,12 +15,16 @@ export const getAllUsers = async (req: Request, res: Response, next: NextFunctio
 // Benutzer erstellen
 export const createUser = async (req: Request<{}, {}, UserType>, res: Response, next: NextFunction) => {
   try {
+    const { name, email } = req.body;
+    if (!name || !email ) {
+      return res.status(400).json({ message: 'Missing required fields' });
+    }
     const user = await User.create(req.body);
     res.status(201).json(user);
   } catch (err) {
     next(err);
   }
-};
+  };
 
 // Benutzer nach ID abrufen
 export const getUserById = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
