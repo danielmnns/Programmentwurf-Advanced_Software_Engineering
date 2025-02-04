@@ -41,11 +41,22 @@
   margin-bottom: 20px;
 }
 
-/* Buttons */
-.mat-raised-button {
-  margin-top: 10px;
-  width: 100%;
+/* Neue Styles für den Aufgabenbereich */
+.task-card {
+  border: 1px solid #ffa500;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #fff8e1;
 }
+
+.submission-feedback {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+/* Buttons */
 .edit-icon {
   cursor: pointer;
   margin-left: 10px;
@@ -56,10 +67,6 @@
 .edit-icon:hover {
   color: #0056b3;
 }
-
-
-
-
 
 .file-actions {
   display: flex;

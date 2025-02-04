@@ -3,6 +3,24 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
+/* Interfaces direkt in der Datei definiert */
+export interface DocumentFile {
+  name: string;
+  url: SafeResourceUrl;
+}
+
+export interface Submission {
+  file: DocumentFile;
+  feedback?: DocumentFile | null;
+}
+
+export interface Task {
+  name: string;
+  description: string;
+  documents?: DocumentFile[];
+  submissions?: { [username: string]: Submission };
+}
+
 @Component({
   selector: 'app-user-kurs',
   templateUrl: './user-kurs.component.html',
@@ -12,21 +30,22 @@ export class KursComponent implements OnInit, OnDestroy {
   userName: string = '';
   courseName: string = '';
   textContent: string = '';
-  aufgabeContent: string = '';
   feedbackContent: string = '';
   showPdfPreview: boolean = false;
   currentPdfUrl: SafeResourceUrl = '';
   participants: string[] = [];
+
   uploadedFiles = {
-    documents: [] as { name: string; url: SafeResourceUrl }[],
-    aufgaben: [] as { name: string; url: SafeResourceUrl }[],
-    abgaben: [] as { name: string; url: SafeResourceUrl }[],
+    documents: [] as DocumentFile[],
+    abgaben: [] as DocumentFile[],
   };
+
+  tasks: Task[] = [];
 
   isAuthorized: boolean = false;
   private apiUrl = 'http://localhost:3000/api/courses';
   showConfirmationDialog: boolean = false;
-  fileToDelete: { name: string; url: SafeResourceUrl } | null = null;
+  fileToDelete: DocumentFile | null = null;
   fileToDeleteIndex: number | null = null;
 
   constructor(
@@ -50,6 +69,7 @@ export class KursComponent implements OnInit, OnDestroy {
       (response: any) => {
         if (response.success && response.user) {
           this.isAuthorized = userRoles.includes(response.user.userType);
+          this.userName = response.user.userName; // Setze den aktuellen Benutzernamen
         } else {
           console.error('Ungültige API-Antwort:', response);
         }
@@ -71,11 +91,12 @@ export class KursComponent implements OnInit, OnDestroy {
     const url = `${this.apiUrl}/user-kurs`;
     this.http.get(url).subscribe(
       (response: any) => {
+        // Kursinformationen
         this.textContent = response.textContent || '';
-        this.aufgabeContent = response.aufgabeContent || '';
         this.feedbackContent = response.feedbackContent || '';
         this.participants = response.participants || [];
 
+        // Kursdokumente
         if (response.documents) {
           this.uploadedFiles.documents = response.documents.map((doc: any) => ({
             name: doc.name,
@@ -83,18 +104,26 @@ export class KursComponent implements OnInit, OnDestroy {
           }));
         }
 
-        if (response.aufgaben) {
-          this.uploadedFiles.aufgaben = response.aufgaben.map((task: any) => ({
-            name: task.name,
-            url: this.sanitizer.bypassSecurityTrustResourceUrl(task.url),
+        // Allgemeine Abgaben des Kurses
+        if (response.abgaben) {
+          this.uploadedFiles.abgaben = response.abgaben.map((sub: any) => ({
+            name: sub.name,
+            url: this.sanitizer.bypassSecurityTrustResourceUrl(sub.url),
           }));
         }
 
-        if (response.abgaben) {
-          this.uploadedFiles.abgaben = response.abgaben.map((submission: any) => ({
-            name: submission.name,
-            url: this.sanitizer.bypassSecurityTrustResourceUrl(submission.url),
-          }));
+        // Aufgaben inkl. Dokumente und submissions
+        if (response.tasks) {
+          this.tasks = response.tasks.map((task: any) => {
+            if (task.documents) {
+              task.documents = task.documents.map((doc: any) => ({
+                name: doc.name,
+                url: this.sanitizer.bypassSecurityTrustResourceUrl(doc.url),
+              }));
+            }
+            // Hier casten wir explizit als Task
+            return task as Task;
+          });
         }
       },
       (error) => {
@@ -115,11 +144,9 @@ export class KursComponent implements OnInit, OnDestroy {
 
   handleFileUpload(event: Event, type: string): void {
     const input = event.target as HTMLInputElement;
-
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       const fileUrl = URL.createObjectURL(file);
-
       if (type === 'abgaben') {
         this.uploadedFiles.abgaben.push({
           name: file.name,
@@ -131,12 +158,28 @@ export class KursComponent implements OnInit, OnDestroy {
     }
   }
 
+  handleTaskSubmission(event: Event, task: Task): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const fileUrl = URL.createObjectURL(file);
+      if (!task.submissions) {
+        task.submissions = {};
+      }
+      task.submissions[this.userName] = {
+        file: {
+          name: file.name,
+          url: this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl),
+        },
+        feedback: null,
+      };
+      console.log(`Abgabe für Aufgabe "${task.name}" von ${this.userName} hochgeladen.`);
+    }
+  }
+
   confirmDeletion(type: 'abgaben', index: number): void {
-    // Sicherstellen, dass der Index und die Datei korrekt gesetzt werden
-    const fileToDelete = this.uploadedFiles[type][index];
-  
+    const fileToDelete = this.uploadedFiles.abgaben[index];
     if (fileToDelete) {
-      // Datei und Index setzen, um die Löschbestätigung zu ermöglichen
       this.fileToDelete = fileToDelete;
       this.fileToDeleteIndex = index;
       this.showConfirmationDialog = true;
@@ -153,10 +196,8 @@ export class KursComponent implements OnInit, OnDestroy {
         userName: this.userName,
         courseName: this.courseName,
       };
-  
       this.http.delete(`${this.apiUrl}/abgaben`, { body: payload }).subscribe(
         () => {
-          // Erfolgreich gelöscht
           this.uploadedFiles.abgaben.splice(this.fileToDeleteIndex!, 1);
           alert(`Datei "${this.fileToDelete?.name}" wurde erfolgreich entfernt.`);
         },
@@ -168,8 +209,6 @@ export class KursComponent implements OnInit, OnDestroy {
     } else {
       console.error('Datei oder Index zum Löschen nicht gesetzt.');
     }
-  
-    // Bestätigung und Index zurücksetzen, nachdem die Löschung abgeschlossen ist
     this.cancelDeletion();
   }
 

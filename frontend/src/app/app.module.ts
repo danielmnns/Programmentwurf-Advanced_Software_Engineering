@@ -3,6 +3,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Pflicht für Angular Material
+import { SafeResourceUrl } from '@angular/platform-browser';
 
 // Angular Material Module Imports
 import { MatInputModule } from '@angular/material/input';
@@ -68,3 +69,20 @@ import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.compo
   bootstrap: [AppComponent]
 })
 export class AppModule {}
+
+export interface DocumentFile {
+  name: string;
+  url: SafeResourceUrl;
+}
+
+export interface Submission {
+  file: DocumentFile;
+  feedback?: DocumentFile | null;
+}
+
+export interface Task {
+  name: string;
+  description: string;
+  documents?: DocumentFile[];
+  submissions?: { [username: string]: Submission };
+}
