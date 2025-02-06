@@ -109,3 +109,11 @@ Ein Lernmanagementsystem (LMS) Backend, entwickelt mit Node.js. Es unterstützt 
 
 ## Lizenz
 Dieses Projekt steht unter der MIT-Lizenz.
+
+
+## Eigene Notizen
+Um Projekt zu builden
+    tsc
+
+Um Tests zu durchlaufen
+    npm test

@@ -1,82 +1,67 @@
-import { Request, Response } from 'express';
-import User from '../models/Users'; // Mongoose Model
-import * as bcrypt from 'bcrypt';
+import { NextFunction, Request, Response } from 'express';
+import User from '../models/Users';
+import { User as UserType } from '../types/user';
 
 // Alle Benutzer abrufen
-export const getAllUsers = async (req: Request, res: Response) => {
+export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const users = await User.find(); // Mongoose find-Methode
+    const users: UserType[] = await User.find();
     res.status(200).json(users);
   } catch (err) {
-    res.status(500).json({ error: (err as Error).message });
+    next(err);
   }
 };
 
 // Benutzer erstellen
-export const createUser = async (req: Request, res: Response) => {
+export const createUser = async (req: Request<{}, {}, UserType>, res: Response, next: NextFunction) => {
   try {
-    const { username, password } = req.body;
-
-    // Überprüfen, ob der Benutzer bereits existiert
-    const existingUser = await User.findOne({ username });
-    if (existingUser) {
-      return res.status(400).json({ error: 'Username already exists' });
+    const { name, email } = req.body;
+    if (!name || !email ) {
+      return res.status(400).json({ message: 'Missing required fields' });
     }
-
-    // Passwort hashen
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Benutzer erstellen
-    const user = new User({ username, password: hashedPassword });
-    await user.save();
-
+    const user = await User.create(req.body);
     res.status(201).json(user);
   } catch (err) {
-    res.status(500).json({ error: (err as Error).message });
+    next(err);
   }
-};
+  };
 
 // Benutzer nach ID abrufen
-export const getUserById = async (req: Request, res: Response) => {
+export const getUserById = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   try {
-    const user = await User.findById(req.params.id); // Mongoose findById-Methode
-    if (!user) return res.status(404).json({ message: 'Benutzer nicht gefunden' });
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
     res.status(200).json(user);
   } catch (err) {
-    res.status(500).json({ error: (err as Error).message });
+    next(err);
   }
 };
 
 // Benutzer aktualisieren
-export const updateUser = async (req: Request, res: Response) => {
+export const updateUser = async (req: Request<{ id: string }, {}, UserType>, res: Response, next: NextFunction) => {
   try {
-    const { password, ...otherData } = req.body;
-
-    if (password) {
-      otherData.password = await bcrypt.hash(password, 10);
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
     }
-
-    const user = await User.findByIdAndUpdate(
-      req.params.id,
-      { $set: otherData },
-      { new: true } // Gibt das aktualisierte Dokument zurück
-    );
-
-    if (!user) return res.status(404).json({ message: 'Benutzer nicht gefunden' });
-    res.status(200).json(user);
+    res.status(200).json(updatedUser);
   } catch (err) {
-    res.status(500).json({ error: (err as Error).message });
+    next(err);
   }
 };
 
 // Benutzer löschen
-export const deleteUser = async (req: Request, res: Response) => {
+export const deleteUser = async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id); // Mongoose findByIdAndDelete-Methode
-    if (!user) return res.status(404).json({ message: 'Benutzer nicht gefunden' });
-    res.status(200).json({ message: 'Benutzer gelöscht' });
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (!deletedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json({ message: 'User deleted' });
   } catch (err) {
-    res.status(500).json({ error: (err as Error).message });
+    next(err);
   }
 };
 

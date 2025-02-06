@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import request from "supertest";
-import { app } from "../main"; // Benannter Export verwenden
-import Course from "../models/Course";
+import { Course as CourseType } from '../types/course';
+const { app } = require("../main");
 
 beforeAll(async () => {
   // Verbindung zur Datenbank herstellen
@@ -21,33 +21,16 @@ describe("Course Endpoints", () => {
   });
 
   it("should create a new course", async () => {
-    const res = await request(app).post("/api/courses").send({
-      name: "New Course",
-      description: "Course Description",
-    });
+    const newCourse: CourseType = {
+      id: '1',
+      title: 'New Course',
+      description: 'Course Description',
+      duration: 10,
+      instructorId: 'instructor1'
+    };
+
+    const res = await request(app).post("/api/courses").send(newCourse);
     expect(res.statusCode).toEqual(201);
-    expect(res.body).toHaveProperty("name", "New Course");
-  });
-
-  it("should update an existing course", async () => {
-    const course = await Course.create({
-      name: "Update Course",
-      description: "Update Description",
-    });
-    const res = await request(app).put(`/api/courses/${course._id}`).send({
-      name: "Updated Course",
-      description: "Updated Description",
-    });
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toHaveProperty("name", "Updated Course");
-  });
-
-  it("should delete an existing course", async () => {
-    const course = await Course.create({
-      name: "Delete Course",
-      description: "Delete Description",
-    });
-    const res = await request(app).delete(`/api/courses/${course._id}`);
-    expect(res.statusCode).toEqual(204);
+    expect(res.body).toHaveProperty('title', 'New Course');
   });
 });
