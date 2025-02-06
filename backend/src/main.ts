@@ -2,6 +2,10 @@ import dotenv from 'dotenv';
 import express from 'express';
 import mongoose from 'mongoose';
 import routes from './routes/index';
+import dotenv from 'dotenv';
+import express from 'express';
+import mongoose from 'mongoose';
+import routes from './routes/index';
 
 dotenv.config();
 
@@ -21,7 +25,7 @@ mongoose
     console.log('Connected to MongoDB');
     // Server starten
     app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+      console.log(`Server started on port ${PORT}`);
     });
   })
   .catch((err: unknown) => {
