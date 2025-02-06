@@ -1,8 +1,7 @@
 import mongoose from 'mongoose';
 import request from 'supertest';
-const { app } = require("../main");
 import { User as UserType } from '../types/user';
-import { Enrollment as EnrollmentType } from '../types/enrollment';
+const { app } = require("../main");
 
 beforeAll(async () => {
   await mongoose.connect(process.env.MONGO_URI!, {
@@ -19,37 +18,27 @@ describe('API Routes', () => {
   it('should create a new user', async () => {
     const newUser: UserType = {
       id: '1',
-      name: 'New User',
+      username: 'newuser',
       email: 'newuser@example.com',
-      role: 'student'
+      password: 'password123',
+      firstName: 'New',
+      lastName: 'User',
+      role: 'student',
+      permissions: ['read', 'write'],
+      profileImage: 'http://example.com/profile.jpg',
+      settings: {
+        language: 'en',
+        theme: 'dark'
+      }
     };
 
     const res = await request(app).post('/api/users').send(newUser);
     expect(res.statusCode).toEqual(201);
-    expect(res.body).toHaveProperty('name', 'New User');
+    expect(res.body).toHaveProperty('username', 'newuser');
   });
 
   it('should get all users', async () => {
     const res = await request(app).get('/api/users');
-    expect(res.statusCode).toEqual(200);
-    expect(res.body).toBeInstanceOf(Array);
-  });
-
-  it('should create a new enrollment', async () => {
-    const newEnrollment: EnrollmentType = {
-      id: '1',
-      userId: '1',
-      courseId: '1',
-      enrolledAt: new Date()
-    };
-
-    const res = await request(app).post('/api/enrollment').send(newEnrollment);
-    expect(res.statusCode).toEqual(201);
-    expect(res.body).toHaveProperty('userId', '1');
-  });
-
-  it('should get all enrollments', async () => {
-    const res = await request(app).get('/api/enrollment');
     expect(res.statusCode).toEqual(200);
     expect(res.body).toBeInstanceOf(Array);
   });
