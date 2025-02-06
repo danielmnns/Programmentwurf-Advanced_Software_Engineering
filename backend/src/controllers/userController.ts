@@ -1,3 +1,4 @@
+import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response } from 'express';
 import User from '../models/Users';
 import { User as UserType } from '../types/user';

@@ -47,7 +47,7 @@ describe("Task Endpoints", () => {
     const user = await User.create({
       username: "student",
       password: "password",
-    });
+    }) as mongoose.Document & { _id: mongoose.Types.ObjectId };
 
     const submission: SubmissionType = {
       id: '1',
