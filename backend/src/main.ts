@@ -6,25 +6,26 @@ import routes from './routes/index';
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT ?? 3000;
+const PORT = process.env.PORT || 3000;
 
+// Middleware zum Verarbeiten von JSON-Daten
+app.use(express.json());
+
+// Alle Routen unter /api verfügbar machen
+app.use('/api', routes);
+
+// Verbindung zur MongoDB herstellen
 mongoose
-  .connect(process.env.MONGO_URI as string)
+  .connect(process.env.MONGO_URI!)
   .then(() => {
     console.log('Connected to MongoDB');
-    app.use(express.json());
-    app.use('/api', routes);
-
-    // Überprüfen, ob Routen registriert sind
-    const routesExist = app._router.stack.some((middleware: any) => {
-      return middleware.route || (middleware.name === 'router' && middleware.handle.stack.length > 0);
-    });
-    if (!routesExist) console.warn('No routes registered.');
-
+    // Server starten
     app.listen(PORT, () => {
-      console.log(`Server started on port ${PORT}`);
+      console.log(`Server is running on port ${PORT}`);
     });
   })
-  .catch((error: any) => {
-    console.error('Failed to connect to MongoDB', error);
+  .catch((err: unknown) => {
+    console.error('Failed to connect to MongoDB', err);
   });
+
+export default app;
