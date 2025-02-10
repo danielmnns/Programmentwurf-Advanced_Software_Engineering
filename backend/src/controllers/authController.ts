@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/Users';
 import { AuthRequest, AuthResponse } from '../types/auth';
-import { hashPassword, generateSalt, verifyPassword } from '../utils/passwordUtils';
+import { generateSalt, hashPassword, verifyPassword } from '../utils/passwordUtils';
 
 // Benutzer registrieren
 export const register = async (req: Request<{}, {}, IUser>, res: Response<AuthResponse>, next: NextFunction) => {
@@ -59,3 +59,4 @@ export const login = async (req: Request<{}, {}, AuthRequest>, res: Response<Aut
   } catch (err) {
     next(err);
   }
+}

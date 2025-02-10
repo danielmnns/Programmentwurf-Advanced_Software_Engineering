@@ -30,4 +30,7 @@ export interface AuthResponse {
       theme: string;
     };
   };
+  inputPassword?: string;
+  storedPassword?: string;
+  salt?: string;
 }
