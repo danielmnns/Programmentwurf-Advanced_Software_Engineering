@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import User from '../models/Users';
 import { User as UserType } from '../types/user';
-import { generateSalt, hashPassword } from '../utils/passwordUtils';
+import { hashPassword } from '../utils/passwordUtils';
 
 // Alle Benutzer abrufen
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
@@ -31,10 +31,8 @@ export const updateUser = async (req: Request<{ id: string }, {}, UserType>, res
   try {
     const { password, ...updateData } = req.body;
     if (password) {
-      const salt = generateSalt();
-      const hashedPassword = hashPassword(password, salt);
+      const hashedPassword = await hashPassword(password);
       (updateData as UserType).password = hashedPassword;
-      (updateData as UserType).salt = salt;
     }
     const updatedUser = await User.findByIdAndUpdate(req.params.id, updateData, { new: true });
     if (!updatedUser) {

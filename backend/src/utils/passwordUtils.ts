@@ -1,14 +1,13 @@
-import { pbkdf2Sync, randomBytes } from 'crypto';
+import bcrypt from "bcryptjs"; 
 
-export const hashPassword = (password: string, salt: string): string => {
-  return pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+export const hashPassword = async (password: string): Promise<string> => {
+  const salt = await bcrypt.genSalt(10);
+  console.log("Generated Salt:", salt);
+  const hashedPassword = await bcrypt.hash(password, salt);
+  console.log("Hashed Password:", hashedPassword);
+  return hashedPassword;
 };
 
-export const generateSalt = (): string => {
-  return randomBytes(16).toString('hex');
-};
-
-export const verifyPassword = (password: string, hash: string, salt: string): boolean => {
-  const hashedPassword = hashPassword(password, salt);
-  return hashedPassword === hash;
+export const comparePasswords = async (inputPassword: string, storedHash: string): Promise<boolean> => {
+  return await bcrypt.compare(inputPassword, storedHash);
 };

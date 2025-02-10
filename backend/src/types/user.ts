@@ -1,6 +1,5 @@
 export interface User {
   id: string;
-  salt?: string;
   username: string;
   email: string;
   password: string;
@@ -22,7 +21,6 @@ export interface IUser {
   username: string;
   email: string;
   password: string;
-  salt: string;
   firstName: string;
   lastName: string;
   role: string;
