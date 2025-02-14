@@ -30,6 +30,8 @@ import { EnrollmentDialogComponent } from './user-dashboard/enrollment-dialog/en
 import { AdminKursComponent } from './admin-kurs/admin-kurs.component';
 import { KursComponent } from './user-kurs/user-kurs.component';
 import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.component';
+import { UserAufgabeComponent } from './user-aufgabe/user-aufgabe.component';
+import { AdminAufgabeComponent } from './admin-aufgabe/admin-aufgabe.component';
 
 
 @NgModule({
@@ -43,7 +45,9 @@ import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.compo
     AdminKursComponent,
     KursComponent,
     EnrollmentDialogComponent,
-    UserVerwaltungComponent
+    UserVerwaltungComponent,
+    UserAufgabeComponent,
+    AdminAufgabeComponent
 
   ],
   imports: [

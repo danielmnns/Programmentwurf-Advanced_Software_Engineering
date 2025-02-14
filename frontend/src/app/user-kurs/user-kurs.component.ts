@@ -1,3 +1,4 @@
+// src/app/user-kurs/user-kurs.component.ts
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -80,6 +81,7 @@ export class KursComponent implements OnInit, OnDestroy {
     );
   }
 
+  // Navigiert zur Admin-Kursseite
   navigateToAdminCourse(courseName: string): void {
     const encodedName = encodeURIComponent(courseName);
     this.router.navigate(['/admin-kurs', encodedName]).catch((error) => {
@@ -121,7 +123,6 @@ export class KursComponent implements OnInit, OnDestroy {
                 url: this.sanitizer.bypassSecurityTrustResourceUrl(doc.url),
               }));
             }
-            // Hier casten wir explizit als Task
             return task as Task;
           });
         }
@@ -132,6 +133,7 @@ export class KursComponent implements OnInit, OnDestroy {
     );
   }
 
+  // Öffnet die PDF-Vorschau
   openPdfPreview(url: SafeResourceUrl): void {
     this.currentPdfUrl = url;
     this.showPdfPreview = true;
@@ -174,6 +176,21 @@ export class KursComponent implements OnInit, OnDestroy {
         feedback: null,
       };
       console.log(`Abgabe für Aufgabe "${task.name}" von ${this.userName} hochgeladen.`);
+    }
+  }
+
+  // Neuer Code: Öffnet die Aufgabe abhängig von der Benutzerrolle
+  openTask(task: Task): void {
+    if (this.isAuthorized) {
+      // Für Admin, Dozent, Studiengangsleiter: Weiterleitung zur admin-aufgabe
+      this.router.navigate(['/admin-aufgabe', this.courseName, task.name]).catch((error) => {
+        console.error('Fehler beim Navigieren zur Admin-Aufgabenseite:', error);
+      });
+    } else {
+      // Für Studierende: Weiterleitung zur user-aufgabe
+      this.router.navigate(['/', this.courseName, task.name]).catch((error) => {
+        console.error('Fehler beim Navigieren zur User-Aufgabenseite:', error);
+      });
     }
   }
 

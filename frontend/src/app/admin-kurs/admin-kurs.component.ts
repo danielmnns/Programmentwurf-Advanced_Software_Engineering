@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
@@ -45,11 +45,42 @@ export class AdminKursComponent implements OnInit, OnDestroy {
     });
   }
   
-  handleFileUpload(event: Event, category: 'documents' | 'aufgaben' | 'abgaben') {
-    const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) {
-      const fileUrl = URL.createObjectURL(file);
-      this.uploadedFiles[category].push({ name: file.name, url: fileUrl });
+  /**
+   * Diese Methode wird nun auch für die Kategorien "documents" und "aufgaben" verwendet,
+   * um eine Datei mittels FormData an den entsprechenden Backend-Endpunkt zu senden.
+   * Für "abgaben" bleibt die bisherige lokale Lösung erhalten.
+   */
+  handleFileUpload(event: Event, category: 'documents' | 'aufgaben' | 'abgaben'): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      if (category === 'documents' || category === 'aufgaben') {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('courseName', this.courseName);
+        // Wähle den richtigen Endpunkt basierend auf der Kategorie
+        let endpoint = '';
+        if (category === 'documents') {
+          endpoint = '/admin/addDocument';
+        } else if (category === 'aufgaben') {
+          endpoint = '/admin/addAufgabe';
+        }
+        this.http.post(`${this.apiUrl}${endpoint}`, formData).subscribe(
+          (response: any) => {
+            alert(`${category === 'documents' ? 'Dokument' : 'Aufgabe'} erfolgreich hinzugefügt!`);
+            // Kursdaten neu laden, um die aktuell gespeicherten Einträge anzuzeigen
+            this.loadCourseData();
+          },
+          (error) => {
+            console.error(`Fehler beim Hinzufügen des ${category === 'documents' ? 'Dokuments' : 'Aufgabe'}`, error);
+            alert(`Fehler beim Hinzufügen des ${category === 'documents' ? 'Dokuments' : 'Aufgabe'}`);
+          }
+        );
+      } else if (category === 'abgaben') {
+        // Für Abgaben wird aktuell nur ein URL.createObjectURL verwendet
+        const fileUrl = URL.createObjectURL(file);
+        this.uploadedFiles.abgaben.push({ name: file.name, url: fileUrl });
+      }
     }
   }
 
@@ -70,7 +101,6 @@ export class AdminKursComponent implements OnInit, OnDestroy {
           }));
         }
   
-        // Backend-Aufgaben hinzufügen
         if (response.aufgaben) {
           this.uploadedFiles.aufgaben = response.aufgaben.map((task: any) => ({
             name: task.name,
@@ -78,7 +108,6 @@ export class AdminKursComponent implements OnInit, OnDestroy {
           }));
         }
   
-        // Backend-Abgaben hinzufügen
         if (response.abgaben) {
           this.uploadedFiles.abgaben = response.abgaben.map((submission: any) => ({
             name: submission.name,
@@ -104,7 +133,7 @@ export class AdminKursComponent implements OnInit, OnDestroy {
     localStorage.removeItem('currentCourseData');
   }
 
-  saveText() {
+  saveText(): void {
     const payload = { courseName: this.courseName, textContent: this.textContent };
     this.http.post(this.apiUrl, payload).subscribe(
       () => alert('Text wurde erfolgreich gespeichert!'),
@@ -112,7 +141,7 @@ export class AdminKursComponent implements OnInit, OnDestroy {
     );
   }
 
-  saveAufgabe() {
+  saveAufgabe(): void {
     const payload = { courseName: this.courseName, aufgabeContent: this.aufgabeContent };
     this.http.post(this.apiUrl, payload).subscribe(
       () => alert('Aufgabe wurde erfolgreich gespeichert!'),
@@ -120,14 +149,11 @@ export class AdminKursComponent implements OnInit, OnDestroy {
     );
   }
 
-  saveFeedback() {
+  saveFeedback(): void {
     const payload = { courseName: this.courseName, feedbackContent: this.feedbackContent };
     this.http.post(this.apiUrl, payload).subscribe(
       () => alert('Feedback wurde erfolgreich gespeichert!'),
       (error) => console.error('Fehler beim Speichern des Feedbacks:', error)
     );
   }
-
-  
 }
-

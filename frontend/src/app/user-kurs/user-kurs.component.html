@@ -1,3 +1,4 @@
+<!-- src/app/user-kurs/user-kurs.component.html -->
 <div class="container">
   <div class="users">
     <h2>
@@ -37,42 +38,12 @@
         </mat-card>
       </li>
 
-      <!-- Aufgabenbereich -->
+      <!-- Aufgabenbereich: Nur ein Link pro Aufgabe -->
       <li *ngFor="let task of tasks">
         <mat-card class="task-card">
-          <mat-card-title>{{ task.name }}</mat-card-title>
-          <mat-card-content>
-            <p>{{ task.description }}</p>
-            <!-- Aufgaben-Dokumente -->
-            <div *ngIf="task.documents && task.documents.length">
-              <h4>Lösungsdokumente</h4>
-              <ul>
-                <li *ngFor="let doc of task.documents">
-                  <a [href]="doc.url" target="_blank">{{ doc.name }}</a>
-                  <button (click)="openPdfPreview(doc.url)" class="preview-button">Vorschau</button>
-                </li>
-              </ul>
-            </div>
-            <!-- Abgabe & Feedback Bereich -->
-            <div class="submission-feedback">
-              <h4>Abgabe & Feedback</h4>
-              <!-- File-Input für neue Abgabe -->
-              <input type="file" accept="application/pdf" (change)="handleTaskSubmission($event, task)" />
-              <!-- Bereits vorhandene Abgaben inkl. Feedback -->
-              <div *ngIf="task.submissions">
-                <div *ngFor="let entry of task.submissions | keyvalue">
-                  <p>
-                    <strong>{{ entry.key }}</strong> – Abgabe:
-                    <a [href]="entry.value.file.url" target="_blank">{{ entry.value.file.name }}</a>
-                  </p>
-                  <p *ngIf="entry.value.feedback">
-                    Feedback:
-                    <a [href]="entry.value.feedback.url" target="_blank">{{ entry.value.feedback.name }}</a>
-                  </p>
-                </div>
-              </div>
-            </div>
-          </mat-card-content>
+          <mat-card-title>
+            <a (click)="openTask(task)" style="cursor: pointer;">{{ task.name }}</a>
+          </mat-card-title>
         </mat-card>
       </li>
 
