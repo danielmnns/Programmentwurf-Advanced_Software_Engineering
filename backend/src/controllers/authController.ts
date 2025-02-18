@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/Users';
 import { AuthRequest, AuthResponse } from '../types/auth';
-import { hashPassword, comparePasswords } from '../utils/passwordUtils';
+import { comparePasswords } from '../utils/passwordUtils'; // Entferne hashPassword
 
 // Benutzer registrieren
 export const register = async (req: Request<{}, {}, IUser>, res: Response<AuthResponse>, next: NextFunction) => {
@@ -12,12 +12,14 @@ export const register = async (req: Request<{}, {}, IUser>, res: Response<AuthRe
       return res.status(400).json({ success: false, message: 'Missing required fields' });
     }
 
-    const hashedPassword = await hashPassword(password);
+    console.log('Registrierungsdaten:', req.body);
 
-    const user = await User.create({ ...req.body, password: hashedPassword });
+    const user = await User.create({ ...req.body, password });
     res.status(201).json({ success: true, message: 'User registered successfully', user });
   } catch (err) {
-    next(err);
+    console.error('Fehler bei der Registrierung:', err);
+    const errorMessage = (err instanceof Error) ? err.message : 'Unknown error';
+    res.status(500).json({ success: false, message: 'Something went wrong during registration', error: errorMessage });
   }
 };
 
@@ -33,6 +35,8 @@ export const login = async (req: Request<{}, {}, AuthRequest>, res: Response<Aut
     }
 
     const isPasswordValid = await comparePasswords(password, user.password);
+    console.log('Password Valid:', isPasswordValid);
+
     if (!isPasswordValid) {
       return res.status(401).json({ 
         success: false, 

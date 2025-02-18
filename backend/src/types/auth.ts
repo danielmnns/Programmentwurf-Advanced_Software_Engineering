@@ -32,5 +32,5 @@ export interface AuthResponse {
   };
   inputPassword?: string;
   storedPassword?: string;
-  salt?: string;
+  error?: string;
 }

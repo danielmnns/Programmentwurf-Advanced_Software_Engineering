@@ -17,7 +17,7 @@ export interface User {
   updatedAt?: Date;
 }
 
-export interface IUser {
+export interface IUser extends Document {
   username: string;
   email: string;
   password: string;

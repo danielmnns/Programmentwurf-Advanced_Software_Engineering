@@ -1,5 +1,5 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
-import { hashPassword } from '../utils/passwordUtils';
+import { hashPassword, comparePasswords } from '../utils/passwordUtils';
 
 // Interface for User Document
 export interface IUser extends Document {
@@ -18,6 +18,7 @@ export interface IUser extends Document {
     language: string;
     theme: string;
   };
+  validatePassword(password: string): Promise<boolean>;
 }
 
 // Schema for User
@@ -51,6 +52,11 @@ UserSchema.pre<IUser>('save', async function (next) {
     next(err as mongoose.CallbackError);
   }
 });
+
+// Method to validate password
+UserSchema.methods.validatePassword = async function (password: string): Promise<boolean> {
+  return comparePasswords(password, this.password);
+};
 
 // Create and export the User model
 const User: Model<IUser> = mongoose.model<IUser>('User', UserSchema);
