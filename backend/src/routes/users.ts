@@ -1,6 +1,5 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import {
-  createUser,
   deleteUser,
   getAllUsers,
   getUserById,
@@ -9,15 +8,6 @@ import {
 import { User as UserType } from '../types/user';
 
 const router = express.Router();
-
-// Benutzer erstellen
-router.post('/', async (req: Request<{}, {}, UserType>, res: Response, next: NextFunction) => {
-  try {
-    await createUser(req, res, next);
-  } catch (err) {
-    next(err);
-  }
-});
 
 // Alle Benutzer abrufen
 router.get('/', async (req: Request, res: Response, next: NextFunction) => {

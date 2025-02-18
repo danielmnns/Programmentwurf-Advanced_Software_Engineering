@@ -16,3 +16,21 @@ export interface User {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface IUser extends Document {
+  username: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  permissions: string[];
+  lastLogin?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
+  profileImage?: string;
+  settings: {
+    language: string;
+    theme: string;
+  };
+}

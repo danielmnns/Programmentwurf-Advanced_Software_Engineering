@@ -1,5 +1,5 @@
-import * as bcrypt from 'bcrypt';
 import mongoose, { Document, Model, Schema } from 'mongoose';
+import { hashPassword, comparePasswords } from '../utils/passwordUtils';
 
 // Interface for User Document
 export interface IUser extends Document {
@@ -10,9 +10,9 @@ export interface IUser extends Document {
   lastName: string;
   role: string;
   permissions: string[];
-  lastLogin: Date;
-  createdAt: Date;
-  updatedAt: Date;
+  lastLogin?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
   profileImage?: string;
   settings: {
     language: string;
@@ -46,8 +46,7 @@ UserSchema.pre<IUser>('save', async function (next) {
     return next();
   }
   try {
-    const salt = await bcrypt.genSalt(10);
-    this.password = await bcrypt.hash(this.password, salt);
+    this.password = await hashPassword(this.password);
     next();
   } catch (err: unknown) {
     next(err as mongoose.CallbackError);
@@ -56,7 +55,7 @@ UserSchema.pre<IUser>('save', async function (next) {
 
 // Method to validate password
 UserSchema.methods.validatePassword = async function (password: string): Promise<boolean> {
-  return bcrypt.compare(password, this.password);
+  return comparePasswords(password, this.password);
 };
 
 // Create and export the User model
