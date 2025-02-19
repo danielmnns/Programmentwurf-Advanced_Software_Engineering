@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { changePassword, login, register } from '../controllers/authController';
+import { changePassword, login, logout, register } from '../controllers/authController';
+import { authenticateToken } from '../middleware/auth';
 import { IUser } from '../models/Users';
-import { AuthRequestChangePassword, AuthRequestLogin, AuthResponseChangePassword, AuthResponseLogin, AuthResponseRegister } from '../types/auth';
+import { AuthRequestChangePassword, AuthRequestLogin, AuthResponseChangePassword, AuthResponseLogin, AuthResponseLogout, AuthResponseRegister } from '../types/auth';
 
 const router = Router();
 
@@ -13,8 +14,12 @@ router.post('/register', (req: Request<{}, {}, IUser>, res: Response<AuthRespons
   register(req, res, next);
 });
 
-router.post('/change-password', (req: Request<{}, {}, AuthRequestChangePassword>, res: Response<AuthResponseChangePassword>, next: NextFunction) => {
+router.post('/change-password', authenticateToken, (req: Request<{}, {}, AuthRequestChangePassword>, res: Response<AuthResponseChangePassword>, next: NextFunction) => {
   changePassword(req, res, next);
+});
+
+router.post('/logout', authenticateToken, (req: Request, res: Response<AuthResponseLogout>, next: NextFunction) => {
+  logout(req, res, next);
 });
 
 export default router;

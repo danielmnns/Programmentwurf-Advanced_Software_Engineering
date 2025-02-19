@@ -46,3 +46,8 @@ export interface AuthResponseChangePassword {
   success: boolean;
   message: string;
 }
+
+export interface AuthResponseLogout {
+  success: boolean;
+  message: string;
+}

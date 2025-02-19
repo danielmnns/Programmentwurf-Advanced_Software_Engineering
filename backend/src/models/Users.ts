@@ -1,5 +1,5 @@
 import mongoose, { Document, Model, Schema } from 'mongoose';
-import { hashPassword, comparePasswords } from '../utils/passwordUtils';
+import { comparePasswords, hashPassword } from '../utils/passwordUtils';
 
 // Interface for User Document
 export interface IUser extends Document {
@@ -18,6 +18,7 @@ export interface IUser extends Document {
     language: string;
     theme: string;
   };
+  isOnline: boolean; 
   validatePassword(password: string): Promise<boolean>;
 }
 
@@ -38,6 +39,7 @@ const UserSchema: Schema<IUser> = new Schema({
     language: { type: String, required: true },
     theme: { type: String, required: true },
   },
+  isOnline: { type: Boolean, default: false }, // Standardmäßig offline
 });
 
 // Middleware to hash password before saving
