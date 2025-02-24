@@ -1,28 +1,13 @@
-import bcrypt from 'bcrypt';
 import { NextFunction, Request, Response } from 'express';
 import User from '../models/Users';
 import { User as UserType } from '../types/user';
+import { hashPassword } from '../utils/passwordUtils';
 
 // Alle Benutzer abrufen
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const users: UserType[] = await User.find();
     res.status(200).json(users);
-  } catch (err) {
-    next(err);
-  }
-};
-
-// Benutzer erstellen
-export const createUser = async (req: Request<{}, {}, UserType>, res: Response, next: NextFunction) => {
-  try {
-    const { username, email, password, firstName, lastName, role, permissions, profileImage, settings } = req.body;
-    if (!username || !email || !password || !firstName || !lastName || !role || !permissions || !settings) {
-      return res.status(400).json({ message: 'Missing required fields' });
-    }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ ...req.body, password: hashedPassword });
-    res.status(201).json(user);
   } catch (err) {
     next(err);
   }
@@ -46,7 +31,7 @@ export const updateUser = async (req: Request<{ id: string }, {}, UserType>, res
   try {
     const { password, ...updateData } = req.body;
     if (password) {
-      const hashedPassword = await bcrypt.hash(password, 10);
+      const hashedPassword = await hashPassword(password);
       (updateData as UserType).password = hashedPassword;
     }
     const updatedUser = await User.findByIdAndUpdate(req.params.id, updateData, { new: true });

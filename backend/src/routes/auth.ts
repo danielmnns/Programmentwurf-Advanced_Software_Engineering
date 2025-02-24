@@ -1,15 +1,16 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response, Router } from 'express';
 import { login, register } from '../controllers/authController';
-import { AuthRequest } from '../types/auth';
+import { IUser } from '../models/Users';
+import { AuthRequest, AuthResponse } from '../types/auth';
 
 const router = Router();
 
-router.post('/register', (req: Request<{}, {}, AuthRequest>, res: Response) => {
-  register(req, res);
+router.post('/login', (req: Request<{}, {}, AuthRequest>, res: Response<AuthResponse>, next: NextFunction) => {
+  login(req, res, next);
 });
 
-router.post('/login', (req: Request<{}, {}, AuthRequest>, res: Response, next: NextFunction) => {
-  login(req, res, next);
+router.post('/register', (req: Request<{}, {}, IUser>, res: Response<AuthResponse>, next: NextFunction) => {
+  register(req, res, next);
 });
 
 export default router;
