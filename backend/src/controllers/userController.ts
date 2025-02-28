@@ -2,6 +2,12 @@ import { NextFunction, Request, Response } from 'express';
 import User from '../models/Users';
 import { User as UserType } from '../types/user';
 import { hashPassword } from '../utils/passwordUtils';
+import Tasks from '../models/Tasks';
+import { authenticateToken } from '../middleware/auth';
+
+interface AuthRequest extends Request {
+  user?: any;
+}
 
 // Alle Benutzer abrufen
 export const getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
@@ -56,3 +62,22 @@ export const deleteUser = async (req: Request<{ id: string }>, res: Response, ne
     next(err);
   }
 };
+
+// Aufgaben für einen bestimmten Benutzer abrufen
+export const getUserTasks = [
+  authenticateToken,
+  async (req: AuthRequest, res: Response, next: NextFunction) => {
+    try {
+      const userId = req.user._id;
+      const tasks = await Tasks.find({ assignedTo: userId });
+
+      if (!tasks) {
+        return res.status(404).json({ message: 'No tasks found for this user' });
+      }
+
+      res.status(200).json(tasks);
+    } catch (err) {
+      next(err);
+    }
+  }
+];

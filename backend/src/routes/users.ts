@@ -3,6 +3,7 @@ import {
   deleteUser,
   getAllUsers,
   getUserById,
+  getUserTasks,
   updateUser,
 } from '../controllers/userController';
 import { User as UserType } from '../types/user';
@@ -40,6 +41,17 @@ router.put('/:id', async (req: Request<{ id: string }, {}, UserType>, res: Respo
 router.delete('/:id', async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   try {
     await deleteUser(req, res, next);
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Aufgaben eines Benutzers abrufen
+router.get('/:id/tasks', async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+  try {
+    for (const task of getUserTasks) {
+      await task(req, res, next);
+    }
   } catch (err) {
     next(err);
   }
