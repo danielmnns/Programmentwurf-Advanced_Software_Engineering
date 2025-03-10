@@ -1,9 +1,7 @@
 <div class="container">
-  <!-- Hauptbereich (Kursinhalt) -->
   <div class="users">
     <h2>
       {{ courseName }}
-      <!-- Stift-Icon als Bestätigung, dass die Bearbeitung abgeschlossen wurde -->
       <span 
         class="edit-icon"
         (click)="navigateToUserCourse(courseName)" 
@@ -18,11 +16,7 @@
           <mat-card-title>Text</mat-card-title>
           <mat-card-content>
             <mat-form-field appearance="outline" class="full-width">
-              <textarea
-                matInput
-                placeholder="Text hier eingeben"
-                [(ngModel)]="textContent"
-              ></textarea>
+              <textarea matInput placeholder="Text hier eingeben" [(ngModel)]="textContent"></textarea>
             </mat-form-field>
             <button mat-raised-button color="primary" (click)="saveText()">Speichern</button>
           </mat-card-content>
@@ -32,9 +26,7 @@
         <mat-card>
           <mat-card-title>Dokumente</mat-card-title>
           <mat-card-content>
-            <!-- Versteckter Datei-Input -->
-            <input type="file" #documentInput style="display:none" accept="application/pdf" (change)="handleFileUpload($event, 'documents')" />
-            <!-- Button, der den Datei-Input auslöst -->
+            <input type="file" #documentInput style="display:none" accept="application/pdf" (change)="handleFileUpload($event)" />
             <button mat-raised-button color="primary" (click)="documentInput.click()">Neues Dokument hinzufügen</button>
             <ul>
               <li *ngFor="let file of uploadedFiles.documents">
@@ -44,62 +36,13 @@
           </mat-card-content>
         </mat-card>
       </li>
-      <li>
-        <mat-card>
-          <mat-card-title>Aufgabe</mat-card-title>
-          <mat-card-content>
-            <mat-form-field appearance="outline" class="full-width">
-              <textarea
-                matInput
-                placeholder="Aufgabe beschreiben"
-                [(ngModel)]="aufgabeContent"
-              ></textarea>
-            </mat-form-field>
-            <button mat-raised-button color="primary" (click)="saveAufgabe()">Speichern</button>
-            <!-- Versteckter Datei-Input -->
-            <input type="file" #taskInput style="display:none" accept="application/pdf" (change)="handleFileUpload($event, 'aufgaben')" />
-            <!-- Button, der den Datei-Input auslöst -->
-            <button mat-raised-button color="primary" (click)="taskInput.click()">Neue Aufgabe hinzufügen</button>
-            <ul>
-              <li *ngFor="let file of uploadedFiles.aufgaben">
-                <a [href]="file.url" target="_blank">{{ file.name }}</a>
-              </li>
-            </ul>
-          </mat-card-content>
-        </mat-card>
-      </li>
-      <li>
-        <mat-card>
-          <mat-card-title>Abgabefeld</mat-card-title>
-          <mat-card-content>
-            <input type="file" accept="application/pdf" (change)="handleFileUpload($event, 'abgaben')" />
-            <ul>
-              <li *ngFor="let file of uploadedFiles.abgaben">
-                <a [href]="file.url" target="_blank">{{ file.name }}</a>
-              </li>
-            </ul>
-          </mat-card-content>
-        </mat-card>
-      </li>
-      <li>
-        <mat-card>
-          <mat-card-title>Feedback</mat-card-title>
-          <mat-card-content>
-            <mat-form-field appearance="outline" class="full-width">
-              <textarea
-                matInput
-                placeholder="Feedback hier eingeben"
-                [(ngModel)]="feedbackContent"
-              ></textarea>
-            </mat-form-field>
-            <button mat-raised-button color="primary" (click)="saveFeedback()">Speichern</button>
-          </mat-card-content>
-        </mat-card>
-      </li>
     </ul>
+    <!-- Klickbare Fläche zum Hinzufügen einer neuen Aufgabe -->
+    <div class="add-task-container" (click)="openNewTaskDialog()">
+      <mat-icon></mat-icon>
+      Neue Aufgabe hinzufügen
+    </div>
   </div>
-
-  <!-- Teilnehmerliste -->
   <div class="teilnehmer">
     <h2>Teilnehmer</h2>
     <ul>

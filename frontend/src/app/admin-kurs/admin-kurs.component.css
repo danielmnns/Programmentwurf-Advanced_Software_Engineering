@@ -57,3 +57,18 @@
 .edit-icon:hover {
   color: #0056b3;
 }
+
+.add-task-container {
+  margin-top: 20px;
+  padding: 10px;
+  border: 2px dashed #007bff;
+  text-align: center;
+  cursor: pointer;
+  font-size: 18px;
+  color: #007bff;
+  border-radius: 4px;
+}
+
+.add-task-container:hover {
+  background-color: #e6f7ff;
+}

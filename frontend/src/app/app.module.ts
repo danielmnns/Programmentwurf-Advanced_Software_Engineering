@@ -32,6 +32,7 @@ import { KursComponent } from './user-kurs/user-kurs.component';
 import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.component';
 import { UserAufgabeComponent } from './user-aufgabe/user-aufgabe.component';
 import { AdminAufgabeComponent } from './admin-aufgabe/admin-aufgabe.component';
+import { NewTaskDialogComponent } from './new-task-dialog/new-task-dialog.component';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import { AdminAufgabeComponent } from './admin-aufgabe/admin-aufgabe.component';
     EnrollmentDialogComponent,
     UserVerwaltungComponent,
     UserAufgabeComponent,
-    AdminAufgabeComponent
+    AdminAufgabeComponent,
+    NewTaskDialogComponent
 
   ],
   imports: [

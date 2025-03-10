@@ -1,0 +1,27 @@
+/* new-task-dialog.component.css */
+
+/* Stellt sicher, dass Eingabefelder die volle Breite einnehmen */
+.full-width {
+    width: 100%;
+  }
+  
+  /* Abstand und Breite der Formularfelder */
+  mat-form-field {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  
+  /* Überschrift zentrieren und etwas Abstand nach unten */
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  /* Container für die Aktions-Buttons (Erstellen/Abbrechen) */
+  .dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  
