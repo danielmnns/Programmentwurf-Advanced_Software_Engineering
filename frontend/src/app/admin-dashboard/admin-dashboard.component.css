@@ -1,0 +1,132 @@
+/* Grundlegendes Layout für Kurse */
+.course-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px; /* Abstand zwischen den Kursen */
+}
+
+.course-box {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.course-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.course-title {
+  font-size: 1.2rem;
+  color: #1976d2; /* Blau */
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.edit-icon,
+.delete-icon {
+  margin-left: 10px; /* Abstand zwischen den Icons */
+  cursor: pointer;
+  font-size: 20px; /* Größe der Icons */
+}
+
+/* Layout für die Buttons */
+.user-management-container {
+  display: flex;
+  justify-content: space-between; /* Buttons links und rechts positionieren */
+  align-items: center; /* Vertikale Zentrierung */
+  margin-top: 20px;
+}
+
+/* Einheitliche Button-Klasse */
+.button-standard {
+  background-color: #007bff; /* Einheitliches Blau */
+  color: white; /* Weißer Text */
+  font-size: 16px; /* Gleiche Schriftgröße */
+  padding: 10px 20px; /* Einheitliche Größe */
+  border: none;
+  border-radius: 8px; /* Abgerundete Ecken */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Einheitlicher Schatten */
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s; /* Einheitliche Übergänge */
+  text-align: center; /* Zentrierter Text */
+}
+
+.button-standard:hover {
+  transform: scale(1.05); /* Leichtes Vergrößern beim Hover */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Stärkerer Schatten */
+}
+
+.button-standard:active {
+  transform: scale(0.98); /* Leichtes Schrumpfen beim Klick */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Weniger Schatten */
+}
+
+/* Modal für Kurs hinzufügen */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Dunkler Hintergrund */
+  display: flex;
+  justify-content: center; /* Horizontale Zentrierung */
+  align-items: center; /* Vertikale Zentrierung */
+  z-index: 1000; /* Modal über allem anzeigen */
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 400px;
+  max-width: 90%; /* Passt sich an kleine Bildschirme an */
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Leichter Schatten */
+}
+
+.course-input {
+  width: 100%;
+  padding: 10px;
+  margin: 15px 0;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Modal-Buttons */
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px; /* Abstand zwischen den Buttons */
+}
+
+.modal-buttons button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.modal-buttons button:hover {
+  background-color: #0056b3; /* Dunkleres Blau beim Hover */
+}
+
+.modal-buttons button.cancel-button {
+  background-color: #f44336; /* Rot für Abbrechen */
+}
+
+.modal-buttons button.cancel-button:hover {
+  background-color: #d32f2f; /* Dunkleres Rot beim Hover */
+}

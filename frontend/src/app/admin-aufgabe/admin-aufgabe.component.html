@@ -1,0 +1,40 @@
+<div class="admin-task-container">
+    <!-- Zurück-Button -->
+    <div class="back-button-container">
+      <button class="btn-back" (click)="navigateBack()">← Zurück zur Kursverwaltung</button>
+    </div>
+  
+    <h1>{{ taskName }}</h1>
+    <p>{{ taskDescription }}</p>
+    
+    <div class="submissions-list">
+      <h3>Benutzerabgaben</h3>
+      <div class="submission-item" *ngFor="let submission of submissions">
+        <p><strong>Benutzer:</strong> {{ submission.userName }}</p>
+        <p>
+          <a [href]="submission.file.url" target="_blank">{{ submission.file.name }}</a>
+        </p>
+        <div class="feedback-input">
+          <textarea [(ngModel)]="submission.feedbackText" placeholder="Feedback eingeben..."></textarea>
+          <button class="btn-save" (click)="saveFeedback(submission)">Speichern</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Benachrichtigungs-Popup -->
+  <div class="modal" *ngIf="showNotification">
+    <div class="modal-content notification">
+      <div class="modal-header">
+        <h2>Hinweis</h2>
+        <button class="close-btn" (click)="closeNotification()">✖</button>
+      </div>
+      <div class="modal-body">
+        <p>{{ notificationMessage }}</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-confirm" (click)="closeNotification()">OK</button>
+      </div>
+    </div>
+  </div>
+  

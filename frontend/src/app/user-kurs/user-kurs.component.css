@@ -1,0 +1,117 @@
+/* Container für die gesamte Seite */
+.container {
+  width: 90%;
+  margin: 20px auto;
+  display: flex;
+  gap: 20px;
+  font-family: Arial, sans-serif;
+}
+
+/* Linker Bereich (Hauptinhalt) */
+.users {
+  flex: 2;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
+/* Rechter Bereich (Teilnehmerliste) */
+.teilnehmer {
+  flex: 1;
+  padding: 20px;
+  background-color: #e3f2fd;
+  border-radius: 8px;
+  max-height: 600px;
+  overflow-y: auto;
+}
+
+/* Listen-Stil */
+.users ul,
+.teilnehmer ul {
+  list-style: none;
+  padding: 0;
+}
+
+.users li,
+.teilnehmer li {
+  margin-bottom: 20px;
+}
+
+.mat-card {
+  margin-bottom: 20px;
+}
+
+/* Neue Styles für den Aufgabenbereich */
+.task-card {
+  border: 1px solid #ffa500;
+  border-radius: 4px;
+  padding: 10px;
+  background-color: #fff8e1;
+}
+
+.submission-feedback {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+/* Buttons */
+.edit-icon {
+  cursor: pointer;
+  margin-left: 10px;
+  font-size: 20px;
+  color: #007bff;
+}
+
+.edit-icon:hover {
+  color: #0056b3;
+}
+
+.file-actions {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.preview-button {
+  margin-left: 10px;
+}
+
+.delete-button {
+  color: red;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.modal-content {
+  position: relative;
+  background-color: white;
+  padding: 20px;
+}
+
+.confirmation-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  border: 1px solid #ccc;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.dialog-content {
+  text-align: center;
+}
+
+.dialog-actions button {
+  margin: 10px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}

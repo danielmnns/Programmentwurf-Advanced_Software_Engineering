@@ -1,0 +1,63 @@
+<div class="user-task-container">
+    <!-- Zurück-Button -->
+    <div class="back-button-container">
+      <button class="btn-back" (click)="navigateBack()">← Zurück zum Kurs</button>
+    </div>
+  
+    <h1>{{ taskName }}</h1>
+    <p>{{ taskDescription }}</p>
+  
+    <div class="upload-section">
+      <h3>Abgabe hochladen</h3>
+      <input type="file" accept="application/pdf" (change)="handleFileUpload($event)" />
+    </div>
+  
+    <div class="submission-file" *ngIf="submissionFile">
+      <h3>Abgabe</h3>
+      <p>
+        <a [href]="submissionFile.url" target="_blank">{{ submissionFile.name }}</a>
+      </p>
+      <!-- Button, der das Lösch-Popup öffnet -->
+      <button class="btn-delete" (click)="openDeletePopup()">Abgabe löschen</button>
+    </div>
+  
+    <div class="submission-feedback" *ngIf="feedback">
+      <h3>Feedback</h3>
+      <p>Feedback von: <strong>{{ feedback.feedbackFrom }}</strong></p>
+      <p>{{ feedback.text }}</p>
+    </div>
+  </div>
+  
+  <!-- Löschbestätigungspopup -->
+  <div class="modal" *ngIf="showDeletePopup">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Löschbestätigung</h2>
+        <button class="close-btn" (click)="cancelDelete()">✖</button>
+      </div>
+      <div class="modal-body">
+        <p>Möchten Sie die Abgabe wirklich löschen?</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-confirm" (click)="confirmDelete()">Ja, löschen</button>
+        <button class="btn-cancel" (click)="cancelDelete()">Abbrechen</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Benachrichtigungs-Popup -->
+  <div class="modal" *ngIf="showNotification">
+    <div class="modal-content notification">
+      <div class="modal-header">
+        <h2>Hinweis</h2>
+        <button class="close-btn" (click)="closeNotification()">✖</button>
+      </div>
+      <div class="modal-body">
+        <p>{{ notificationMessage }}</p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-confirm" (click)="closeNotification()">OK</button>
+      </div>
+    </div>
+  </div>
+  

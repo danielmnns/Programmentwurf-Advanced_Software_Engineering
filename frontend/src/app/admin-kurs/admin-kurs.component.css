@@ -1,0 +1,127 @@
+/* Container: Zwei Spalten, responsives Layout */
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 20px;
+  justify-content: center;
+}
+
+.content {
+  flex: 2;
+  min-width: 300px;
+}
+
+.teilnehmer {
+  flex: 1;
+  min-width: 250px;
+}
+
+/* Kurskopf */
+.course-header {
+  margin-bottom: 20px;
+}
+
+/* Allgemeine Karten für Abschnitte */
+.section-card {
+  margin-bottom: 20px;
+}
+
+/* Volle Breite für Formularfelder */
+.full-width {
+  width: 100%;
+}
+
+/* Container für Button-Anordnungen */
+.button-container {
+  margin-top: 10px;
+  text-align: right;
+}
+
+/* Upload-Bereich */
+.upload-section {
+  margin-top: 10px;
+}
+
+/* Styling für Listen */
+mat-list-item {
+  font-size: 0.95em;
+}
+
+/* Aufgabenliste */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Jede Aufgabe als eigene Karte */
+.task-card {
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Dokumente innerhalb der Aufgabe */
+.task-documents h4 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 1em;
+  font-weight: 500;
+}
+
+/* Aktionen in der Aufgabe */
+.task-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+/* Container für "Neue Aufgabe hinzufügen" */
+.add-task-container {
+  margin-top: 15px;
+  text-align: center;
+}
+
+/* Normale Buttons mit Hover-Effekt */
+.btn {
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+  margin-right: 5px;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+.btn-secondary {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.btn-secondary:hover {
+  background-color: #5a6268;
+}
