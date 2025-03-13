@@ -35,7 +35,7 @@ export class NewTaskDialogComponent {
     this.selectedFiles.forEach(file => {
       formData.append('files', file, file.name);
     });
-    this.http.post(`${this.apiUrl}/admin/addAufgabe`, formData).subscribe(
+    this.http.post(`${this.apiUrl}/admin/addTask`, formData).subscribe(
       (response: any) => {
         alert('Aufgabe erfolgreich erstellt!');
         this.dialogRef.close(true);

@@ -18,6 +18,10 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
+import { MatFormFieldModule } from '@angular/material/form-field';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -55,6 +59,8 @@ import { NewTaskDialogComponent } from './new-task-dialog/new-task-dialog.compon
   imports: [
     BrowserModule,
     FormsModule,
+    MatFormFieldModule,
+    MatListModule,
     HttpClientModule,
     BrowserAnimationsModule,
     MatInputModule,
@@ -69,7 +75,8 @@ import { NewTaskDialogComponent } from './new-task-dialog/new-task-dialog.compon
     MatSortModule,
     MatIconModule,
     MatToolbarModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatDividerModule
   ],
   providers: [],
   bootstrap: [AppComponent]
