@@ -1,11 +1,12 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import UserModel from '../models/Users';
 
 interface AuthRequest extends Request {
-  user?: string | jwt.JwtPayload; // or any other type based on your user object
+  user?: string | jwt.JwtPayload; 
 }
 
-export const authenticateToken = (req: AuthRequest, res: Response, next: NextFunction): void => {
+export const authenticateToken = async (req: AuthRequest, res: Response, next: NextFunction): Promise<void> => {
   const token = req.header('Authorization')?.split(' ')[1];
   const secret = process.env.JWT_SECRET;
 
@@ -20,14 +21,29 @@ export const authenticateToken = (req: AuthRequest, res: Response, next: NextFun
     return;
   }
 
-  jwt.verify(token, secret, (err, user) => {
-    if (err) {
-      console.error('Token verification error:', err);
-      res.status(403).json({ message: 'Invalid token' });
+  try {
+    const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
+    const user = await UserModel.findById(decoded.userId);
+
+    if (!user) {
+      res.status(404).json({ message: 'User not found' });
       return;
     }
 
-    req.user = user as string | jwt.JwtPayload;
+    req.user = user;
     next();
-  });
+  } catch (err) {
+    console.error('Token verification error:', err);
+    res.status(403).json({ message: 'Invalid token' });
+  }
+};
+
+export const authorize = (role: string) => {
+  return (req: AuthRequest, res: Response, next: NextFunction) => {
+    if (!req.user || (req.user as any).role !== role) {
+      res.status(403).json({ message: 'Forbidden' });
+      return;
+    }
+    next();
+  };
 };

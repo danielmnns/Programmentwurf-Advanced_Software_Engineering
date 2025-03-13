@@ -6,6 +6,7 @@ export interface IUser extends Document {
   username: string;
   password: string;
   roles: mongoose.Types.ObjectId[];
+  isOnline: boolean; 
   validatePassword(password: string): Promise<boolean>;
 }
 
@@ -13,7 +14,8 @@ export interface IUser extends Document {
 const UserSchema: Schema<IUser> = new Schema({
   username: { type: String, required: true, unique: true },
   password: { type: String, required: true },
-  roles: [{ type: mongoose.Schema.Types.ObjectId, ref: "Role" }] 
+  roles: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Role' }],
+  isOnline: { type: Boolean, default: false }
 });
 
 // Middleware to hash password before saving

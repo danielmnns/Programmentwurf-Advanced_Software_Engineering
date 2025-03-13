@@ -1,36 +1,15 @@
+import mongoose, { Document } from 'mongoose';
+
 export interface User {
   id: string;
   username: string;
-  email: string;
   password: string;
-  firstName: string;
-  lastName: string;
-  role: 'student' | 'instructor';
+  roles: mongoose.Types.ObjectId[];
   permissions: string[];
-  profileImage?: string;
-  settings: {
-    language: string;
-    theme: string;
-  };
-  lastLogin?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
 export interface IUser extends Document {
   username: string;
-  email: string;
   password: string;
-  firstName: string;
-  lastName: string;
-  role: string;
-  permissions: string[];
-  lastLogin?: Date;
-  createdAt?: Date;
-  updatedAt?: Date;
-  profileImage?: string;
-  settings: {
-    language: string;
-    theme: string;
-  };
+  roles: mongoose.Types.ObjectId[];
 }

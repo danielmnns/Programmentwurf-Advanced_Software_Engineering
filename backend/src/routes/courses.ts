@@ -13,11 +13,12 @@ import {
   unenrollUser,
   updateCourse,
 } from '../controllers/courseControllers';
+import { authenticateToken } from '../middleware/auth';
 import { Course } from '../types/course';
 
 const router = express.Router();
 
-router.post('/', async (req: Request<{}, {}, Course>, res: Response, next: NextFunction) => {
+router.post('/', authenticateToken, async (req: Request<{}, {}, Course>, res: Response, next: NextFunction) => {
   try {
     await createCourse(req, res, next);
   } catch (err) {
@@ -25,7 +26,7 @@ router.post('/', async (req: Request<{}, {}, Course>, res: Response, next: NextF
   }
 });
 
-router.get('/', async (req: Request, res: Response, next: NextFunction) => {
+router.get('/', authenticateToken, async (req: Request, res: Response, next: NextFunction) => {
   try {
     await getAllCourses(req, res, next);
   } catch (err) {
@@ -33,7 +34,7 @@ router.get('/', async (req: Request, res: Response, next: NextFunction) => {
   }
 });
 
-router.get('/:id', async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+router.get('/:id', authenticateToken, async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   try {
     await getCourseById(req, res, next);
   } catch (err) {
@@ -41,7 +42,7 @@ router.get('/:id', async (req: Request<{ id: string }>, res: Response, next: Nex
   }
 });
 
-router.put('/:id', async (req: Request<{ id: string }, {}, Course>, res: Response, next: NextFunction) => {
+router.put('/:id', authenticateToken, async (req: Request<{ id: string }, {}, Course>, res: Response, next: NextFunction) => {
   try {
     await updateCourse(req, res, next);
   } catch (err) {
@@ -49,7 +50,7 @@ router.put('/:id', async (req: Request<{ id: string }, {}, Course>, res: Respons
   }
 });
 
-router.delete('/:id', async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+router.delete('/:id', authenticateToken, async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   try {
     await deleteCourse(req, res, next);
   } catch (err) {
@@ -57,8 +58,7 @@ router.delete('/:id', async (req: Request<{ id: string }>, res: Response, next: 
   }
 });
 
-
-router.post('/:id/enroll', async (req: Request<{ id: string }, {}, { userId: string }>, res: Response, next: NextFunction) => {
+router.post('/:id/enroll', authenticateToken, async (req: Request<{ id: string }, {}, { userId: string }>, res: Response, next: NextFunction) => {
   try {
     await enrollUser(req, res, next);
   } catch (err) {
@@ -66,7 +66,7 @@ router.post('/:id/enroll', async (req: Request<{ id: string }, {}, { userId: str
   }
 });
 
-router.post('/:id/unenroll', async (req: Request<{ id: string }, {}, { userId: string }>, res: Response, next: NextFunction) => {
+router.post('/:id/unenroll', authenticateToken, async (req: Request<{ id: string }, {}, { userId: string }>, res: Response, next: NextFunction) => {
   try {
     await unenrollUser(req, res, next);
   } catch (err) {
@@ -74,7 +74,7 @@ router.post('/:id/unenroll', async (req: Request<{ id: string }, {}, { userId: s
   }
 });
 
-router.post('/:id/add-activity', async (req: Request<{ id: string }, {}, { title: string; description: string; dueDate: Date; priority: string }>, res: Response, next: NextFunction) => {
+router.post('/:id/add-activity', authenticateToken, async (req: Request<{ id: string }, {}, { title: string; description: string; dueDate: Date; priority: string }>, res: Response, next: NextFunction) => {
   try {
     await addActivity(req, res, next);
   } catch (err) {
@@ -82,7 +82,7 @@ router.post('/:id/add-activity', async (req: Request<{ id: string }, {}, { title
   }
 });
 
-router.post('/:id/remove-activity', async (req: Request<{ id: string }, {}, { taskId: string }>, res: Response, next: NextFunction) => {
+router.post('/:id/remove-activity', authenticateToken, async (req: Request<{ id: string }, {}, { taskId: string }>, res: Response, next: NextFunction) => {
   try {
     await removeActivity(req, res, next);
   } catch (err) {
@@ -90,7 +90,7 @@ router.post('/:id/remove-activity', async (req: Request<{ id: string }, {}, { ta
   }
 });
 
-router.post('/:id/toggle-visibility', async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+router.post('/:id/toggle-visibility', authenticateToken, async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   try {
     await toggleVisibility(req, res, next);
   } catch (err) {
@@ -98,7 +98,7 @@ router.post('/:id/toggle-visibility', async (req: Request<{ id: string }>, res: 
   }
 });
 
-router.get('/:id/enrolled-users', async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+router.get('/:id/enrolled-users', authenticateToken, async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   try {
     await getEnrolledUsers(req, res, next);
   } catch (err) {
@@ -106,7 +106,7 @@ router.get('/:id/enrolled-users', async (req: Request<{ id: string }>, res: Resp
   }
 });
 
-router.get('/:id/info', async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
+router.get('/:id/info', authenticateToken, async (req: Request<{ id: string }>, res: Response, next: NextFunction) => {
   try {
     await getCourseInfo(req, res, next);
   } catch (err) {

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import User, { IUser } from '../models/Users';
+import Role from '../models/Role'; 
 import { AuthRequestLogin, AuthResponseChangePassword, AuthResponseLogin, AuthResponseLogout, AuthResponseRegister } from '../types/auth';
 import { comparePasswords } from '../utils/passwordUtils';
 
@@ -8,32 +9,13 @@ interface AuthRequest extends Request {
   user?: string | jwt.JwtPayload;
 }
 
-// Benutzer registrieren
-export const register = async (req: Request<{}, {}, IUser>, res: Response<AuthResponseRegister>, next: NextFunction) => {
-  try {
-    const { username, email, password, firstName, lastName, role, permissions, profileImage, settings } = req.body;
-    if (!username || !email || !password || !firstName || !lastName || !role || !permissions || !settings) {
-      return res.status(400).json({ success: false, message: 'Missing required fields' });
-    }
-
-    console.log('Registrierungsdaten:', req.body);
-
-    const user = await User.create({ ...req.body, password });
-    res.status(201).json({ success: true, message: 'User registered successfully', user });
-  } catch (err) {
-    console.error('Fehler bei der Registrierung:', err);
-    const errorMessage = (err instanceof Error) ? err.message : 'Unknown error';
-    res.status(500).json({ success: false, message: 'Something went wrong during registration' });
-  }
-};
-
 // Benutzer anmelden
 export const login = async (req: Request<{}, {}, AuthRequestLogin>, res: Response<AuthResponseLogin>, next: NextFunction) => {
   try {
     const { username, password } = req.body;
 
     // Benutzer anhand des Benutzernamens finden
-    const user = await User.findOne({ username });
+    const user = await User.findOne({ username }).populate('roles');
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found', token: '', user: { username: '', usertype: '' } });
     }
@@ -60,17 +42,23 @@ export const login = async (req: Request<{}, {}, AuthRequestLogin>, res: Respons
       });
     }
 
+    // JWT-Token erstellen
+    const token = jwt.sign({ username: user.username, userId: user._id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+
     // Benutzer als online markieren
     user.isOnline = true;
     await user.save();
 
-    // JWT-Token erstellen
-    const token = jwt.sign({ username: user.username }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+    // Rollen-Namen abrufen
+    const roles = await Promise.all(user.roles.map(async (roleId) => {
+      const role = await Role.findById(roleId);
+      return role ? role.name : '';
+    }));
 
     res.status(200).json({ success: true, message: 'Login successful', token, user: { 
       username: user.username, 
-      usertype: user.role 
-    }  });
+      usertype: roles.join(', ') 
+    } });
   } catch (err) {
     next(err);
   }
@@ -79,10 +67,10 @@ export const login = async (req: Request<{}, {}, AuthRequestLogin>, res: Respons
 // Benutzer abmelden (Logout)
 export const logout = async (req: AuthRequest, res: Response<AuthResponseLogout>, next: NextFunction) => {
   try {
-    const username = (req.user as jwt.JwtPayload).username;
+    const userId = (req.user as jwt.JwtPayload).userId;
 
-    // Benutzer anhand des Benutzernamens finden
-    const user = await User.findOne({ username });
+    // Benutzer anhand der ID finden
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
@@ -100,22 +88,17 @@ export const logout = async (req: AuthRequest, res: Response<AuthResponseLogout>
 // Passwort ändern
 export const changePassword = async (req: AuthRequest, res: Response<AuthResponseChangePassword>, next: NextFunction) => {
   try {
-    const username = (req.user as jwt.JwtPayload).username;
-    const { oldPassword, newPassword, confirmNewPassword } = req.body;
+    const userId = (req.user as jwt.JwtPayload).userId;
+    const { password, newPassword } = req.body;
 
-    // Überprüfen, ob die neuen Passwörter übereinstimmen
-    if (newPassword !== confirmNewPassword) {
-      return res.status(400).json({ success: false, message: 'New passwords do not match' });
-    }
-
-    // Benutzer anhand des Benutzernamens finden
-    const user = await User.findOne({ username });
+    // Benutzer anhand der ID finden
+    const user = await User.findById(userId);
     if (!user) {
       return res.status(404).json({ success: false, message: 'User not found' });
     }
 
     // Überprüfen, ob das alte Passwort korrekt ist
-    const isOldPasswordValid = await comparePasswords(oldPassword, user.password);
+    const isOldPasswordValid = await comparePasswords(password, user.password);
     if (!isOldPasswordValid) {
       return res.status(401).json({ success: false, message: 'Old password is incorrect' });
     }
