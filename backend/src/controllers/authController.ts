@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
-import User, { IUser } from '../models/Users';
-import Role from '../models/Role'; 
-import { AuthRequestLogin, AuthResponseChangePassword, AuthResponseLogin, AuthResponseLogout, AuthResponseRegister } from '../types/auth';
+import Role from '../models/Role';
+import { AuthRequestLogin, AuthResponseChangePassword, AuthResponseLogin, AuthResponseLogout } from '../types/auth';
+import User from '../user/user.module';
 import { comparePasswords } from '../utils/passwordUtils';
 
 interface AuthRequest extends Request {

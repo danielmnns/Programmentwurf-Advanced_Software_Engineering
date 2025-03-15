@@ -2,8 +2,8 @@ import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import CourseModel from '../models/Course';
 import TaskModel from '../models/Tasks';
-import UserModel from '../models/Users';
 import { Course } from '../types/course';
+import UserModel from '../user/user.module';
 
 interface AuthRequest extends Request {
   user?: any;

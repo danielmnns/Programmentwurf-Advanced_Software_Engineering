@@ -10,6 +10,15 @@ export interface IUser extends Document {
   validatePassword(password: string): Promise<boolean>;
 }
 
+export interface User {
+  id?: string;
+  name: string;
+  email: string;
+  password: string;
+  role?: 'Admin' | 'Kursleiter' | 'Dozent' | 'Sekretärin' | 'Student';
+  lastLogin?: Date;
+}
+
 // Schema for User
 const UserSchema: Schema<IUser> = new Schema({
   username: { type: String, required: true, unique: true },

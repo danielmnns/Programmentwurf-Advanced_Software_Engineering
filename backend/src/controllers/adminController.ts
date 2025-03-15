@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Role from '../models/Role';
-import User from '../models/Users';
+import User from '../user/user.module';
 
 export const assignRole = async (req: Request, res: Response) => {
   const { userId, roleId } = req.body;

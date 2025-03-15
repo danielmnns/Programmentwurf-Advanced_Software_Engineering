@@ -1,5 +1,5 @@
 import Role from '../models/Role';
-import User from '../models/Users';
+import User from '../user/user.module';
 import { hashPassword } from '../utils/passwordUtils';
 
 const initializeAdminUser = async () => {

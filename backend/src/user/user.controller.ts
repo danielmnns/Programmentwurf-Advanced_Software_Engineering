@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
-import User from '../models/Users';
+import { authenticateToken } from '../middleware/auth';
+import Tasks from '../models/Tasks';
 import { User as UserType } from '../types/user';
 import { hashPassword } from '../utils/passwordUtils';
-import Tasks from '../models/Tasks';
-import { authenticateToken } from '../middleware/auth';
+import User from './user.module';
 
 interface AuthRequest extends Request {
   user?: any;
