@@ -1,56 +1,54 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../common/decorators/roles.decorator';
 import { CoursesService } from './courses.service';
+import { CreateCourseDto } from './dto/create-course.dto';
+import { UpdateCourseDto } from './dto/update-course.dto';
 
 @Controller('courses')
+@UseGuards(JwtAuthGuard)
 export class CoursesController {
-  constructor(private coursesService: CoursesService) {}
+  constructor(private readonly coursesService: CoursesService) {}
 
-  @UseGuards(JwtAuthGuard)
-  @Get()
-  getAllCourses(@Req() req: Request) {
-    return this.coursesService.getAllCourses(req.user);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Get(':id')
-  getCourseById(@Param('id') id: string) {
-    return this.coursesService.getCourseById(id);
-  }
-
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('dozent', 'admin', 'studiengangsleiter')
   @Post()
-  createCourse(@Body() createCourseDto: any) {
-    return this.coursesService.createCourse(createCourseDto);
+  @UseGuards(RolesGuard)
+  @Roles('Admin', 'Kursleiter', 'Dozent')
+  create(@Body() createCourseDto: CreateCourseDto) {
+    return this.coursesService.create(createCourseDto);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('dozent', 'admin', 'studiengangsleiter')
-  @Put(':id')
-  updateCourse(@Param('id') id: string, @Body() updateCourseDto: any) {
-    return this.coursesService.updateCourse(id, updateCourseDto);
+  @Get()
+  findAll() {
+    return this.coursesService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('dozent', 'admin', 'studiengangsleiter')
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.coursesService.findOne(id);
+  }
+
+  @Patch(':id')
+  @UseGuards(RolesGuard)
+  @Roles('Admin', 'Kursleiter', 'Dozent')
+  update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
+    return this.coursesService.update(id, updateCourseDto);
+  }
+
   @Delete(':id')
-  deleteCourse(@Param('id') id: string) {
-    return this.coursesService.deleteCourse(id);
+  @UseGuards(RolesGuard)
+  @Roles('Admin', 'Kursleiter')
+  remove(@Param('id') id: string) {
+    return this.coursesService.remove(id);
+  }
+  
+  @Post(':id/enroll/:userId')
+  enrollStudent(@Param('id') courseId: string, @Param('userId') userId: string) {
+    return this.coursesService.enrollStudent(courseId, userId);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Post(':id/enroll')
-  enrollUser(@Param('id') id: string, @Req() req: Request) {
-    return this.coursesService.enrollUser(id, req.user);
-  }
-
-  @UseGuards(JwtAuthGuard)
-  @Post(':id/unenroll')
-  unenrollUser(@Param('id') id: string, @Req() req: Request) {
-    return this.coursesService.unenrollUser(id, req.user);
+  @Post(':id/unenroll/:userId')
+  unenrollStudent(@Param('id') courseId: string, @Param('userId') userId: string) {
+    return this.coursesService.unenrollStudent(courseId, userId);
   }
 }

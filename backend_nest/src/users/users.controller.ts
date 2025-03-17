@@ -1,31 +1,43 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
-import { Request } from 'express';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { Roles } from '../common/decorators/roles.decorator';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthGuard)
-  @Get('userdata')
-  getUserData(@Req() req: Request) {
-    return this.usersService.getUserData(req.user);
+  @Post()
+  @Roles('Admin')
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
-  @Get('user-verwaltung')
-  getAllUsersForAdmin() {
-    return this.usersService.getAllUsers();
+  @Get()
+  @Roles('Admin')
+  findAll() {
+    return this.usersService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin')
-  @Post('user-verwaltung')
-  createUser(@Body() createUserDto: any) {
-    return this.usersService.createUser(createUserDto);
+  @Get(':id')
+  @Roles('Admin')
+  findOne(@Param('id') id: string) {
+    return this.usersService.findById(id);
+  }
+
+  @Patch(':id')
+  @Roles('Admin')
+  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(id, updateUserDto);
+  }
+
+  @Delete(':id')
+  @Roles('Admin')
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(id);
   }
 }

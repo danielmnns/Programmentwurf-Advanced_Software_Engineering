@@ -1,23 +1,24 @@
-import { Body, Controller, HttpCode, HttpStatus, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, HttpCode, Post, Req, UseGuards } from '@nestjs/common';
 import { Request } from 'express';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
-@Controller('auth')
+@Controller()
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  @HttpCode(HttpStatus.OK)
-  async login(@Body() loginDto: LoginDto) {
-    return this.authService.login(loginDto);
+  @UseGuards(LocalAuthGuard)
+  @HttpCode(200)
+  async login(@Req() req: Request) {
+    return this.authService.login(req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Post('logout')
-  async logout(@Req() req: Request) {
-    return this.authService.logout(req.user);
+  @Post('register')
+  async register(@Body() createUserDto: CreateUserDto) {
+    return this.authService.register(createUserDto);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -31,5 +32,20 @@ export class AuthController {
       body.currentPassword,
       body.newPassword
     );
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('user/userdata')
+  getUserData(@Req() req: Request) {
+    return this.authService.getUserData(req.user);
+  }
+
+  @Post('logout')
+  @HttpCode(200)
+  async logout() {
+    return {
+      success: true,
+      message: 'Erfolgreich ausgeloggt',
+    };
   }
 }

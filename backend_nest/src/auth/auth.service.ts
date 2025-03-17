@@ -1,109 +1,101 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { RolesService } from '../roles/roles.service';
-import { User, UserDocument } from '../users/schemas/user.schema';
+import * as bcrypt from 'bcrypt';
+import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
-import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private jwtService: JwtService,
-    private usersService: UsersService,
-    private rolesService: RolesService,
+    private readonly usersService: UsersService,
+    private readonly jwtService: JwtService,
   ) {}
 
-  async login(loginDto: LoginDto) {
-    const { username, password } = loginDto;
+  async validateUser(username: string, password: string): Promise<any> {
+    const user = await this.usersService.findByUsername(username);
     
-    // Benutzer finden
-    const user = await this.userModel
-      .findOne({ username })
-      .populate('roles')
-      .exec();
-      
-    if (!user) {
-      throw new NotFoundException('Benutzer nicht gefunden');
+    if (user && await bcrypt.compare(password, user.password)) {
+      const { password, ...result } = user.toObject();
+      return result;
     }
     
-    // Passwort überprüfen
-    const isPasswordValid = await user.comparePassword(password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Ungültige Anmeldedaten');
-    }
+    return null;
+  }
+
+  async login(user: any) {
+    const payload = { 
+      sub: user._id, 
+      username: user.username,
+      userType: user.role 
+    };
     
-    // Prüfen, ob der Benutzer bereits eingeloggt ist
-    if (user.isOnline) {
-      throw new BadRequestException('Benutzer ist bereits angemeldet');
-    }
-    
-    // Token erstellen
-    const payload = { username: user.username, sub: user._id };
     const token = this.jwtService.sign(payload);
     
-    // Benutzer als online markieren
-    user.isOnline = true;
-    user.lastLogin = new Date();
-    await user.save();
-    
-    // Rollen-Namen abrufen
-    const roleNames = await this.rolesService.getRoleNames(user.roles);
-    
-    // Frontend-kompatibles Format zurückgeben
     return {
       success: true,
       message: 'Login erfolgreich',
-      token,
       user: {
         username: user.username,
-        userType: roleNames.join(', ') || 'student'
+        userType: user.role,
+        token: token,
       }
     };
   }
 
-  async logout(user: any) {
-    if (!user || !user.userId) {
-      throw new UnauthorizedException('Nicht authentifiziert');
+  async register(createUserDto: CreateUserDto) {
+    // Überprüfen, ob Benutzer bereits existiert
+    const existingUser = await this.usersService.findByUsername(createUserDto.username);
+    if (existingUser) {
+      throw new BadRequestException('Benutzername existiert bereits');
     }
     
-    const foundUser = await this.userModel.findById(user.userId);
-    if (!foundUser) {
-      throw new NotFoundException('Benutzer nicht gefunden');
-    }
+    // Benutzer erstellen
+    const createdUser = await this.usersService.create({
+      ...createUserDto,
+      role: createUserDto.role || 'Student',
+    });
     
-    foundUser.isOnline = false;
-    await foundUser.save();
-    
-    return { success: true, message: 'Logout erfolgreich' };
+    return {
+      success: true,
+      message: 'Registrierung erfolgreich',
+      user: {
+        username: createdUser.username,
+        userType: createdUser.role,
+      }
+    };
   }
 
   async changePassword(user: any, currentPassword: string, newPassword: string) {
-    if (!user || !user.userId) {
-      throw new UnauthorizedException('Nicht authentifiziert');
+    const dbUser = await this.usersService.findById(user.userId);
+    
+    if (!dbUser) {
+      throw new UnauthorizedException('Benutzer nicht gefunden');
     }
     
-    if (!currentPassword || !newPassword) {
-      throw new BadRequestException('Aktuelles und neues Passwort erforderlich');
-    }
+    const isPasswordValid = await bcrypt.compare(
+      currentPassword, 
+      dbUser.password
+    );
     
-    const foundUser = await this.userModel.findById(user.userId);
-    if (!foundUser) {
-      throw new NotFoundException('Benutzer nicht gefunden');
-    }
-    
-    // Altes Passwort überprüfen
-    const isPasswordValid = await foundUser.comparePassword(currentPassword);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Aktuelles Passwort ist falsch');
     }
     
-    // Neues Passwort setzen
-    foundUser.password = newPassword;  // Wird durch pre-save Hook gehasht
-    await foundUser.save();
+    await this.usersService.updatePassword(user.userId, newPassword);
     
-    return { success: true, message: 'Passwort erfolgreich geändert' };
+    return {
+      userName: user.username,
+      passwordChangeSuccess: true
+    };
+  }
+
+  async getUserData(user: any) {
+    return {
+      success: true,
+      user: {
+        username: user.username,
+        userType: user.userType,
+      }
+    };
   }
 }
