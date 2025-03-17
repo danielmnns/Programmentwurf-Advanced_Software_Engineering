@@ -1,12 +1,12 @@
 import express, { NextFunction, Request, Response } from 'express';
-import { User as UserType } from '../types/user';
 import {
   deleteUser,
   getAllUsers,
   getUserById,
   getUserTasks,
   updateUser,
-} from '../user/user.controller';
+} from './user.controller';
+import { User as UserType } from './user.type';
 
 const router = express.Router();
 

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from '../user/dto/create-user.dto';
@@ -23,12 +23,53 @@ export class AuthService {
 
   async login(user: any) {
     const payload = { username: user.name, sub: user.id, role: user.role };
+    const token = this.jwtService.sign(payload);
+    
+    // Format an die Erwartungen des Frontends anpassen
     return {
-      access_token: this.jwtService.sign(payload),
+      success: true,
+      message: 'Login erfolgreich',
       user: {
-        id: user.id,
         username: user.name,
-        role: user.role,
+        userType: user.role, // userType statt role für Frontend-Kompatibilität
+        token: token, // token statt access_token
+      },
+    };
+  }
+
+  async changePassword(user: any, currentPassword: string, newPassword: string) {
+    const dbUser = this.userService.findByUsername(user.username);
+    
+    if (!dbUser) {
+      throw new UnauthorizedException('Benutzer nicht gefunden');
+    }
+    
+    const isPasswordValid = await bcrypt.compare(currentPassword, dbUser.password);
+    
+    if (!isPasswordValid) {
+      throw new UnauthorizedException('Aktuelles Passwort ist falsch');
+    }
+    
+    const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    this.userService.update(dbUser.id, {
+      ...dbUser,
+      password: hashedNewPassword,
+    });
+    
+    return {
+      userName: user.username,
+      passwordChangeSuccess: true
+    };
+  }
+
+  async getUserData(user: any) {
+    // Format an die Erwartungen des Frontends anpassen
+    return {
+      success: true,
+      user: {
+        username: user.username,
+        userType: user.role,
+        token: user.token,
       },
     };
   }
@@ -46,11 +87,11 @@ export class AuthService {
     });
 
     return {
-      message: 'User registered successfully',
+      success: true,
+      message: 'Registrierung erfolgreich',
       user: {
-        id: user.id,
         username: user.name,
-        role: user.role,
+        userType: user.role,
       },
     };
   }

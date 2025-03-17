@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { changePassword, login, logout } from '../controllers/authController';
 import { authenticateToken } from '../middleware/auth';
-import { AuthRequestChangePassword, AuthRequestLogin, AuthResponseChangePassword, AuthResponseLogin, AuthResponseLogout } from '../types/auth';
+import { AuthRequestChangePassword, AuthRequestLogin, AuthResponseChangePassword, AuthResponseLogin, AuthResponseLogout } from '../types/auth.type';
 
 const router = Router();
 

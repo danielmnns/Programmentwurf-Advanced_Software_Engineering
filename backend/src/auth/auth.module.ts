@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { UserModule } from '../user/user.module';
+import { UserModule } from '../user/user.module'; // Korrigiert von user.model zu user.module
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
@@ -12,7 +12,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     UserModule,
     PassportModule,
     JwtModule.register({
-      secret: 'lms-secret-key', // In der Produktion: Verwende Umgebungsvariablen!
+      secret: 'lms-secret-key', // In der Produktion: Umgebungsvariablen verwenden
       signOptions: { expiresIn: '1d' },
     }),
   ],

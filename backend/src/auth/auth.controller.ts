@@ -1,9 +1,10 @@
-import { Body, Controller, Post, UseGuards, Request, HttpCode } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { LocalAuthGuard } from './guards/local-auth.guard';
+import { Body, Controller, Get, HttpCode, Post, Request, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from '../user/dto/create-user.dto';
+import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -19,10 +20,22 @@ export class AuthController {
     return this.authService.login(req.user);
   }
   
+  @Post('change-password')
+  @UseGuards(JwtAuthGuard)
+  @HttpCode(200)
+  async changePassword(@Request() req, @Body() body: { userName: string; password: string; newPassword: string }) {
+    return this.authService.changePassword(req.user, body.password, body.newPassword);
+  }
+  
   @Post('logout')
   @HttpCode(200)
   async logout() {
-    // In einer Token-basierten Auth muss der Client den Token löschen
-    return { message: 'Logout successful' };
+    return { success: true, message: 'Logout successful' };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('user/userdata')
+  getUserData(@Request() req) {
+    return this.authService.getUserData(req.user);
   }
 }

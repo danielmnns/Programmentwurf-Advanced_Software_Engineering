@@ -1,23 +1,22 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  // CORS aktivieren für Frontend-Kommunikation
+  // CORS aktivieren
   app.enableCors({
     origin: 'http://localhost:4200',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
   
-  // Globale Prefix für alle API-Endpunkte
+  // API-Präfix ist nur "api", nicht "api/auth" wie standardmäßig für AuthModule
   app.setGlobalPrefix('api');
   
-  // Validierung für alle eingehenden Requests
   app.useGlobalPipes(new ValidationPipe());
   
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
