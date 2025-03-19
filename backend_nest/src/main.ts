@@ -5,24 +5,22 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  // Globale Präfix für alle Routen
-  app.setGlobalPrefix('api');
+    app.setGlobalPrefix('api');
+  
+  // CORS für das Angular-Frontend konfigurieren
+  app.enableCors({
+    origin: 'http://localhost:4200',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    credentials: true,
+  });
   
   // Validierung für DTOs aktivieren
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true,
-    forbidNonWhitelisted: true,
     transform: true
   }));
   
-  // CORS für das Angular-Frontend konfigurieren
-  app.enableCors({
-    origin: 'http://localhost:4200', // URL des Frontend-Projekts
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true,
-  });
-  
   await app.listen(3000);
-  console.log(`Application is running on: ${await app.getUrl()}`);
+  console.log(`Application is running on: http://localhost:3000/api`);
 }
 bootstrap();

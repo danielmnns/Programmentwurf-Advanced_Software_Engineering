@@ -1,20 +1,25 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto } from '../users/dto/create-user.dto';
 import { UsersService } from '../users/users.service';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly usersService: UsersService,
-    private readonly jwtService: JwtService,
+    private usersService: UsersService,
+    private jwtService: JwtService
   ) {}
 
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.usersService.findByUsername(username);
     
-    if (user && await bcrypt.compare(password, user.password)) {
+    if (!user) {
+      return null;
+    }
+    
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    
+    if (isPasswordValid) {
       const { password, ...result } = user.toObject();
       return result;
     }
@@ -23,79 +28,51 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { 
-      sub: user._id, 
-      username: user.username,
-      userType: user.role 
+    const payload = {
+      username: user.username, 
+      sub: user._id,
+      role: user.userType // wichtig für Rollenbasierte Zugriffskontrolle
     };
     
     const token = this.jwtService.sign(payload);
     
+    // Aktualisiere den Token im Benutzer-Dokument
+    await this.usersService.updateToken(user._id, token);
+    
     return {
-      success: true,
-      message: 'Login erfolgreich',
-      user: {
-        username: user.username,
-        userType: user.role,
-        token: token,
-      }
+      access_token: token,
     };
   }
 
-  async register(createUserDto: CreateUserDto) {
-    // Überprüfen, ob Benutzer bereits existiert
-    const existingUser = await this.usersService.findByUsername(createUserDto.username);
-    if (existingUser) {
-      throw new BadRequestException('Benutzername existiert bereits');
-    }
-    
-    // Benutzer erstellen
-    const createdUser = await this.usersService.create({
-      ...createUserDto,
-      role: createUserDto.role || 'Student',
+  async register(registerDto: any) {
+    return this.usersService.create({
+      username: registerDto.username,
+      password: registerDto.password,
+      email: registerDto.email,
+      userType: 'student' // Standardrolle für neue Benutzer
     });
-    
-    return {
-      success: true,
-      message: 'Registrierung erfolgreich',
-      user: {
-        username: createdUser.username,
-        userType: createdUser.role,
-      }
-    };
   }
 
-  async changePassword(user: any, currentPassword: string, newPassword: string) {
-    const dbUser = await this.usersService.findById(user.userId);
+  async logout(userId: string) {
+    return this.usersService.updateToken(userId, null);
+  }
+
+  async changePassword(username: string, oldPassword: string, newPassword: string) {
+    const user = await this.usersService.findByUsername(username);
     
-    if (!dbUser) {
+    if (!user) {
       throw new UnauthorizedException('Benutzer nicht gefunden');
     }
     
-    const isPasswordValid = await bcrypt.compare(
-      currentPassword, 
-      dbUser.password
-    );
+    const isPasswordValid = await bcrypt.compare(oldPassword, user.password);
     
     if (!isPasswordValid) {
       throw new UnauthorizedException('Aktuelles Passwort ist falsch');
     }
     
-    await this.usersService.updatePassword(user.userId, newPassword);
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    await this.usersService.updatePassword(user._id, hashedPassword);
     
-    return {
-      userName: user.username,
-      passwordChangeSuccess: true
-    };
-  }
-
-  async getUserData(user: any) {
-    return {
-      success: true,
-      user: {
-        username: user.username,
-        userType: user.userType,
-      }
-    };
+    return { passwordChangeSuccess: true };
   }
 }

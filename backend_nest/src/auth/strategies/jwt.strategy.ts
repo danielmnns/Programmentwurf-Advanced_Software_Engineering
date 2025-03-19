@@ -1,24 +1,24 @@
-jwt.strategy.ts
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { UsersService } from '../../users/users.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private configService: ConfigService) {
+  constructor(private usersService: UsersService) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('jwt.secret'),
+      secretOrKey: process.env.JWT_SECRET || 'lms-secret-key',
     });
   }
 
   async validate(payload: any) {
-    return { 
-      userId: payload.sub,
+    // Das userType-Feld wird beim Login im auth.service.ts gesetzt
+    return {
+      id: payload.sub,
       username: payload.username,
-      userType: payload.userType 
+      userType: payload.role,  
     };
   }
 }
