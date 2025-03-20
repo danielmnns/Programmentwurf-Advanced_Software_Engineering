@@ -1,13 +1,12 @@
-\tasks.module.ts
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { TasksController } from './tasks.controller';
-import { TasksService } from './tasks.service';
-import { Task, TaskSchema } from './schemas/task.schema';
-import { Submission, SubmissionSchema } from './schemas/submission.schema';
 import { MulterModule } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
+import { Submission, SubmissionSchema } from './schemas/submission.schema';
+import { Task, TaskSchema } from './schemas/task.schema';
+import { TasksController } from './tasks.controller';
+import { TasksService } from './tasks.service';
 
 @Module({
   imports: [

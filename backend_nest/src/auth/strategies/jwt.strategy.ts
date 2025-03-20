@@ -14,7 +14,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    // Das userType-Feld wird beim Login im auth.service.ts gesetzt
     return {
       id: payload.sub,
       username: payload.username,

@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import * as bcrypt from 'bcrypt';
-import { Document, Schema as MongooseSchema } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export type UserDocument = User & Document;
 
@@ -12,65 +12,40 @@ export class User {
   @Prop({ required: true })
   password: string;
 
-  @Prop({ required: true })
+  @Prop()
   email: string;
 
-  @Prop({ default: '' })
+  @Prop()
   firstName: string;
 
-  @Prop({ default: '' })
+  @Prop()
   lastName: string;
 
-  @Prop({ type: [{ type: MongooseSchema.Types.ObjectId, ref: 'Role' }] })
-  roles: MongooseSchema.Types.ObjectId[];
+  @Prop({ enum: ['admin', 'studiengangsleiter', 'dozent', 'student'], default: 'student' })
+  userType: string;
+
+  @Prop()
+  token: string;
 
   @Prop({ default: false })
   isOnline: boolean;
 
-  @Prop({ default: Date.now })
-  lastLogin: Date;
-
-  @Prop({ default: Date.now })
-  createdAt: Date;
-
-  @Prop({ default: Date.now })
-  updatedAt: Date;
-
-  @Prop({ default: null })
-  profileImage: string;
-
-  @Prop({
-    type: {
-      language: { type: String, default: 'de' },
-      theme: { type: String, default: 'light' }
-    },
-    default: { language: 'de', theme: 'light' }
-  })
+  @Prop({ type: Object })
   settings: {
     language: string;
     theme: string;
   };
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Role' }] })
+  roles: Types.ObjectId[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
-// Pre-save hook zum Hashen des Passworts
+// Pre-save Hook zum Hashen des Passworts
 UserSchema.pre('save', async function(next) {
-  const user = this as UserDocument;
-
-  // Nur hashen, wenn das Passwort geändert wurde
-  if (!user.isModified('password')) return next();
-
-  try {
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
-    next();
-  } catch (error) {
-    next(error);
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, 10);
   }
+  next();
 });
-
-// Methode zum Vergleichen von Passwörtern
-UserSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
-  return bcrypt.compare(candidatePassword, this.password);
-};

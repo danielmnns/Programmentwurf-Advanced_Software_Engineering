@@ -37,7 +37,7 @@ export class AuthService {
     const token = this.jwtService.sign(payload);
     
     // Aktualisiere den Token im Benutzer-Dokument
-    await this.usersService.updateToken(user._id, token);
+    await this.usersService.updateToken(user._id.toString(), token);
     
     return {
       access_token: token,
@@ -71,7 +71,8 @@ export class AuthService {
     }
     
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    await this.usersService.updatePassword(user._id, hashedPassword);
+    // Korrektur hier: toString() verwenden, um _id in einen String zu konvertieren
+    await this.usersService.updatePassword(user._id.toString(), hashedPassword);
     
     return { passwordChangeSuccess: true };
   }

@@ -1,6 +1,5 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -60,16 +59,22 @@ export class UsersService {
     return updatedUser;
   }
 
-  async updatePassword(id: string, newPassword: string): Promise<void> {
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    const updatedUser = await this.userModel
-      .findByIdAndUpdate(id, { password: hashedPassword })
-      .exec();
-      
-    if (!updatedUser) {
-      throw new NotFoundException(`Benutzer mit ID ${id} nicht gefunden`);
-    }
+  async updatePassword(userId: string, hashedPassword: string): Promise<User> {
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      { password: hashedPassword },
+      { new: true }
+    ).exec();
   }
+
+  async updateToken(userId: string, token: string | null): Promise<User> {
+    return this.userModel.findByIdAndUpdate(
+      userId,
+      { token },
+      { new: true }
+    ).exec();
+  }
+
 
   async remove(id: string): Promise<void> {
     const result = await this.userModel.deleteOne({ _id: id }).exec();
