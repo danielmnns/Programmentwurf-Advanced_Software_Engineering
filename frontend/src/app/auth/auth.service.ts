@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { LoginResponse } from '../models/login-response.model';
@@ -34,7 +34,7 @@ export class AuthService {
   login(username: string, password: string): Observable<LoginResponse> {
     console.log('AuthService: Login gestartet');
     const payload = { username, password };
-    return this.http.post<LoginResponse>('http://localhost:3000/api/login', payload).pipe(
+    return this.http.post<LoginResponse>('http://localhost:3000/api/auth/login', payload).pipe(
       tap((response) => {
         console.log('AuthService: Login-Antwort erhalten', response);
 

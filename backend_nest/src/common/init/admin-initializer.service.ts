@@ -1,6 +1,5 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { User, UserDocument } from '../../users/schemas/user.schema';
 
@@ -20,11 +19,10 @@ export class AdminInitializerService implements OnModuleInit {
     const adminExists = await this.userModel.findOne({ username: 'admin' }).exec();
     
     if (!adminExists) {
-      const hashedPassword = await bcrypt.hash('admin', 10);
       
       const adminUser = new this.userModel({
         username: 'admin',
-        password: hashedPassword,
+        password: 'admin',
         email: 'admin@example.com',
         firstName: 'Admin',
         lastName: 'User',
