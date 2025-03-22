@@ -1,28 +1,36 @@
-import { Component, OnInit } from '@angular/core';
-import { CourseService } from '../services/course.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../auth/auth.service';  // Importiere den AuthService
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { AuthService } from '../auth/auth.service';
+import { CourseService } from '../services/course.service';
 
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
   styleUrls: ['./admin-dashboard.component.css']
 })
-export class AdminDashboardComponent implements OnInit {
+export class AdminDashboardComponent implements OnInit, OnDestroy {
   courses: any[] = [];
-  isAdmin: boolean = false; // Variable für die Admin-Prüfung
-  showAddCourseModal: boolean = false; // Flag für das Hinzufügen-Fenster
-  newCourseTitle: string = ''; // Eingabe für den neuen Kursnamen
+  isAdmin: boolean = false;
+  showAddCourseModal: boolean = false;
+  newCourseTitle: string = '';
+  private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private courseService: CourseService,
     private router: Router,
-    private authService: AuthService  // AuthService zur Benutzertyp-Prüfung
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
     this.loadCourses();
-    this.checkAdmin();  // Überprüfe, ob der Benutzer Admin ist
+    this.checkAdmin();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   loadCourses(): void {
@@ -40,7 +48,7 @@ export class AdminDashboardComponent implements OnInit {
   // Modal schließen
   closeAddCourseModal(): void {
     this.showAddCourseModal = false;
-    this.newCourseTitle = ''; // Eingabe zurücksetzen
+    this.newCourseTitle = '';
   }
 
   // Kurs hinzufügen
@@ -50,13 +58,14 @@ export class AdminDashboardComponent implements OnInit {
       return;
     }
   
-    const newCourse = { title: this.newCourseTitle }; // Kursdaten
+    const kursName = this.newCourseTitle; // Kursnamen für die Nachricht sichern
+    const newCourse = { title: kursName };
+    
     this.courseService.addCourse(newCourse).subscribe(
       (response) => {
-        // Backend gibt den neuen Kurs zurück
-        this.courses.push(response); // Füge den Kurs zur Liste hinzu
-        this.closeAddCourseModal(); // Modal schließen
-        alert(`Kurs "${this.newCourseTitle}" wurde erfolgreich hinzugefügt.`);
+        this.courses.push(response);
+        alert(`Kurs "${kursName}" wurde erfolgreich hinzugefügt.`);
+        this.closeAddCourseModal();
       },
       (error) => {
         console.error('Fehler beim Hinzufügen des Kurses:', error);
@@ -64,7 +73,6 @@ export class AdminDashboardComponent implements OnInit {
       }
     );
   }
-  
 
   // Methode zur Admin-Prüfung
   checkAdmin(): void {
@@ -72,33 +80,34 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   navigateToCourse(courseName: string): void {
-    // Navigation zur Kursseite mit Kursnamen in der URL
     this.router.navigate(['/user-kurs', encodeURIComponent(courseName)]);
   }
 
   navigateToAdminKurs(courseName: string): void {
-    // Navigation zur Admin-Kurs-Seite
     this.router.navigate(['/admin-kurs', encodeURIComponent(courseName)]);
   }
 
   // Methode zur Navigation zur User-Verwaltung
   navigateToUserVerwaltung(): void {
-    this.router.navigate(['/user-verwaltung']);  // Hier zur User-Verwaltung navigieren
+    this.router.navigate(['/user-verwaltung']);
   }
 
-  deleteCourse(courseTitle: string): void {
-    if (confirm(`Möchten Sie den Kurs "${courseTitle}" wirklich löschen?`)) {
-      this.courseService.deleteCourse(courseTitle).subscribe(
-        (response) => {
-          // Kurs erfolgreich gelöscht, die Liste aktualisieren
-          this.courses = this.courses.filter(course => course.title !== courseTitle);
-          alert(`Kurs "${courseTitle}" wurde erfolgreich gelöscht.`);
-        },
-        (error) => {
-          console.error('Fehler beim Löschen des Kurses:', error);
-          alert(`Fehler beim Löschen des Kurses "${courseTitle}".`);
-        }
-      );
+  deleteCourse(course: any): void {
+    if (!course._id) {
+      console.error('Kurs hat keine ID');
+      return;
     }
+  
+    this.courseService.deleteCourse(course._id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          console.log(`Kurs mit ID ${course._id} erfolgreich gelöscht`);
+          this.loadCourses();
+        },
+        error: (error) => {
+          console.error('Fehler beim Löschen des Kurses:', error);
+        }
+      });
   }
 }

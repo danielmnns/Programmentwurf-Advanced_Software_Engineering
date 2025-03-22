@@ -76,10 +76,19 @@ export class UsersService {
   }
 
 
-  async remove(id: string): Promise<void> {
-    const result = await this.userModel.deleteOne({ _id: id }).exec();
+  async remove(username: string): Promise<void> {
+    const result = await this.userModel.deleteOne({ username }).exec();
+    
     if (result.deletedCount === 0) {
-      throw new NotFoundException(`Benutzer mit ID ${id} nicht gefunden`);
+      throw new NotFoundException(`Benutzer mit Name "${username}" nicht gefunden`);
+    }
+  }
+
+  async removeById(id: number): Promise<void> {
+    const result = await this.userModel.findByIdAndDelete(id).exec();
+    
+    if (!result) {
+      throw new NotFoundException(`Benutzer mit ID "${id}" nicht gefunden`);
     }
   }
 }

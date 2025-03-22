@@ -147,4 +147,12 @@ export class CoursesService {
     
     return { message: 'Aufgabe erfolgreich zum Kurs hinzugefügt' };
   }
+
+  async findCourseByName(name: string): Promise<Course> {
+    const course = await this.courseModel.findOne({ name }).exec();
+    if (!course) {
+      throw new NotFoundException(`Kurs mit Namen "${name}" nicht gefunden`);
+    }
+    return course;
+  }
 }

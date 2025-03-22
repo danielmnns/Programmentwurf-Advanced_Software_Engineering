@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -25,6 +25,79 @@ export class UsersController {
     };
   }
 
+  @Get('admin/user-verwaltung')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin', 'studiengangsleiter')
+async getUsersForAdmin() {
+  const users = await this.usersService.findAll();
+  return users.map(user => ({
+    user: {
+      username: user.username,
+      userType: user.userType,
+      token: user.token || null
+    }
+  }));
+}
+
+@Post('admin/user-verwaltung')
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles('admin', 'studiengangsleiter')
+async updateUserFromAdmin(@Body() updateData: any) {
+  try {
+    // Prüfen, welche Operation durchgeführt werden soll
+    if (updateData.operation === 'updateUserType') {
+      // Benutzerrolle aktualisieren
+      const { username, newUserType } = updateData;
+      const user = await this.usersService.findByUsername(username);
+      
+      if (!user) {
+        throw new NotFoundException(`Benutzer ${username} nicht gefunden`);
+      }
+      
+      user.userType = newUserType;
+      await user.save();
+      
+      return {
+        success: true,
+        message: `Benutzertyp für ${username} auf ${newUserType} aktualisiert`
+      };
+    } 
+    else if (updateData.operation === 'deleteUserById') {
+      const { userId } = updateData;
+      await this.usersService.removeById(userId);
+      
+      return {
+        success: true,
+        message: `Benutzer mit ID ${userId} wurde gelöscht`
+      };
+    }
+    else if (updateData.operation === 'createUser') {
+      const newUser = await this.usersService.create({
+        username: updateData.username,
+        password: updateData.password,
+        userType: updateData.userType || 'student'
+      });
+      
+      return {
+        success: true,
+        message: `Benutzer ${newUser.username} wurde erstellt`,
+        user: {
+          username: newUser.username,
+          userType: newUser.userType
+        }
+      };
+    }
+    else {
+      throw new BadRequestException('Unbekannte Operation');
+    }
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message
+    };
+  }
+}
+
   // Alle Benutzer abrufen (für Adminbereich)
   @Get('users')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -32,7 +105,8 @@ export class UsersController {
   async findAll() {
     const users = await this.usersService.findAll();
     return users.map(user => ({
-      user: {
+      user: {   
+        _id: user._id,
         username: user.username,
         userType: user.userType,
         token: user.token || null

@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -23,9 +23,8 @@ export class CourseService {
     return this.http.get<any>(url);
   }
   
-  deleteCourse(courseTitle: string): Observable<void> {
-    return this.http.
-    delete<void>(`${this.apiUrl}/${encodeURIComponent(courseTitle)}`);
+  deleteCourse(courseId: string): Observable<any> {
+    return this.http.delete(`${this.apiUrl}/${courseId}`);
   }
 
   addCourse(course: { title: string }): Observable<any> {

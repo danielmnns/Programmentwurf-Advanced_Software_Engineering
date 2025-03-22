@@ -5,5 +5,6 @@ export interface LoginResponse {
       userType: string; // Rolle des Benutzers (admin, student, etc.)
       token: string; // Authentifizierungstoken
     };
+    token?: string;
     message?: string; // Optionale Fehlermeldung oder Info
   }

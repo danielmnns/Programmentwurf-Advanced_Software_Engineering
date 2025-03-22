@@ -74,4 +74,29 @@ export class CoursesController {
   async deleteCourse(@Param('id') id: string) {
     return this.coursesService.remove(id);
   }
+  
+
+  @Get('user-verwaltung')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'studiengangsleiter')
+  async getCoursesForUserManagement() {
+    const courses = await this.coursesService.findAll();
+    return courses.map((course, index) => ({
+      id: index + 1,
+      courseName: course.title,
+      participants: course.participants || []
+    }));
+  }
+
+  // Zusätzlich für courseName-basierte Suche
+  @Get('user-kurs')
+  @UseGuards(JwtAuthGuard)
+  async getCourseByName(@Query('courseName') courseName: string) {
+    return this.coursesService.findCourseByName(courseName);
+  }
+
+    @Get('test')
+  async testEndpoint() {
+    return { message: 'Test endpoint working!' };
+  }
 }

@@ -15,10 +15,12 @@
         <input matInput type="password" [(ngModel)]="newUser.password" placeholder="Passwort" />
       </mat-form-field>
 
-      <mat-form-field appearance="fill" class="user-form-field">
+      <mat-form-field>
         <mat-label>Benutzertyp</mat-label>
-        <mat-select [(value)]="newUser.userType">
-          <mat-option *ngFor="let type of userTypes" [value]="type">{{ type }}</mat-option>
+        <mat-select [(ngModel)]="newUser.userType" name="userType" required>
+          <mat-option *ngFor="let type of userTypes" [value]="type.value">
+            {{type.label}}
+          </mat-option>
         </mat-select>
       </mat-form-field>
 
@@ -45,7 +47,7 @@
             <button mat-button color="primary" (click)="updateUserType(user)" class="full-width">
               Bearbeiten
             </button>
-            <button mat-button color="warn" (click)="deleteUser(user.username)" class="full-width">
+            <button mat-button color="warn" (click)="deleteUser(user)" class="full-width">
               Löschen
             </button>
           </td>

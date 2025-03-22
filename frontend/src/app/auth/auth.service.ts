@@ -37,17 +37,19 @@ export class AuthService {
     return this.http.post<LoginResponse>('http://localhost:3000/api/auth/login', payload).pipe(
       tap((response) => {
         console.log('AuthService: Login-Antwort erhalten', response);
-
-        if (response.success && response.user) {
+  
+        if (response.success) {
           this.loggedIn = true;
-          this.userName = response.user.username || null;
-          this.userType = response.user.userType || null;
-          this.token = response.user.token || null;
-
+          this.userName = response.user?.username || null;
+          this.userType = response.user?.userType || null;
+          this.token = response.token || null;  
+  
+          console.log('Token wird gespeichert:', this.token);
+          
           localStorage.setItem('token', this.token || '');
           localStorage.setItem('userType', this.userType || '');
           localStorage.setItem('userName', this.userName || '');
-
+  
           this.userDataService.fetchUserData().subscribe();
         } else {
           this.loggedIn = false;
@@ -81,7 +83,7 @@ export class AuthService {
 
   changePassword(payload: { userName: string | null; password: string; newPassword: string }): Observable<{ passwordChangeSuccess: boolean }> {
     console.log('AuthService: Passwortänderung gestartet');
-    return this.http.post<{ passwordChangeSuccess: boolean }>('http://localhost:3000/api/change-password', payload).pipe(
+    return this.http.post<{ passwordChangeSuccess: boolean }>('http://localhost:3000/api/auth/Schange-password', payload).pipe(
       tap((response) => {
         console.log('AuthService: Passwortänderung-Antwort erhalten', response);
       })
