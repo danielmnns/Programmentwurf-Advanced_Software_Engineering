@@ -1,8 +1,8 @@
 // src/app/user-kurs/user-kurs.component.ts
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ActivatedRoute, Router } from '@angular/router';
 
 /* Interfaces direkt in der Datei definiert */
 export interface DocumentFile {
@@ -90,7 +90,7 @@ export class KursComponent implements OnInit, OnDestroy {
   }
 
   loadCourseData(): void {
-    const url = `${this.apiUrl}/user-kurs`;
+    const url = `${this.apiUrl}/user-kurs?courseName=${encodeURIComponent(this.courseName)}`;
     this.http.get(url).subscribe(
       (response: any) => {
         // Kursinformationen
@@ -204,7 +204,7 @@ export class KursComponent implements OnInit, OnDestroy {
       console.error('Fehler: Datei konnte nicht gefunden werden');
     }
   }
-  
+
   deleteFile(): void {
     if (this.fileToDelete && this.fileToDeleteIndex !== null) {
       const payload = {

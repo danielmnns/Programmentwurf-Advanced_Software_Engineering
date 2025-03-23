@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule, SafeResourceUrl } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'; // Pflicht für Angular Material
+import { A11yModule } from '@angular/cdk/a11y';
+
 
 // Angular Material Module Imports
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -21,6 +23,9 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
+
+
 
 import { AccountComponent } from './account/account.component';
 import { AdminAufgabeComponent } from './admin-aufgabe/admin-aufgabe.component';
@@ -76,7 +81,9 @@ import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.compo
     MatIconModule,
     MatToolbarModule,
     MatCheckboxModule,
-    MatDividerModule
+    MatDividerModule,
+    MatTooltipModule,
+    A11yModule
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }],
   bootstrap: [AppComponent]

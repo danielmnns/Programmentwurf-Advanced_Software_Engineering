@@ -148,11 +148,22 @@ export class CoursesService {
     return { message: 'Aufgabe erfolgreich zum Kurs hinzugefügt' };
   }
 
-  async findCourseByName(name: string): Promise<Course> {
-    const course = await this.courseModel.findOne({ name }).exec();
+  async updateCourseParticipants(data: {courseName: string, participants: any[]}) {
+    const course = await this.findCourseByName(data.courseName);
+    if (!course) {
+      throw new NotFoundException(`Kurs "${data.courseName}" nicht gefunden`);
+    }
+    
+    course.participants = data.participants;
+    return await course.save();
+  }
+
+  async findCourseByName(name: string): Promise<CourseDocument> {
+    const course = await this.courseModel.findOne({ title: name }).exec();
     if (!course) {
       throw new NotFoundException(`Kurs mit Namen "${name}" nicht gefunden`);
     }
     return course;
   }
+  
 }

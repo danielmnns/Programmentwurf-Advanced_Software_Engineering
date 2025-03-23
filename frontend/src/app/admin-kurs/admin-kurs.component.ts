@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NewTaskDialogComponent } from '../new-task-dialog/new-task-dialog.component';
 
 export interface DocumentFile {
@@ -48,32 +48,32 @@ export class AdminKursComponent implements OnInit {
     this.loadCourseData();
   }
 
+
   loadCourseData(): void {
-    // Hier verwenden wir die gleiche GET-Route wie in der User-Kurs-Seite
     const url = `${this.apiUrl}/user-kurs?courseName=${encodeURIComponent(this.courseName)}`;
     this.http.get(url).subscribe(
       (response: any) => {
-        this.textContent = response.textContent || '';
-        this.participants = response.participants || [];
-        if (response.documents) {
-          this.uploadedDocuments = response.documents.map((doc: any) => ({
-            name: doc.name,
-            url: doc.url
-          }));
-        }
-        if (response.tasks) {
-          this.tasks = response.tasks.map((task: any) => ({
-            taskId: task.taskId || '',
-            name: task.name,
-            description: task.description,
-            documents: task.documents || []
-          }));
-        }
-      },
-      (error) => {
-        console.error('Fehler beim Laden der Kursdaten:', error);
+      this.textContent = response.textContent || '';
+      this.participants = response.participants || [];
+      if (response.documents) {
+        this.uploadedDocuments = response.documents.map((doc: any) => ({
+          name: doc.name,
+          url: doc.url
+        }));
       }
-    );
+      if (response.tasks) {
+        this.tasks = response.tasks.map((task: any) => ({
+          taskId: task.taskId || '',
+          name: task.name,
+          description: task.description,
+          documents: task.documents || []
+        }));
+      }
+    },
+    (error) => {
+      console.error('Fehler beim Laden der Kursdaten:', error);
+    }
+  );
   }
 
   // Methode zum Upload allgemeiner Kursdokumente
@@ -136,7 +136,7 @@ export class AdminKursComponent implements OnInit {
       }
     );
   }
-  
+
 
   // Entfernt ein Dokument aus einer Aufgabe
   removeTaskDocument(task: Task, index: number): void {
@@ -177,5 +177,5 @@ export class AdminKursComponent implements OnInit {
       }
     });
   }
-  
+
 }

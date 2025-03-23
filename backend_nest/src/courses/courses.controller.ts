@@ -88,11 +88,11 @@ export class CoursesController {
     }));
   }
 
-  // Zusätzlich für courseName-basierte Suche
-  @Get('user-kurs')
-  @UseGuards(JwtAuthGuard)
-  async getCourseByName(@Query('courseName') courseName: string) {
-    return this.coursesService.findCourseByName(courseName);
+  @Post('user-verwaltung')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'studiengangsleiter')
+  async manageUsers(@Body() userData: any) {
+    return this.coursesService.updateCourseParticipants(userData);
   }
 
     @Get('test')
