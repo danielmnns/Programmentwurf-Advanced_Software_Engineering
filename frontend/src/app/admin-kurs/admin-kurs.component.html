@@ -1,0 +1,113 @@
+<div class="container">
+  <!-- Hauptbereich: Kursinhalte -->
+  <div class="content">
+    <!-- Kurskopf -->
+    <mat-card class="course-header">
+      <mat-card-title>{{ courseName }}</mat-card-title>
+      <mat-card-subtitle>
+        <button mat-icon-button (click)="router.navigate(['/user-kurs', courseName])" aria-label="Zur Benutzeransicht wechseln">
+          <mat-icon></mat-icon>
+        </button>
+      </mat-card-subtitle>
+    </mat-card>
+
+    <!-- Textbereich -->
+    <mat-card class="section-card">
+      <mat-card-title>Text</mat-card-title>
+      <mat-card-content>
+        <mat-form-field appearance="outline" class="full-width">
+          <textarea matInput placeholder="Kurstext hier eingeben" [(ngModel)]="textContent"></textarea>
+        </mat-form-field>
+        <div class="button-container">
+          <button mat-flat-button color="primary" (click)="updateText()">
+            💾 Text speichern
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Dokumente des Kurses -->
+    <mat-card class="section-card">
+      <mat-card-title>Dokumente</mat-card-title>
+      <mat-card-content>
+        <div class="upload-section">
+          <input type="file" #docInput hidden accept="application/pdf" (change)="handleDocumentUpload($event)" />
+          <button mat-stroked-button color="primary" (click)="docInput.click()">
+            ➕ Dokument hinzufügen
+          </button>
+        </div>
+        <mat-list>
+          <mat-list-item *ngFor="let doc of uploadedDocuments">
+            <a [href]="doc.url" target="_blank">{{ doc.name }}</a>
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Aufgabenbereich -->
+    <mat-card class="section-card">
+      <mat-card-title>Aufgaben</mat-card-title>
+      <mat-card-content>
+        <div class="task-list">
+          <mat-card *ngFor="let task of tasks" class="task-card">
+            <mat-card-content>
+              <mat-form-field appearance="outline" class="full-width">
+                <input matInput placeholder="Aufgabenname" [(ngModel)]="task.name" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="full-width">
+                <textarea matInput placeholder="Aufgabenbeschreibung" [(ngModel)]="task.description"></textarea>
+              </mat-form-field>
+              <!-- Dokumente innerhalb der Aufgabe -->
+              <div class="task-documents" *ngIf="(task.documents || []).length > 0">
+                <h4>Dokumente</h4>
+                <mat-list>
+                  <mat-list-item *ngFor="let d of (task.documents || []); let i = index">
+                    <span>{{ d.name }}</span>
+                    <button mat-icon-button color="warn" (click)="removeTaskDocument(task, i)" aria-label="Dokument entfernen">
+                      ❌
+                    </button>
+                  </mat-list-item>
+                </mat-list>
+              </div>
+              <!-- Datei-Upload für neue Dokumente in der Aufgabe -->
+              <div class="upload-section">
+                <input type="file" #taskDocInput hidden accept="application/pdf" (change)="addTaskDocument(task, $event)" />
+                <button mat-stroked-button color="accent" (click)="taskDocInput.click()">
+                  ➕ Dokument hinzufügen
+                </button>
+              </div>
+            </mat-card-content>
+            <mat-card-actions class="task-actions">
+              <button mat-flat-button color="primary" (click)="updateTask(task)">
+                💾 Speichern
+              </button>
+              <button mat-flat-button color="warn" (click)="deleteTask(task)">
+                🗑️ Löschen
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+        <!-- Button zum Hinzufügen einer neuen Aufgabe -->
+        <div class="add-task-container">
+          <button mat-button color="primary" (click)="openNewTaskDialog()">
+            ➕ Neue Aufgabe hinzufügen
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Teilnehmerliste -->
+  <div class="teilnehmer">
+    <mat-card>
+      <mat-card-title>Teilnehmer</mat-card-title>
+      <mat-card-content>
+        <mat-list>
+          <mat-list-item *ngFor="let participant of participants">
+            {{ participant }}
+          </mat-list-item>
+        </mat-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
