@@ -1,5 +1,5 @@
 import { A11yModule } from '@angular/cdk/a11y';
-import { HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient, withInterceptors } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -41,8 +41,10 @@ import { KursComponent } from './user-kurs/user-kurs.component';
 import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.component';
 
 @NgModule({
-  // Empty declarations since all components are now standalone
-  declarations: [],
+  // AppComponent muss hier deklariert werden, damit sie als bootstrap-Komponente verwendet werden kann
+  declarations: [
+    AppComponent
+  ],
   imports: [
     // Angular core modules
     BrowserModule,
@@ -70,8 +72,7 @@ import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.compo
     MatTooltipModule,
     A11yModule,
 
-    // Import components (they must be marked as standalone in their own files)
-    AppComponent,
+    // Import standalone components
     LoginComponent,
     AdminDashboardComponent,
     UserDashboardComponent,
