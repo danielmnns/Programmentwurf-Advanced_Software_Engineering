@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { CourseService } from '../services/course.service';
 import { AuthService } from '../auth/auth.service';
+import { MatDialog } from '@angular/material/dialog';
 import { EnrollmentDialogComponent } from './enrollment-dialog/enrollment-dialog.component';
 import { Router } from '@angular/router';
 
@@ -40,19 +42,19 @@ export class UserDashboardComponent implements OnInit {
       console.error('Kurs ist nicht verfügbar!');
       return;
     }
-  
+
     const dialogRef = this.dialog.open(EnrollmentDialogComponent, {
       width: '400px',
       data: { course }  // Kurs wird hier korrekt weitergegeben
     });
-  
+
     dialogRef.afterClosed().subscribe((result) => {
       if (result?.success) {
         this.loadCourses();  // Kurse neu laden, falls Einschreibung erfolgreich war
       }
     });
   }
-  
+
   navigateToCourse(courseName: string): void {
     // Navigation zur Kursseite mit Kursnamen in der URL
     this.router.navigate(['/user-kurs', encodeURIComponent(courseName)]);
