@@ -84,7 +84,7 @@
         <button mat-icon-button color="primary" #dialogTrigger
         (click)="openParticipantDialog(course)"
         matTooltip="Teilnehmer verwalten">
-          <mat-icon>people</mat-icon>
+          <mat-icon>🔧</mat-icon>
         </button>
       </td>
     </ng-container>
@@ -107,7 +107,7 @@
           <mat-form-field class="search-field" appearance="outline">
             <mat-label>Teilnehmer suchen</mat-label>
             <input matInput [(ngModel)]="participantSearchTerm" placeholder="Suche">
-            <mat-icon matSuffix>search</mat-icon>
+            <mat-icon matSuffix></mat-icon>
           </mat-form-field>
 
           <mat-selection-list #participantsList [multiple]="true">
@@ -119,7 +119,7 @@
           <div class="action-buttons">
             <button mat-raised-button color="warn" [disabled]="!participantsList.selectedOptions.selected.length"
                     (click)="removeParticipants(participantsList.selectedOptions.selected)">
-              <mat-icon>person_remove</mat-icon> Ausgewählte entfernen
+              <mat-icon></mat-icon> Ausgewählte entfernen
             </button>
           </div>
         </div>
@@ -130,7 +130,7 @@
           <mat-form-field class="search-field" appearance="outline">
             <mat-label>Benutzer suchen</mat-label>
             <input matInput [(ngModel)]="userSearchTerm" placeholder="Suche">
-            <mat-icon matSuffix>search</mat-icon>
+            <mat-icon matSuffix></mat-icon>
           </mat-form-field>
 
           <mat-selection-list #usersList [multiple]="true">
@@ -142,7 +142,7 @@
           <div class="action-buttons">
             <button mat-raised-button color="primary" [disabled]="!usersList.selectedOptions.selected.length"
                     (click)="addParticipants(usersList.selectedOptions.selected)">
-              <mat-icon>person_add</mat-icon> Ausgewählte hinzufügen
+              <mat-icon></mat-icon> Ausgewählte hinzufügen
             </button>
           </div>
         </div>
