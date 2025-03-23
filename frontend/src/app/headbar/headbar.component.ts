@@ -1,14 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../auth/auth.service'; // AuthService importieren
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Component } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { Router, RouterModule } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-headbar',
   templateUrl: './headbar.component.html',
-  styleUrls: ['./headbar.component.css']
+  styleUrls: ['./headbar.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatIconModule
+  ]
 })
-export class HeadbarComponent implements OnInit {
+export class HeadbarComponent {
   currentDate: string = '';
   currentTime: string = '';
   userName: string | null = '';
@@ -24,7 +36,7 @@ export class HeadbarComponent implements OnInit {
 
     this.loadUserData();
   }
-  
+
   loadUserData(): void {
     this.http.get('http://localhost:3000/api/user/userdata').subscribe(
       (response: any) => {
@@ -41,7 +53,7 @@ export class HeadbarComponent implements OnInit {
       }
     );
   }
-  
+
     updateDateTime(): void {
     const now = new Date();
     this.currentDate = now.toLocaleDateString();

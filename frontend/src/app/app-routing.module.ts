@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginComponent } from './login/login.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
-import { AuthGuard } from './auth/auth.guard';
+import { authGuard } from './auth/auth.guard';
 import { AccountComponent } from './account/account.component';
 import { KursComponent } from './user-kurs/user-kurs.component';
 import { AdminKursComponent } from './admin-kurs/admin-kurs.component';
@@ -11,24 +11,24 @@ import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.compo
 import { UserAufgabeComponent } from './user-aufgabe/user-aufgabe.component';
 import { AdminAufgabeComponent } from './admin-aufgabe/admin-aufgabe.component';
 
+
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
 
-
   // Admin Dashboard, nur zugänglich für 'admin' und 'studiengangsleiter'
-  { 
-    path: 'admin-dashboard', 
-    component: AdminDashboardComponent, 
-    canActivate: [AuthGuard], 
+  {
+    path: 'admin-dashboard',
+    component: AdminDashboardComponent,
+    canActivate: [authGuard],
     data: { allowedRoles: ['admin', 'studiengangsleiter'] }
   },
 
   // User Dashboard, nur zugänglich für 'dozent' und 'user'
-  { 
-    path: 'user-dashboard', 
-    component: UserDashboardComponent, 
-    canActivate: [AuthGuard], 
+  {
+    path: 'user-dashboard',
+    component: UserDashboardComponent,
+    canActivate: [authGuard],
     data: { allowedRoles: ['dozent', 'student'] }
   },
 
@@ -36,39 +36,39 @@ const routes: Routes = [
   { path: 'account', component: AccountComponent},
 
   // User Kurs, für alle Benutzer zugänglich
-  { 
-    path: 'user-kurs/:courseName', 
-    component: KursComponent, 
-    canActivate: [AuthGuard], 
+  {
+    path: 'user-kurs/:courseName',
+    component: KursComponent,
+    canActivate: [authGuard],
     data: { allowedRoles: ['admin', 'studiengangsleiter', 'dozent', 'student'] }
   },
 
   // Admin Kurs, nur zugänglich für 'admin', 'studiengangsleiter' und 'dozent'
-  { 
-    path: 'admin-kurs/:courseName', 
-    component: AdminKursComponent, 
-    canActivate: [AuthGuard], 
+  {
+    path: 'admin-kurs/:courseName',
+    component: AdminKursComponent,
+    canActivate: [authGuard],
     data: { allowedRoles: ['admin', 'studiengangsleiter', 'dozent'] }
   },
 
   // Route für Studierende: z.B. http://localhost:4200/kursname/aufgabenname
-  { path: ':courseName/:taskName', component: UserAufgabeComponent, 
-    canActivate: [AuthGuard], 
+  { path: ':courseName/:taskName', component: UserAufgabeComponent,
+    canActivate: [authGuard],
     data: { allowedRoles: ['student'] }
    },
 
   // Route für Admin/Dozenten: z.B. http://localhost:4200/admin-aufgabe/kursname/aufgabenname
-  { path: 'admin-aufgabe/:courseName/:taskName', component: AdminAufgabeComponent, 
-    canActivate: [AuthGuard], 
+  { path: 'admin-aufgabe/:courseName/:taskName', component: AdminAufgabeComponent,
+    canActivate: [authGuard],
     data: { allowedRoles: ['admin', 'studiengangsleiter', 'dozent'] } },
 
-  { 
-    path: 'user-verwaltung', 
-    component: UserVerwaltungComponent, 
-    canActivate: [AuthGuard], 
-    data: { allowedRoles: ['admin'] } 
+  {
+    path: 'user-verwaltung',
+    component: UserVerwaltungComponent,
+    canActivate: [authGuard],
+    data: { allowedRoles: ['admin'] }
   },
-  
+
 ];
 
 @NgModule({

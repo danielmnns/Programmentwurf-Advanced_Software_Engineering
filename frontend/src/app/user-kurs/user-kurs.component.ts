@@ -1,31 +1,41 @@
-// src/app/user-kurs/user-kurs.component.ts
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
-/* Interfaces direkt in der Datei definiert */
 export interface DocumentFile {
   name: string;
   url: SafeResourceUrl;
 }
 
 export interface Submission {
-  file: DocumentFile;
-  feedback?: DocumentFile | null;
+  file?: { name: string; url: SafeResourceUrl };
+  feedback?: { text: string };
 }
 
 export interface Task {
   name: string;
   description: string;
-  documents?: DocumentFile[];
-  submissions?: { [username: string]: Submission };
+  documents: DocumentFile[];
+  submissions?: { [key: string]: Submission };
 }
 
 @Component({
   selector: 'app-user-kurs',
   templateUrl: './user-kurs.component.html',
   styleUrls: ['./user-kurs.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatButtonModule,
+    RouterModule
+  ]
 })
 export class KursComponent implements OnInit, OnDestroy {
   userName: string = '';
@@ -173,7 +183,7 @@ export class KursComponent implements OnInit, OnDestroy {
           name: file.name,
           url: this.sanitizer.bypassSecurityTrustResourceUrl(fileUrl),
         },
-        feedback: null,
+        feedback: undefined,
       };
       console.log(`Abgabe für Aufgabe "${task.name}" von ${this.userName} hochgeladen.`);
     }

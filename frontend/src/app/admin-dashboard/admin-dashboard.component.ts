@@ -1,16 +1,34 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms'; // Add this import
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field'; // Add this
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input'; // Add this
+import { Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { AuthService } from '../auth/auth.service';
-import { CourseService } from '../services/course.service';
+import { AuthService } from '../auth/auth.service'; // Adjust the path as necessary
+import { CourseService } from '../services/course.service'; // Adjust the path as necessary
 
 @Component({
   selector: 'app-admin-dashboard',
   templateUrl: './admin-dashboard.component.html',
-  styleUrls: ['./admin-dashboard.component.css']
+  styleUrls: ['./admin-dashboard.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule, // Required for ngModel binding
+    RouterModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatInputModule,
+    MatFormFieldModule
+  ]
 })
-export class AdminDashboardComponent implements OnInit, OnDestroy {
+export class AdminDashboardComponent {
   courses: any[] = [];
   isAdmin: boolean = false;
   showAddCourseModal: boolean = false;
@@ -57,10 +75,10 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       alert('Bitte geben Sie einen Kursnamen ein.');
       return;
     }
-  
+
     const kursName = this.newCourseTitle; // Kursnamen für die Nachricht sichern
     const newCourse = { title: kursName };
-    
+
     this.courseService.addCourse(newCourse).subscribe(
       (response) => {
         this.courses.push(response);
@@ -97,7 +115,7 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
       console.error('Kurs hat keine ID');
       return;
     }
-  
+
     this.courseService.deleteCourse(course._id)
       .pipe(takeUntil(this.destroy$))
       .subscribe({

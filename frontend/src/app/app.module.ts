@@ -1,5 +1,5 @@
 import { A11yModule } from '@angular/cdk/a11y';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule, provideHttpClient, withInterceptors } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -41,7 +41,36 @@ import { KursComponent } from './user-kurs/user-kurs.component';
 import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.component';
 
 @NgModule({
-  declarations: [
+  // Empty declarations since all components are now standalone
+  declarations: [],
+  imports: [
+    // Angular core modules
+    BrowserModule,
+    FormsModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    AppRoutingModule,
+
+    // Material modules
+    MatFormFieldModule,
+    MatListModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatCardModule,
+    MatDialogModule,
+    MatSnackBarModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatCheckboxModule,
+    MatDividerModule,
+    MatTooltipModule,
+    A11yModule,
+
+    // Import components (they must be marked as standalone in their own files)
     AppComponent,
     LoginComponent,
     AdminDashboardComponent,
@@ -55,30 +84,6 @@ import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.compo
     UserAufgabeComponent,
     AdminAufgabeComponent,
     NewTaskDialogComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    MatFormFieldModule,
-    MatListModule,
-    BrowserAnimationsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatCardModule,
-    AppRoutingModule,
-    MatDialogModule,
-    MatSnackBarModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatCheckboxModule,
-    MatDividerModule,
-    MatTooltipModule,
-    A11yModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }

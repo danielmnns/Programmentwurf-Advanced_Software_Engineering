@@ -1,7 +1,15 @@
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule } from '@angular/material/list'; // Add this for mat-list
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { NewTaskDialogComponent } from '../new-task-dialog/new-task-dialog.component';
 
 export interface DocumentFile {
@@ -15,16 +23,24 @@ export interface Task {
   description: string;
   documents: DocumentFile[];
 }
-const defaultTask: Task = {
-  name: '',
-  description: '',
-  documents: []
-};
 
 @Component({
   selector: 'app-admin-kurs',
   templateUrl: './admin-kurs.component.html',
-  styleUrls: ['./admin-kurs.component.css']
+  styleUrls: ['./admin-kurs.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    MatDialogModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatListModule 
+  ]
 })
 export class AdminKursComponent implements OnInit {
   courseName: string = '';

@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router'; // Router importiert
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 interface TaskDetails {
   courseName: string;
@@ -22,7 +26,15 @@ interface TaskDetails {
 @Component({
   selector: 'app-user-aufgabe',
   templateUrl: './user-aufgabe.component.html',
-  styleUrls: ['./user-aufgabe.component.css']
+  styleUrls: ['./user-aufgabe.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatButtonModule,
+    RouterModule
+  ]
 })
 export class UserAufgabeComponent implements OnInit {
   courseName: string = '';
@@ -40,7 +52,7 @@ export class UserAufgabeComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router, // Router im Konstruktor
+    private router: Router,
     private http: HttpClient,
     private sanitizer: DomSanitizer
   ) {}

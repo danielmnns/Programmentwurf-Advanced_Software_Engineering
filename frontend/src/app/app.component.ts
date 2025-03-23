@@ -1,14 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { UserDataService } from './services/userdata.service';
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { AuthService } from './auth/auth.service';
+import { HeadbarComponent } from './headbar/headbar.component';
+import { UserDataService } from './services/userdata.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, HeadbarComponent]
 })
-export class AppComponent implements OnInit {
+export class AppComponent {
   title = 'Saugiels Lernplattform';
 
   constructor(

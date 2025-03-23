@@ -1,13 +1,20 @@
-import { HttpClient } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatDialog, MatDialogRef, DialogPosition } from '@angular/material/dialog';
-import { MatListOption } from '@angular/material/list';
-import { ViewChild, TemplateRef, AfterViewInit, OnDestroy  } from '@angular/core';
 import { FocusMonitor } from '@angular/cdk/a11y';
-import { ElementRef } from '@angular/core';
-
+import { CommonModule } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { Component, ElementRef, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatListModule, MatListOption } from '@angular/material/list';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 
 interface User {
   _id: number;
@@ -23,16 +30,33 @@ interface Course {
 }
 
 interface UserType {
-  value: string;   // Backend-Wert (kleinbuchstaben)
-  label: string;   // Anzeige-Wert (mit Großbuchstaben)
+  value: string;
+  label: string;
 }
 
 @Component({
   selector: 'app-user-verwaltung',
   templateUrl: './user-verwaltung.component.html',
   styleUrls: ['./user-verwaltung.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatTableModule,
+    MatSortModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSelectModule,
+    MatDialogModule,
+    MatListModule,
+    MatIconModule,
+    MatCheckboxModule,
+    MatSnackBarModule
+  ]
 })
-export class UserVerwaltungComponent implements OnInit {
+export class UserVerwaltungComponent implements OnInit, OnDestroy {
   users: User[] = [];
 
   // Korrigierte Benutzertypen als Objekte mit value/label
@@ -106,8 +130,7 @@ export class UserVerwaltungComponent implements OnInit {
     }
   }
 
-  ngOnDestroy() {
-    // Bereinige Fokus-Monitoring beim Zerstören der Komponente
+  ngOnDestroy(): void {
     if (this.dialogTrigger) {
       this.focusMonitor.stopMonitoring(this.dialogTrigger);
     }

@@ -1,18 +1,29 @@
-import { Component, OnInit } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { CourseService } from '../services/course.service';
-import { AuthService } from '../auth/auth.service';
+import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDialogModule } from '@angular/material/dialog';
+import { RouterModule } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
-import { EnrollmentDialogComponent } from './enrollment-dialog/enrollment-dialog.component';
 import { Router } from '@angular/router';
+import { CourseService } from '../services/course.service'; // Adjust the path as necessary
+import { AuthService } from '../auth/auth.service'; // Adjust the path as necessary
+import { EnrollmentDialogComponent } from './enrollment-dialog/enrollment-dialog.component'; // Adjust the path as necessary
 
 @Component({
   selector: 'app-user-dashboard',
   templateUrl: './user-dashboard.component.html',
-  styleUrls: ['./user-dashboard.component.css']
+  styleUrls: ['./user-dashboard.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    MatCardModule,
+    MatButtonModule,
+    MatDialogModule,
+    RouterModule
+  ]
 })
-export class UserDashboardComponent implements OnInit {
+export class UserDashboardComponent {
   courses: any[] = [];
 
   constructor(

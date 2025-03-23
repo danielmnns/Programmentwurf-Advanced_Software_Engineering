@@ -1,12 +1,18 @@
-// account.component.ts
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { AuthService } from '../auth/auth.service';
+import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
-  styleUrls: ['./account.component.css']
+  styleUrls: ['./account.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule
+  ]
 })
 export class AccountComponent {
   userName: string | null = '';

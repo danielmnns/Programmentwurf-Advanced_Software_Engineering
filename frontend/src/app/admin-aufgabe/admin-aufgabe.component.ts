@@ -1,13 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router'; // Für Navigation
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { DomSanitizer } from '@angular/platform-browser';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 interface Submission {
   userName: string;
   file: { name: string; url: string };
   feedback?: { text: string };
-  feedbackText?: string; // Wird für das Eingabefeld genutzt
+  feedbackText?: string;
 }
 
 interface AdminTaskDetails {
@@ -20,14 +26,24 @@ interface AdminTaskDetails {
 @Component({
   selector: 'app-admin-aufgabe',
   templateUrl: './admin-aufgabe.component.html',
-  styleUrls: ['./admin-aufgabe.component.css']
+  styleUrls: ['./admin-aufgabe.component.css'],
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
+    RouterModule
+  ]
 })
 export class AdminAufgabeComponent implements OnInit {
   courseName: string = '';
   taskName: string = '';
   taskDescription: string = '';
   submissions: Submission[] = [];
-  
+
   // Hier den Benutzernamen des Dozenten (Feedbackgeber) angeben
   adminUsername: string = 'DozentAdmin';
 
@@ -35,7 +51,7 @@ export class AdminAufgabeComponent implements OnInit {
   showNotification: boolean = false;
   notificationMessage: string = '';
 
-  // Basis-URL für API-Aufrufe (anpassen, falls nötig)
+  // Basis-URL für API-Aufrufe
   private apiUrl = 'http://localhost:3000/api';
 
   constructor(
