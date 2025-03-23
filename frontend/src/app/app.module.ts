@@ -1,4 +1,4 @@
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule, SafeResourceUrl } from '@angular/platform-browser';
@@ -44,50 +44,42 @@ import { KursComponent } from './user-kurs/user-kurs.component';
 import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.component';
 
 
-@NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    AdminDashboardComponent,
-    UserDashboardComponent,
-    HeadbarComponent,
-    AccountComponent,
-    AdminKursComponent,
-    KursComponent,
-    EnrollmentDialogComponent,
-    UserVerwaltungComponent,
-    UserAufgabeComponent,
-    AdminAufgabeComponent,
-    NewTaskDialogComponent
-
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatListModule,
-    HttpClientModule,
-    BrowserAnimationsModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatCardModule,
-    AppRoutingModule,
-    MatDialogModule,
-    MatSnackBarModule,
-    MatTableModule,
-    MatPaginatorModule,
-    MatSortModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatCheckboxModule,
-    MatDividerModule,
-    MatTooltipModule,
-    A11yModule
-  ],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }],
-  bootstrap: [AppComponent]
-})
+@NgModule({ declarations: [
+        AppComponent,
+        LoginComponent,
+        AdminDashboardComponent,
+        UserDashboardComponent,
+        HeadbarComponent,
+        AccountComponent,
+        AdminKursComponent,
+        KursComponent,
+        EnrollmentDialogComponent,
+        UserVerwaltungComponent,
+        UserAufgabeComponent,
+        AdminAufgabeComponent,
+        NewTaskDialogComponent
+    ],
+    bootstrap: [AppComponent], imports: [BrowserModule,
+        FormsModule,
+        MatFormFieldModule,
+        MatListModule,
+        BrowserAnimationsModule,
+        MatInputModule,
+        MatButtonModule,
+        MatSelectModule,
+        MatCardModule,
+        AppRoutingModule,
+        MatDialogModule,
+        MatSnackBarModule,
+        MatTableModule,
+        MatPaginatorModule,
+        MatSortModule,
+        MatIconModule,
+        MatToolbarModule,
+        MatCheckboxModule,
+        MatDividerModule,
+        MatTooltipModule,
+        A11yModule], providers: [{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }, provideHttpClient(withInterceptorsFromDi())] })
 export class AppModule {}
 
 export interface DocumentFile {
