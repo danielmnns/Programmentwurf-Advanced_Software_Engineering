@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { CourseService } from '../services/course.service';
 import { AuthService } from '../auth/auth.service';
 import { EnrollmentDialogComponent } from './enrollment-dialog/enrollment-dialog.component';

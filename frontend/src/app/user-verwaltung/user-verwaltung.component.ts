@@ -1,9 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatDialog, MatDialogRef, DialogPosition  } from '@angular/material/dialog';
-import { MatListOption } from '@angular/material/list';
+import { MatLegacySnackBar as MatSnackBar } from '@angular/material/legacy-snack-bar';
+import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { MatLegacyDialog as MatDialog, MatLegacyDialogRef as MatDialogRef, LegacyDialogPosition as DialogPosition  } from '@angular/material/legacy-dialog';
+import { MatLegacyListOption as MatListOption } from '@angular/material/legacy-list';
 import { ViewChild, TemplateRef, AfterViewInit, OnDestroy  } from '@angular/core';
 import { FocusMonitor } from '@angular/cdk/a11y';
 import { ElementRef } from '@angular/core';
