@@ -42,12 +42,17 @@ export class CoursesService {
     if (!course) {
       throw new NotFoundException(`Kurs mit dem Namen "${courseName}" nicht gefunden`);
     }
+    
+    console.log('Gefundenes Course-Objekt:', course);
+    console.log('Tasks im Kurs:', course.tasks);
+    
+    // Stellen Sie sicher, dass alle Felder korrekt zurückgegeben werden
     return {
       title: course.title,
       textContent: course.textContent,
-      participants: course.participants,
-      documents: course.documents,
-      tasks: course.tasks
+      participants: course.participants || [],
+      documents: course.documents || [],
+      tasks: course.tasks || []
     };
   }
 
@@ -125,7 +130,10 @@ export class CoursesService {
     return { message: 'Benutzer erfolgreich eingeschrieben' };
   }
 
-  async addTaskToCourse(courseName: string, task: any): Promise<any> {
+  
+  async addTaskToCourse(courseName: string, task: any): Promise<CourseDocument> {
+    console.log("Adding task to course:", courseName, task);
+    
     const course = await this.courseModel.findOne({ title: courseName }).exec();
     
     if (!course) {
@@ -136,16 +144,25 @@ export class CoursesService {
       course.tasks = [];
     }
     
+    // Prüfe die verfügbaren Eigenschaften
+    console.log("Task properties:", Object.keys(task));
+    
     course.tasks.push({
       taskId: task._id.toString(),
       name: task.taskName,
-      description: task.taskDescription,
+      description: task.description || task.taskText || "",  
       documents: task.documents || []
     });
     
-    await course.save();
-    
-    return { message: 'Aufgabe erfolgreich zum Kurs hinzugefügt' };
+    // Explizite Speicherung mit error-handling
+    try {
+      const savedCourse = await course.save();
+      console.log("Course after save - tasks:", savedCourse.tasks);
+      return savedCourse;
+    } catch (error) {
+      console.error("Error saving course:", error);
+      throw error;
+    }
   }
 
   async updateCourseParticipants(data: {courseName: string, participants: any[]}) {

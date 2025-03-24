@@ -197,32 +197,6 @@ async deleteSubmissionForUser(courseName: string, taskName: string, username: st
     return { message: 'Abgabe erfolgreich gelöscht' };
   }
 
-  async addTaskToCourse(courseName: string, task: any): Promise<any> {
-    console.log(`Füge Aufgabe ${task.taskName} zum Kurs ${courseName} hinzu`);
-    
-    // Finde den Kurs in der Datenbank
-    const course = await this.courseModel.findOne({ name: courseName }).exec();
-    
-    if (!course) {
-      throw new NotFoundException(`Kurs ${courseName} nicht gefunden`);
-    }
-    
-    // Prüfe, ob der Kurs bereits ein tasks-Array hat, falls nicht, erstelle eines
-    if (!course.tasks) {
-      course.tasks = [];
-    }
-    
-    // Füge die Task-ID zum Kurs hinzu
-    course.tasks.push(task._id);
-    
-    // Speichere den aktualisierten Kurs
-    await course.save();
-    
-    console.log(`Aufgabe erfolgreich zum Kurs ${courseName} hinzugefügt`);
-    
-    return course;
-  }
-
   async updateTask(taskData: any): Promise<any> {
     const task = await this.taskModel.findOne({
       courseName: taskData.courseName,

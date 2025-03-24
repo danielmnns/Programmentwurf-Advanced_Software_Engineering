@@ -108,13 +108,14 @@ export class KursComponent implements OnInit, OnDestroy {
         this.feedbackContent = response.feedbackContent || '';
         this.participants = response.participants || [];
 
-        // Kursdokumente
-        if (response.documents) {
-          this.uploadedFiles.documents = response.documents.map((doc: any) => ({
-            name: doc.name,
-            url: this.sanitizer.bypassSecurityTrustResourceUrl(doc.url),
-          }));
-        }
+        // Kursdokumente mit absoluten URLs
+      if (response.documents) {
+        this.uploadedFiles.documents = response.documents.map((doc: any) => ({
+          name: doc.name,
+          // Absolute URL verwenden
+          url: this.sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:3000${doc.url}`),
+        }));
+      }
 
         // Allgemeine Abgaben des Kurses
         if (response.abgaben) {
@@ -130,7 +131,8 @@ export class KursComponent implements OnInit, OnDestroy {
             if (task.documents) {
               task.documents = task.documents.map((doc: any) => ({
                 name: doc.name,
-                url: this.sanitizer.bypassSecurityTrustResourceUrl(doc.url),
+                // Absolute URL verwenden
+                url: this.sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:3000${doc.url}`),
               }));
             }
             return task as Task;

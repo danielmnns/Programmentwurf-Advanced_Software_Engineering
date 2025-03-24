@@ -74,9 +74,9 @@ export class AdminAufgabeComponent implements OnInit {
       taskName: this.taskName
     };
 
-    this.http.post<AdminTaskDetails>(`${this.apiUrl}/admin/submissions`, payload).subscribe(
+    this.http.post<AdminTaskDetails>(`${this.apiUrl}/tasks/admin/submissions`, payload).subscribe(
       data => {
-        this.taskDescription = data.taskDescription;
+        this.taskDescription = data.taskDescription;  
         // Initialisiere das Feedback-Eingabefeld mit vorhandenem Feedback oder als leerer String
         this.submissions = data.submissions.map(sub => ({
           ...sub,
@@ -106,7 +106,7 @@ export class AdminAufgabeComponent implements OnInit {
       feedbackBy: this.adminUsername
     };
 
-    this.http.post(`${this.apiUrl}/admin/feedback`, payload).subscribe(
+    this.http.post(`${this.apiUrl}/tasks/admin/feedback`, payload).subscribe(
       response => {
         console.log('Feedback erfolgreich gespeichert', response);
         this.showNotificationPopup('Feedback erfolgreich gespeichert.');
