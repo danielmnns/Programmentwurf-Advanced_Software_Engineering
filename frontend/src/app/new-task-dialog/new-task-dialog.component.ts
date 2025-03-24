@@ -54,8 +54,8 @@ export class NewTaskDialogComponent {
       description: this.taskText
     };
     
-    // Korrigierter API-Pfad - zurück zu /courses/admin/addTask
-    this.http.post(`${this.apiUrl}/admin/addTask`, taskData).subscribe(
+    
+    this.http.post(`${this.apiUrl}/tasks/admin/addTask`, taskData).subscribe(
       (response: any) => {
         alert('Aufgabe erfolgreich erstellt!');
         this.dialogRef.close(true);

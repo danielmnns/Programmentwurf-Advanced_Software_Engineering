@@ -8,21 +8,21 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { CoursesService } from '../courses/courses.service';
 import { TasksService } from './tasks.service';
 
-@Controller('api')
+@Controller('tasks')
 export class TasksController {
   constructor(
     private readonly tasksService: TasksService,
-    private readonly coursesService: CoursesService  // Diese Zeile fehlt!
+    private readonly coursesService: CoursesService 
   ) {}
   // Aufgabendetails abrufen
-  @Get('tasks')
+  @Get()
   @UseGuards(JwtAuthGuard)
   async getTaskDetails(@Body() payload: { courseName: string; taskName: string }, @Req() req) {
     return this.tasksService.getTaskDetailsForStudent(payload.courseName, payload.taskName, req.user.username);
   }
 
   // Abgabe hochladen
-  @Post('tasks/upload')
+  @Post('upload')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
