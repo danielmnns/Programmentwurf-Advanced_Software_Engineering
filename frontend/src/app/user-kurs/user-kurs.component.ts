@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { FileUrlService } from '../services/file-url.service';
 
 export interface DocumentFile {
   name: string;
@@ -63,7 +64,8 @@ export class KursComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public fileUrlService: FileUrlService
   ) {}
 
   ngOnInit(): void {
@@ -109,13 +111,13 @@ export class KursComponent implements OnInit, OnDestroy {
         this.participants = response.participants || [];
 
         // Kursdokumente mit absoluten URLs
-      if (response.documents) {
-        this.uploadedFiles.documents = response.documents.map((doc: any) => ({
-          name: doc.name,
-          // Absolute URL verwenden
-          url: this.sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:3000${doc.url}`),
-        }));
-      }
+        if (response.documents) {
+          this.uploadedFiles.documents = response.documents.map((doc: any) => ({
+            name: doc.name,
+            originalUrl: doc.url,
+            url: this.fileUrlService.getFileUrl(doc.url),
+          }));
+        }
 
         // Allgemeine Abgaben des Kurses
         if (response.abgaben) {
@@ -146,8 +148,12 @@ export class KursComponent implements OnInit, OnDestroy {
   }
 
   // Öffnet die PDF-Vorschau
-  openPdfPreview(url: SafeResourceUrl): void {
-    this.currentPdfUrl = url;
+  openPdfPreview(url: SafeResourceUrl | string) {
+    if (typeof url === 'string') {
+      this.currentPdfUrl = this.fileUrlService.getFileUrl(url);
+    } else {
+      this.currentPdfUrl = url;
+    }
     this.showPdfPreview = true;
   }
 

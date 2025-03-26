@@ -38,7 +38,13 @@
         </div>
         <mat-list>
           <mat-list-item *ngFor="let doc of uploadedDocuments">
-            <a [href]="doc.url" target="_blank">{{ doc.name }}</a>
+            <div class="document-item">
+              <a [href]="fileUrlService.getFileUrl(doc.url)" target="_blank">{{ doc.name }}</a>
+              <button (click)="openPdfPreview(doc.url)" class="preview-button">Vorschau</button>
+              <button mat-icon-button color="warn" (click)="removeDocument(doc)" aria-label="Dokument entfernen">
+                ❌
+              </button>
+            </div>
           </mat-list-item>
         </mat-list>
       </mat-card-content>
@@ -109,5 +115,13 @@
         </mat-list>
       </mat-card-content>
     </mat-card>
+  </div>
+</div>
+
+<!--PDF viewer -->
+<div *ngIf="showPdfPreview" class="pdf-preview-overlay">
+  <div class="pdf-preview-container">
+    <button (click)="closePdfPreview()" class="close-button">Schließen</button>
+    <iframe [src]="currentPdfUrl" width="100%" height="90%"></iframe>
   </div>
 </div>

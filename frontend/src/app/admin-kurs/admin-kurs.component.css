@@ -125,3 +125,16 @@ mat-list-item {
 .btn-secondary:hover {
   background-color: #5a6268;
 }
+
+.document-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+mat-list-item {
+  height: auto !important;
+  margin-bottom: 8px;
+}
+

@@ -18,6 +18,13 @@ export class CoursesController {
     return this.coursesService.findAll();
   }
 
+  @Delete('admin/removeDocument')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'studiengangsleiter', 'dozent')
+  async removeDocumentFromCourse(@Body() payload: { courseName: string, documentName: string }) {
+    return this.coursesService.removeDocumentFromCourse(payload.courseName, payload.documentName);
+  }
+
   // Kurs erstellen
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)

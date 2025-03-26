@@ -82,9 +82,9 @@ import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.compo
     KursComponent,
     EnrollmentDialogComponent,
     UserVerwaltungComponent,
-    UserAufgabeComponent,
     AdminAufgabeComponent,
-    NewTaskDialogComponent
+    NewTaskDialogComponent,
+    UserAufgabeComponent
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }

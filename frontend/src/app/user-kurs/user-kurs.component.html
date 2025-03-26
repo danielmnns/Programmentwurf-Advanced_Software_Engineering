@@ -47,7 +47,7 @@
         </mat-card>
       </li>
 
-      <!-- Allgemeiner Abgabebereich 
+      <!-- Allgemeiner Abgabebereich
       <li>
         <mat-card>
           <mat-card-title>Abgabefeld</mat-card-title>
@@ -67,7 +67,7 @@
       </li>
     -->
 
-      <!-- Allgemeines Feedback 
+      <!-- Allgemeines Feedback
       <li *ngIf="feedbackContent">
         <mat-card>
           <mat-card-title>Feedback</mat-card-title>
@@ -80,10 +80,10 @@
     </ul>
 
     <!-- PDF-Vorschau Modal -->
-    <div class="modal" *ngIf="showPdfPreview">
-      <div class="modal-content">
-        <button class="close-btn" (click)="closePdfPreview()">✖</button>
-        <iframe [src]="currentPdfUrl" width="100%" height="600px" frameborder="0"></iframe>
+    <div *ngIf="showPdfPreview" class="pdf-preview">
+      <div class="pdf-container">
+        <button class="close-button" (click)="showPdfPreview = false">✖</button>
+        <iframe [src]="currentPdfUrl" width="100%" height="100%"></iframe>
       </div>
     </div>
   </div>

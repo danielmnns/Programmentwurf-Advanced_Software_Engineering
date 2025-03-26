@@ -10,7 +10,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list'; // Add this for mat-list
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { SafeResourceUrl } from '@angular/platform-browser';
 import { NewTaskDialogComponent } from '../new-task-dialog/new-task-dialog.component';
+import { FileUrlService } from '../services/file-url.service';
 
 export interface DocumentFile {
   name: string;
@@ -39,7 +41,7 @@ export interface Task {
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    MatListModule 
+    MatListModule
   ]
 })
 export class AdminKursComponent implements OnInit {
@@ -55,7 +57,8 @@ export class AdminKursComponent implements OnInit {
     private route: ActivatedRoute,
     public router: Router,
     private http: HttpClient,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    public fileUrlService: FileUrlService
   ) {}
 
   ngOnInit(): void {
@@ -64,6 +67,24 @@ export class AdminKursComponent implements OnInit {
     this.loadCourseData();
   }
 
+  // remove documents
+removeDocument(doc: DocumentFile): void {
+  const payload = {
+    courseName: this.courseName,
+    documentName: doc.name
+  };
+
+  this.http.request('delete', `${this.apiUrl}/admin/removeDocument`, { body: payload }).subscribe(
+    (response: any) => {
+      this.uploadedDocuments = this.uploadedDocuments.filter(d => d.name !== doc.name);
+      alert(response.message || 'Dokument erfolgreich gelöscht');
+    },
+    (error) => {
+      console.error('Fehler beim Löschen des Dokuments:', error);
+      alert('Fehler beim Löschen des Dokuments');
+    }
+  );
+}
 
   loadCourseData(): void {
     const url = `${this.apiUrl}/user-kurs?courseName=${encodeURIComponent(this.courseName)}`;
@@ -78,12 +99,15 @@ export class AdminKursComponent implements OnInit {
         }));
       }
       if (response.tasks) {
-        this.tasks = response.tasks.map((task: any) => ({
-          taskId: task.taskId || '',
-          name: task.name,
-          description: task.description,
-          documents: task.documents || []
-        }));
+        this.tasks = response.tasks.map((task: any) => {
+          if (task.documents) {
+            task.documents = task.documents.map((doc: any) => ({
+              name: doc.name,
+              url: this.fileUrlService.getFileUrl(doc.url)
+            }));
+          }
+          return task as Task;
+        });
       }
     },
     (error) => {
@@ -100,8 +124,9 @@ export class AdminKursComponent implements OnInit {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('courseName', this.courseName);
-      const endpoint = '/courses/admin/addDocument';
-      this.http.post(`${this.apiUrl}${endpoint}`, formData).subscribe(
+
+
+      this.http.post(`${this.apiUrl}/admin/addDocument`, formData).subscribe(
         (response: any) => {
           alert('Dokument erfolgreich hinzugefügt!');
           this.loadCourseData();
@@ -117,7 +142,9 @@ export class AdminKursComponent implements OnInit {
   // Speichert die Änderungen an einer Aufgabe
   updateTask(task: Task): void {
     const payload = { courseName: this.courseName, ...task };
-    this.http.post(`${this.apiUrl}/admin/updateTask`, payload).subscribe(
+
+
+    this.http.post('http://localhost:3000/api/tasks/admin/updateTask', payload).subscribe(
       (response: any) => {
         alert(response.message || 'Aufgabe wurde erfolgreich aktualisiert!');
       },
@@ -126,6 +153,19 @@ export class AdminKursComponent implements OnInit {
       }
     );
   }
+
+currentPdfUrl: SafeResourceUrl | string = '';
+showPdfPreview = false;
+
+openPdfPreview(url: string): void {
+  this.currentPdfUrl = this.fileUrlService.getFileUrl(url);
+  this.showPdfPreview = true;
+}
+
+closePdfPreview(): void {
+  this.showPdfPreview = false;
+  this.currentPdfUrl = '';
+}
 
   // Löscht eine Aufgabe
   deleteTask(task: Task): void {
@@ -168,9 +208,10 @@ export class AdminKursComponent implements OnInit {
       formData.append('file', file);
       formData.append('courseName', this.courseName);
       formData.append('taskId', task.taskId || '');
-      this.http.post(`${this.apiUrl}/admin/addTaskDocument`, formData).subscribe(
+
+
+      this.http.post('http://localhost:3000/api/tasks/admin/addTaskDocument', formData).subscribe(
         (response: any) => {
-          // Backend liefert das Dokument (Name und URL) zurück
           task.documents.push({ name: response.name, url: response.url });
         },
         (error) => {
