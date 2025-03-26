@@ -3,14 +3,16 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as fs from 'fs';
 import { Model } from 'mongoose';
 import * as path from 'path';
+import { Course, CourseDocument } from '../courses/schemas/course.schema';
 import { Submission, SubmissionDocument } from './schemas/submission.schema';
 import { Task, TaskDocument } from './schemas/task.schema';
 
 @Injectable()
 export class TasksService {
   constructor(
-    @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
-    @InjectModel(Submission.name) private submissionModel: Model<SubmissionDocument>
+    @InjectModel(Submission.name) private submissionModel: Model<SubmissionDocument>,
+    @InjectModel(Course.name) private courseModel: Model<CourseDocument>,
+    @InjectModel(Task.name) private taskModel: Model<TaskDocument>
   ) {}
 
   async createTask(courseName: string, taskName: string, taskDescription: string, file: any): Promise<TaskDocument> {
@@ -189,7 +191,6 @@ async deleteSubmissionForUser(courseName: string, taskName: string, username: st
       }
     }
   
-    // Entferne die Abgabe aus dem Array
     task.submissions.splice(submissionIndex, 1);
     await task.save();
   

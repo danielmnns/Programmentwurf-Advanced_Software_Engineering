@@ -17,13 +17,21 @@ export class Course {
   @Prop({ type: [{ name: String, url: String }] })
   documents: { name: string; url: string }[];
 
-  @Prop({ type: Array })
+  @Prop({ 
+    type: [{ 
+      taskId: String, 
+      name: String, 
+      description: String, 
+      documents: [{ name: String, url: String }] 
+    }] 
+  })
   tasks: {
     taskId: string;
     name: string;
     description: string;
     documents: { name: string; url: string }[];
   }[];
+  
 }
 
 export const CourseSchema = SchemaFactory.createForClass(Course);

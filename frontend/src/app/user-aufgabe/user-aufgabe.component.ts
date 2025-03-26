@@ -143,7 +143,7 @@ export class UserAufgabeComponent implements OnInit {
       taskName: this.taskName
     };
 
-    this.http.post(`${this.apiUrl}/delete`, payload).subscribe(
+    this.http.post(`${this.apiUrl}/tasks/delete`, payload).subscribe(
       (response) => {
         console.log('Abgabe erfolgreich gelöscht', response);
         this.showNotificationPopup("Abgabe erfolgreich gelöscht.");

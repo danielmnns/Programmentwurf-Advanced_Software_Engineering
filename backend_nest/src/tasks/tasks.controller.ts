@@ -1,25 +1,28 @@
-import { Body, Controller, Get, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { CoursesService } from '../courses/courses.service';
 import { TasksService } from './tasks.service';
 
-@Controller()
+@Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) {}
-
-  // Für Studenten: Aufgabendetails und Abgabe abrufen
-  @Get('tasks')
+  constructor(
+    private readonly tasksService: TasksService,
+    private readonly coursesService: CoursesService 
+  ) {}
+  // Aufgabendetails abrufen
+  @Get()
   @UseGuards(JwtAuthGuard)
   async getTaskDetails(@Body() payload: { courseName: string; taskName: string }, @Req() req) {
     return this.tasksService.getTaskDetailsForStudent(payload.courseName, payload.taskName, req.user.username);
   }
 
   // Abgabe hochladen
-  @Post('tasks/upload')
+  @Post('upload')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(FileInterceptor('file', {
     storage: diskStorage({
@@ -39,27 +42,6 @@ export class TasksController {
     return this.tasksService.createSubmission(body.courseName, body.taskName, req.user.username, file);
   }
 
-  // Admin-Route: Task hinzufügen
-  @Post('admin/addTask')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('admin', 'dozent', 'studiengangsleiter')
-  @UseInterceptors(FileInterceptor('files', {
-    storage: diskStorage({
-      destination: './uploads/tasks',
-      filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        const ext = path.extname(file.originalname);
-        cb(null, `${uniqueSuffix}${ext}`);
-      }
-    })
-  }))
-  async addTask(
-    @UploadedFile() file,
-    @Body() body: { courseName: string; taskName: string; taskText: string }
-  ) {
-    return this.tasksService.createTask(body.courseName, body.taskName, body.taskText, file);
-  }
-
   // Admin-Route: Abgaben anzeigen
   @Post('admin/submissions')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -72,16 +54,14 @@ export class TasksController {
   @Post('admin/feedback')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin', 'dozent', 'studiengangsleiter')
-  async giveFeedback(
-    @Body() payload: { 
+  async giveFeedback(@Body() payload: { 
       courseName: string; 
       taskName: string; 
       submissionName: string;
       studentName: string;
       feedbackText: string;
       feedbackBy: string;
-    }
-  ) {
+    }) {
     return this.tasksService.saveFeedback(
       payload.courseName,
       payload.taskName,
@@ -122,17 +102,46 @@ export class TasksController {
       }
     })
   }))
-  // Füge diese Methode zum TasksController hinzu:
-
-  @Post('delete')
-  @UseGuards(JwtAuthGuard)
-  async deleteSubmission(@Body() payload: { courseName: string; taskName: string }, @Req() req) {
-    return this.tasksService.deleteSubmissionForUser(payload.courseName, payload.taskName, req.user.username);
-  }
   async addTaskDocument(
     @UploadedFile() file,
     @Body() body: { courseName: string; taskId: string }
   ) {
     return this.tasksService.addDocumentToTask(body.courseName, body.taskId, file);
+  }
+
+  @Post('admin/addTask')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('admin', 'dozent', 'studiengangsleiter')
+  async addTask(@Body() taskData: any) {
+    try {
+      console.log('Neue Aufgabe wird hinzugefügt:', taskData);
+      
+      const task = await this.tasksService.createTask(
+        taskData.courseName,
+        taskData.taskName,
+        taskData.description || taskData.taskText,
+        null
+      );
+      
+      await this.coursesService.addTaskToCourse(taskData.courseName, task);
+      
+      console.log('Aufgabe erfolgreich erstellt und zum Kurs hinzugefügt:', task._id);
+      
+      return {
+        success: true,
+        message: 'Aufgabe erfolgreich erstellt',
+        task: task
+      };
+    } catch (error) {
+      console.error('Fehler beim Erstellen der Aufgabe:', error);
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  // Abgabe löschen
+  @Post('delete')
+  @UseGuards(JwtAuthGuard)
+  async deleteSubmission(@Body() payload: { courseName: string; taskName: string }, @Req() req) {
+    return this.tasksService.deleteSubmissionForUser(payload.courseName, payload.taskName, req.user.username);
   }
 }

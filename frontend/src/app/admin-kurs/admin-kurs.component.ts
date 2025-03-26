@@ -100,7 +100,7 @@ export class AdminKursComponent implements OnInit {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('courseName', this.courseName);
-      const endpoint = '/admin/addDocument';
+      const endpoint = '/courses/admin/addDocument';
       this.http.post(`${this.apiUrl}${endpoint}`, formData).subscribe(
         (response: any) => {
           alert('Dokument erfolgreich hinzugefügt!');
