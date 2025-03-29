@@ -1,9 +1,16 @@
 /* Grundlegendes Layout für Kurse */
-.course-container {
-  display: flex;
-  flex-direction: column;
-  gap: 15px; /* Abstand zwischen den Kursen */
+.courses{
+    width: 80%;
+    margin: 0 auto;
 }
+
+.course-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); 
+  gap: 10px; 
+  padding-top: 10px;
+}
+
 
 .course-box {
   background-color: #f9f9f9;
@@ -23,10 +30,9 @@
 }
 
 .course-title {
-  font-size: 1.2rem;
-  color: #1976d2; /* Blau */
+  font-size: 1.2rem;; 
   cursor: pointer;
-  text-decoration: underline;
+  text-decoration: none;
 }
 
 .edit-icon,
@@ -93,7 +99,7 @@
 }
 
 .course-input {
-  width: 100%;
+  width: 90%;
   padding: 10px;
   margin: 15px 0;
   border: 1px solid #ddd;
