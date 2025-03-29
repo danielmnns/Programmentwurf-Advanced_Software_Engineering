@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import * as fs from 'fs';
 import { Model } from 'mongoose';
+import { join } from 'path';
 import { Course, CourseDocument } from './schemas/course.schema';
 
 @Injectable()
@@ -163,6 +165,37 @@ export class CoursesService {
       console.error("Error saving course:", error);
       throw error;
     }
+  }
+
+  async removeDocumentFromCourse(courseName: string, documentName: string): Promise<any> {
+    const course = await this.courseModel.findOne({ title: courseName }).exec();
+    
+    if (!course) {
+      throw new NotFoundException(`Kurs mit dem Namen "${courseName}" nicht gefunden`);
+    }
+    
+    const documentIndex = course.documents.findIndex(doc => doc.name === documentName);
+    
+    if (documentIndex === -1) {
+      throw new NotFoundException(`Dokument "${documentName}" nicht gefunden im Kurs "${courseName}"`);
+    }
+    
+
+    const document = course.documents[documentIndex];
+    const filePath = document.url;
+    
+    
+    course.documents.splice(documentIndex, 1);
+    await course.save();
+    
+    try {
+      const absolutePath = join(process.cwd(), filePath.replace(/^\//, ''));
+      await fs.promises.unlink(absolutePath);
+    } catch (error) {
+      console.error(`Error deleting file: ${error.message}`);
+    }
+    
+    return { message: 'Dokument erfolgreich aus dem Kurs entfernt' };
   }
 
   async updateCourseParticipants(data: {courseName: string, participants: any[]}) {

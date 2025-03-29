@@ -6,6 +6,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { FileUrlService } from '../services/file-url.service';
 
 interface TaskDetails {
   courseName: string;
@@ -40,13 +41,24 @@ export class UserAufgabeComponent implements OnInit {
   courseName: string = '';
   taskName: string = '';
   taskDescription: string = '';
-  submissionFile?: { name: string; url: SafeResourceUrl };
+  description: string = ''; // Add description property
+  submissionFile?: { name: string; url: SafeResourceUrl; originalUrl: string };
+  task?: any; // Define the task property with an appropriate type
   feedback?: { text: string; feedbackFrom: string };
+  submissionText: string = ''; // Add submissionText property
+  dueDate?: Date | null; // Add dueDate property
+  submissionDate?: Date | null; // Add submissionDate property
+  grade?: number | null; // Add grade property
+  taskId?: string; // Add taskId property
+  uploadedDocuments: { name: string; url: string; originalUrl: string }[] = []; // Add uploadedDocuments property
+  hasSubmission: boolean = false; // Add hasSubmission property
 
   // Zustände für Popups
   showDeletePopup: boolean = false;
   showNotification: boolean = false;
   notificationMessage: string = '';
+  loading: boolean = false; // Lade-Indikator
+  errorMessage: string = ''; // Fehlermeldung für den Benutzer
 
   private apiUrl = 'http://localhost:3000/api/tasks';
 
@@ -54,7 +66,8 @@ export class UserAufgabeComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    private fileUrlService: FileUrlService
   ) {}
 
   ngOnInit(): void {
@@ -64,36 +77,77 @@ export class UserAufgabeComponent implements OnInit {
   }
 
   loadTaskData(): void {
-    const payload = {
-      courseName: this.courseName,
-      taskName: this.taskName,
-    };
+    this.loading = true; // Lade-Indikator anzeigen (falls vorhanden)
 
-    this.http.post<TaskDetails>(`${this.apiUrl}/user`, payload).subscribe(
+    // Erhalte taskId entweder aus der Klasse oder aus der Route
+    const taskId = this.taskId || this.route.snapshot.paramMap.get('taskId');
+    const courseName = this.courseName || this.route.snapshot.paramMap.get('courseName');
+
+    if (!taskId) {
+      console.error('Keine Aufgaben-ID gefunden');
+      this.loading = false;
+      return;
+    }
+
+    // API-Aufruf für Aufgabendetails
+    this.http.get<any>(`${this.apiUrl}/tasks/${taskId}`).subscribe(
       (data) => {
-        this.taskDescription = data.taskDescription;
+        console.log('Aufgabendaten erhalten:', data);
+
+        // Grundlegende Aufgabeninformationen setzen
+        this.task = data;
+        this.taskName = data.name;
+        this.description = data.description;
+        this.dueDate = data.dueDate ? new Date(data.dueDate) : null;
+
+        // Aufgabendokumente verarbeiten mit konsistenter URL-Transformation
+        if (data.documents && data.documents.length > 0) {
+          this.uploadedDocuments = data.documents.map((doc: { name: string; url: string }) => ({
+            name: doc.name,
+            url: doc.url,  // Der originale URL-String vom Backend
+            originalUrl: this.fileUrlService.getFileUrl(doc.url) // Die transformierte URL für die Anzeige
+          }));
+          console.log('Dokumente geladen:', this.uploadedDocuments);
+        } else {
+          this.uploadedDocuments = [];
+          console.log('Keine Dokumente für diese Aufgabe gefunden');
+        }
+
+        // Einreichungsdaten verarbeiten, falls vorhanden
         if (data.submission) {
+          this.hasSubmission = true;
+          this.submissionText = data.submission.text || '';
+
           if (data.submission.file) {
             this.submissionFile = {
               name: data.submission.file.name,
-              url: this.sanitizer.bypassSecurityTrustResourceUrl(data.submission.file.url)
+              url: this.fileUrlService.getFileUrl(data.submission.file.url),
+              originalUrl: data.submission.file.url
             };
-          } else {
-            this.submissionFile = undefined;
           }
-          if (data.submission.feedback) {
-            this.feedback = {
-              text: data.submission.feedback.text,
-              feedbackFrom: data.submission.feedbackFrom || ''
-            };
-          } else {
-            this.feedback = undefined;
-          }
+
+          this.submissionDate = data.submission.submissionDate
+            ? new Date(data.submission.submissionDate)
+            : null;
+
+          this.grade = data.submission.grade || null;
+          this.feedback = data.submission.feedback || '';
+        } else {
+          this.hasSubmission = false;
+          this.submissionText = '';
+          this.submissionFile = undefined;
+          this.submissionDate = null;
+          this.grade = null;
+          this.feedback = { text: '', feedbackFrom: '' };
         }
+
+        this.loading = false; // Lade-Indikator ausblenden
       },
       (error) => {
         console.error('Fehler beim Laden der Aufgabendaten:', error);
-        this.showNotificationPopup("Fehler beim Laden der Aufgabendaten.");
+        this.loading = false;
+        // Optional: Fehlermeldung für den Benutzer anzeigen
+        this.errorMessage = 'Die Aufgabendaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.';
       }
     );
   }

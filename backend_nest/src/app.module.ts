@@ -8,9 +8,11 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 import { CoursesModule } from './courses/courses.module';
+import { FilesModule } from './files/files.module';
 import { RolesModule } from './roles/roles.module';
 import { TasksModule } from './tasks/tasks.module';
 import { UsersModule } from './users/users.module';
+
 
 @Module({
   imports: [
@@ -19,9 +21,13 @@ import { UsersModule } from './users/users.module';
     }),
     MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost/lms_db'),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
+      rootPath: join(__dirname, '..', '..', 'uploads'), 
       serveRoot: '/uploads',
+      serveStaticOptions: {
+        index: false 
+      }
     }),
+    FilesModule,
     AuthModule,
     UsersModule,
     CoursesModule,

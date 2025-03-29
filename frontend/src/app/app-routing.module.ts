@@ -1,15 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
-import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
-import { authGuard } from './auth/auth.guard';
 import { AccountComponent } from './account/account.component';
-import { KursComponent } from './user-kurs/user-kurs.component';
-import { AdminKursComponent } from './admin-kurs/admin-kurs.component';
-import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.component';
-import { UserAufgabeComponent } from './user-aufgabe/user-aufgabe.component';
 import { AdminAufgabeComponent } from './admin-aufgabe/admin-aufgabe.component';
+import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
+import { AdminKursComponent } from './admin-kurs/admin-kurs.component';
+import { authGuard } from './auth/auth.guard';
+import { LoginComponent } from './login/login.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { UserAufgabeComponent } from './user-aufgabe/user-aufgabe.component';
+import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
+import { KursComponent } from './user-kurs/user-kurs.component';
+import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.component';
 
 
 const routes: Routes = [
@@ -68,6 +69,7 @@ const routes: Routes = [
     canActivate: [authGuard],
     data: { allowedRoles: ['admin'] }
   },
+  { path: '**', component: PageNotFoundComponent },
 
 ];
 
