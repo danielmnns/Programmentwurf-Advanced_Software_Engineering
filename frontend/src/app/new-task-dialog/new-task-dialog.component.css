@@ -23,6 +23,38 @@ h2 {
 .file-upload {
   margin-top: 15px;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Versteckt das Standard-Input-Element */
+.file-upload input[type="file"] {
+  display: none;
+}
+
+/* Benutzerdefinierter Button für Datei-Upload */
+.file-upload label {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+  display: inline-block;
+}
+
+/* Hover-Effekt für den Button */
+.file-upload label:hover {
+  background-color: #0056b3;
+}
+
+/* Anzeigebereich für den Dateinamen */
+#file-name {
+  font-size: 14px;
+  color: #555;
+  margin-top: 10px;
 }
 
 /* Buttons */
@@ -30,8 +62,4 @@ h2 {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
-}
-
-input[type="file"] {
-width:100%
 }

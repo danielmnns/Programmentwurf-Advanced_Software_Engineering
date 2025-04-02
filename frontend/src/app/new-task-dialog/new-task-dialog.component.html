@@ -9,7 +9,9 @@
   </mat-form-field>
 
   <div class="file-upload">
-    <input type="file" multiple (change)="onFileSelected($event)" />
+    <input type="file" id="fileInput" multiple (change)="onFileSelected($event)" />
+    <label for="fileInput">📁 Datei auswählen</label>
+    <span id="file-name">Keine Datei ausgewählt</span>
   </div>
 
   <div class="dialog-actions">
