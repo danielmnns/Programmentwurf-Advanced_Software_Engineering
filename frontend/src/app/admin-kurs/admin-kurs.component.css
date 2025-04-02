@@ -31,6 +31,14 @@ mat-card{
   font-weight: bold;
 }
 
+.course-header mat-card-subtitle {
+  margin-top: 10px;
+}
+
+mat-back-button {
+  
+}
+
 /* Allgemeine Karten für Abschnitte */
 .section-card {
   margin-bottom: 20px;

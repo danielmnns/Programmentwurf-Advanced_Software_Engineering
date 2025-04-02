@@ -5,8 +5,8 @@
     <mat-card class="course-header">
       <mat-card-title>{{ courseName }}</mat-card-title>
       <mat-card-subtitle>
-        <button mat-icon-button (click)="router.navigate(['/user-kurs', courseName])" aria-label="Zur Benutzeransicht wechseln">
-          <mat-icon></mat-icon>
+        <button mat-flat-button color="primary" (click)="router.navigate(['/user-kurs', courseName])" aria-label="Zur Benutzeransicht wechseln">
+          Zur Benutzeransicht wechseln
         </button>
       </mat-card-subtitle>
     </mat-card>
