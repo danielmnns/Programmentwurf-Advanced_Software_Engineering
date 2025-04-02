@@ -26,6 +26,11 @@ mat-card{
   margin-bottom: 20px;
 }
 
+.course-header mat-card-title {
+  font-size: 30px;
+  font-weight: bold;
+}
+
 /* Allgemeine Karten für Abschnitte */
 .section-card {
   margin-bottom: 20px;
