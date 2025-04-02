@@ -17,6 +17,10 @@
   min-width: 250px;
 }
 
+mat-card{
+    padding: 10px;
+}
+
 /* Kurskopf */
 .course-header {
   margin-bottom: 20px;
