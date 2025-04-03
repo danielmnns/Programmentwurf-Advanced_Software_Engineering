@@ -4,7 +4,6 @@
   margin: 20px auto;
   display: flex;
   gap: 20px;
-  font-family: Arial, sans-serif;
 }
 
 /* Linker Bereich (Hauptinhalt) */
@@ -37,8 +36,13 @@
   margin-bottom: 20px;
 }
 
-.mat-card {
+mat-card {
   margin-bottom: 20px;
+  padding: 10px;
+}
+
+mat-card-content {
+  padding-top: 10px;
 }
 
 /* Neue Styles für den Aufgabenbereich */
