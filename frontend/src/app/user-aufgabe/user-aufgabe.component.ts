@@ -77,47 +77,36 @@ export class UserAufgabeComponent implements OnInit {
   }
 
   loadTaskData(): void {
-    this.loading = true; // Lade-Indikator anzeigen (falls vorhanden)
-
-    // Erhalte taskId entweder aus der Klasse oder aus der Route
-    const taskId = this.taskId || this.route.snapshot.paramMap.get('taskId');
-    const courseName = this.courseName || this.route.snapshot.paramMap.get('courseName');
-
-    if (!taskId) {
-      console.error('Keine Aufgaben-ID gefunden');
-      this.loading = false;
-      return;
-    }
-
-    // API-Aufruf für Aufgabendetails
-    this.http.get<any>(`${this.apiUrl}/tasks/${taskId}`).subscribe(
-      (data) => {
+    this.loading = true; // Lade-Indikator anzeigen
+  
+    const payload = {
+      courseName: this.courseName,
+      taskName: this.taskName
+    };
+  
+    this.http.post(`${this.apiUrl}`, payload).subscribe(
+      (data: any) => {
         console.log('Aufgabendaten erhalten:', data);
-
+        
         // Grundlegende Aufgabeninformationen setzen
         this.task = data;
-        this.taskName = data.name;
-        this.description = data.description;
-        this.dueDate = data.dueDate ? new Date(data.dueDate) : null;
-
-        // Aufgabendokumente verarbeiten mit konsistenter URL-Transformation
+        this.taskDescription = data.description || '';
+        
+        // Aufgabendokumente verarbeiten
         if (data.documents && data.documents.length > 0) {
-          this.uploadedDocuments = data.documents.map((doc: { name: string; url: string }) => ({
+          this.uploadedDocuments = data.documents.map((doc: any) => ({
             name: doc.name,
             url: doc.url,  // Der originale URL-String vom Backend
             originalUrl: this.fileUrlService.getFileUrl(doc.url) // Die transformierte URL für die Anzeige
           }));
-          console.log('Dokumente geladen:', this.uploadedDocuments);
         } else {
           this.uploadedDocuments = [];
-          console.log('Keine Dokumente für diese Aufgabe gefunden');
         }
-
-        // Einreichungsdaten verarbeiten, falls vorhanden
+  
+        // Einreichungsdaten verarbeiten
         if (data.submission) {
           this.hasSubmission = true;
-          this.submissionText = data.submission.text || '';
-
+          
           if (data.submission.file) {
             this.submissionFile = {
               name: data.submission.file.name,
@@ -125,28 +114,19 @@ export class UserAufgabeComponent implements OnInit {
               originalUrl: data.submission.file.url
             };
           }
-
-          this.submissionDate = data.submission.submissionDate
-            ? new Date(data.submission.submissionDate)
-            : null;
-
-          this.grade = data.submission.grade || null;
+          
           this.feedback = data.submission.feedback || '';
         } else {
           this.hasSubmission = false;
-          this.submissionText = '';
           this.submissionFile = undefined;
-          this.submissionDate = null;
-          this.grade = null;
           this.feedback = { text: '', feedbackFrom: '' };
         }
-
-        this.loading = false; // Lade-Indikator ausblenden
+        
+        this.loading = false;
       },
       (error) => {
         console.error('Fehler beim Laden der Aufgabendaten:', error);
         this.loading = false;
-        // Optional: Fehlermeldung für den Benutzer anzeigen
         this.errorMessage = 'Die Aufgabendaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.';
       }
     );
@@ -156,20 +136,40 @@ export class UserAufgabeComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
+      
+      // Prüfe Dateigröße (10 MB = 10 * 1024 * 1024 Bytes)
+      if (file.size > 10 * 1024 * 1024) {
+        this.showNotificationPopup("Die Datei ist zu groß. Maximale Größe: 10 MB.");
+        return;
+      }
+      
       const formData = new FormData();
       formData.append('file', file);
       formData.append('courseName', this.courseName);
       formData.append('taskName', this.taskName);
-
+  
+      this.loading = true;
       this.http.post(`${this.apiUrl}/upload`, formData).subscribe(
-        (response) => {
+        (response: any) => {
           console.log('Datei erfolgreich hochgeladen', response);
           this.showNotificationPopup("Datei erfolgreich hochgeladen.");
-          this.loadTaskData();
+          
+          // Direkt die Antwort nutzen, statt erneut zu laden
+          if (response.submission && response.submission.file) {
+            this.hasSubmission = true;
+            this.submissionFile = {
+              name: response.submission.file.name,
+              url: this.fileUrlService.getFileUrl(response.submission.file.url),
+              originalUrl: response.submission.file.url
+            };
+          }
+          
+          this.loading = false;
         },
         (error) => {
           console.error('Fehler beim Hochladen der Datei:', error);
-          this.showNotificationPopup("Fehler beim Hochladen der Datei.");
+          this.showNotificationPopup(error.error?.message || "Fehler beim Hochladen der Datei.");
+          this.loading = false;
         }
       );
     }

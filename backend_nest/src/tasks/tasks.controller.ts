@@ -1,5 +1,6 @@
 import { BadRequestException, Body, Controller, Get, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import * as fs from 'fs';
 import { diskStorage } from 'multer';
 import * as path from 'path';
 import { Roles } from '../auth/decorators/roles.decorator';
@@ -23,24 +24,44 @@ export class TasksController {
 
   // Abgabe hochladen
   @Post('upload')
-  @UseGuards(JwtAuthGuard)
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: './uploads/submissions',
-      filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        const ext = path.extname(file.originalname);
-        cb(null, `${uniqueSuffix}${ext}`);
+@UseGuards(JwtAuthGuard)
+@UseInterceptors(FileInterceptor('file', {
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10 MB in Bytes
+  },
+  fileFilter: (req, file, callback) => {
+    // Prüfe, ob es ein PDF ist
+    if (file.mimetype !== 'application/pdf') {
+      return callback(new BadRequestException('Nur PDF-Dateien sind erlaubt'), false);
+    }
+    callback(null, true);
+  },
+  storage: diskStorage({
+    destination: (req, file, cb) => {
+      const submissionsDir = './uploads/submissions';
+      // Prüfe, ob Verzeichnis existiert, falls nicht, erstelle es
+      if (!fs.existsSync(submissionsDir)) {
+        fs.mkdirSync(submissionsDir, { recursive: true });
       }
-    })
-  }))
-  async uploadSubmission(
-    @UploadedFile() file,
-    @Body() body: { courseName: string; taskName: string },
-    @Req() req
-  ) {
-    return this.tasksService.createSubmission(body.courseName, body.taskName, req.user.username, file);
+      cb(null, submissionsDir);
+    },
+    filename: (req, file, cb) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      const ext = path.extname(file.originalname);
+      cb(null, `${uniqueSuffix}${ext}`);
+    }
+  })
+}))
+async uploadSubmission(
+  @UploadedFile() file,
+  @Body() body: { courseName: string; taskName: string },
+  @Req() req
+) {
+  if (!file) {
+    throw new BadRequestException('Keine Datei gefunden');
   }
+  return this.tasksService.createSubmission(body.courseName, body.taskName, req.user.username, file);
+}
 
   // Admin-Route: Abgaben anzeigen
   @Post('admin/submissions')
