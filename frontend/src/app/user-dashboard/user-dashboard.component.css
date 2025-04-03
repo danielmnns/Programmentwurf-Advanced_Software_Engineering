@@ -26,6 +26,8 @@
 
 .course-title {
   font-size: 1.2rem;
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .course-title.unenrolled {
@@ -34,9 +36,8 @@
 }
 
 .course-title.enrolled {
-  color: #1976d2; /* Blau */
+  color: #000;
   cursor: pointer;
-  text-decoration: underline;
 }
 
 .lock-icon {
