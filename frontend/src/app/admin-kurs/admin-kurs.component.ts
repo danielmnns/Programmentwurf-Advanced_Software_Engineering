@@ -9,8 +9,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list'; // Add this for mat-list
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { SafeResourceUrl } from '@angular/platform-browser';
 import { NewTaskDialogComponent } from '../new-task-dialog/new-task-dialog.component';
 import { FileUrlService } from '../services/file-url.service';
 
@@ -58,7 +58,8 @@ export class AdminKursComponent implements OnInit {
     public router: Router,
     private http: HttpClient,
     private dialog: MatDialog,
-    public fileUrlService: FileUrlService
+    public fileUrlService: FileUrlService,
+    private sanitizer: DomSanitizer
   ) {}
 
   ngOnInit(): void {
@@ -170,10 +171,12 @@ closePdfPreview(): void {
   // Löscht eine Aufgabe
   deleteTask(task: Task): void {
     const payload = { courseName: this.courseName, taskId: task.taskId };
-    this.http.request('delete', `${this.apiUrl}/admin/deleteTask`, { body: payload }).subscribe(
+    
+    this.http.post('http://localhost:3000/api/tasks/admin/deleteTask', payload).subscribe(
       (response: any) => {
-        alert(response.message || 'Aufgabe wurde gelöscht!');
-        this.tasks = this.tasks.filter(t => t.taskId !== task.taskId);
+        alert(response.message || 'Aufgabe wurde erfolgreich gelöscht!');
+        // Aktualisiere die lokale Aufgabenliste oder lade die Daten neu
+        this.loadCourseData();
       },
       (error) => {
         console.error('Fehler beim Löschen der Aufgabe:', error);
@@ -208,11 +211,25 @@ closePdfPreview(): void {
       formData.append('file', file);
       formData.append('courseName', this.courseName);
       formData.append('taskId', task.taskId || '');
-
-
+  
       this.http.post('http://localhost:3000/api/tasks/admin/addTaskDocument', formData).subscribe(
         (response: any) => {
-          task.documents.push({ name: response.name, url: response.url });
+          console.log('Dokument-Antwort vom Server:', response);
+          if (response.document) {
+            if (!task.documents) {
+              task.documents = [];
+            }
+            // Die URL transformieren, wie bei anderen Dokumenten auch
+            task.documents.push({
+              name: response.document.name,
+              url: this.fileUrlService.getFileUrl(response.document.url) as string
+            });
+            
+            // Nach dem Hinzufügen die Aufgabe aktualisieren
+            this.updateTask(task);
+          } else {
+            console.error('Unerwartetes Antwortformat vom Server:', response);
+          }
         },
         (error) => {
           console.error('Fehler beim Hinzufügen des Dokuments zur Aufgabe:', error);
