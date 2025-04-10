@@ -14,7 +14,19 @@
 
 .teilnehmer {
   flex: 1;
-  min-width: 250px;
+  padding: 20px;
+  background-color: #e3f2fd;
+  border-radius: 8px;
+  overflow-y: auto;
+}
+
+.teilnehmer ul {
+  list-style: none;
+  padding: 0;
+}
+
+.teilnehmer li {
+  margin-bottom: 20px;
 }
 
 mat-card{
