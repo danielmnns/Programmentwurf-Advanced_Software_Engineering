@@ -1,5 +1,9 @@
 <!-- Header -->
 <div class="header">
+  <div class="home">
+      <mat-icon class="home-icon" (click)="navigateToHome()">home</mat-icon>
+  </div>
+
   <div class="date-time">
     <p>{{ currentDate }} | {{ currentTime }}</p>
   </div>
@@ -28,10 +32,6 @@
       <span class="username">{{ userName }}</span>
       
       <mat-icon class="benutzer-icon" (click)="navigateToAccount()">account_circle</mat-icon>
-    </div>
-
-    <div class="home">
-      <mat-icon class="home-icon" (click)="navigateToHome()">home</mat-icon>
     </div>
   </div>
 </div>
