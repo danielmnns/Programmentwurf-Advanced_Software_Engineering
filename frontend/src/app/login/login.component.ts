@@ -27,13 +27,20 @@ import { AuthService } from '../auth/auth.service';
 export class LoginComponent {
   username: string = '';
   password: string = '';
+  loginFailed: boolean = false;
+  errorMessage: string = '';
+  isLoading: boolean = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
   onSubmit(): void {
+    this.isLoading = true;
+    this.loginFailed = false;
+    
     console.log('LoginComponent: Login-Formular abgeschickt');
     this.authService.login(this.username, this.password).subscribe(
       (response) => {
+        this.isLoading = false;
         console.log('LoginComponent: Login-Antwort erhalten', response);
 
         // Zusätzliche Prüfung auf response.user
@@ -47,14 +54,20 @@ export class LoginComponent {
             this.router.navigate(['/user-dashboard']);
           } else {
             console.log('LoginComponent: Unbekannter Benutzer-Typ');
+            this.loginFailed = true;
+            this.errorMessage = 'Unbekannter Benutzertyp.';
           }
         } else {
           console.log('LoginComponent: Login fehlgeschlagen');
-          alert(response.message);
+          this.loginFailed = true;
+          this.errorMessage = response.message || 'Login fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten.';
         }
       },
       (error) => {
+        this.isLoading = false;
         console.error('LoginComponent: Fehler beim Login', error);
+        this.loginFailed = true;
+        this.errorMessage = 'Login fehlgeschlagen. Bitte überprüfen Sie Ihre Anmeldedaten.';
       }
     );
   }

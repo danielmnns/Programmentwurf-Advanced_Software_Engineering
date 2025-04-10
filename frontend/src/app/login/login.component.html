@@ -1,6 +1,12 @@
 <div class="login-container">
   <mat-card>
     <h2>Anmeldung</h2>
+
+    <!-- Error Message Box -->
+    <div *ngIf="loginFailed" class="error-message-box">
+      <p>{{ errorMessage }}</p>
+    </div>
+
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
       <mat-form-field appearance="fill" class="form-field">
         <mat-label>Benutzername</mat-label>
@@ -12,8 +18,8 @@
         <input matInput type="password" [(ngModel)]="password" name="password" required />
       </mat-form-field>
 
-      <button mat-raised-button color="primary" [disabled]="!loginForm.valid" class="submit-button">
-        Anmelden
+      <button mat-raised-button color="primary" [disabled]="!loginForm.valid || isLoading" class="submit-button">
+        {{ isLoading ? 'Wird angemeldet...' : 'Anmelden' }}
       </button>
     </form>
   </mat-card>
