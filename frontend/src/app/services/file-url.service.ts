@@ -20,11 +20,22 @@ export class FileUrlService {
       return this.sanitizer.bypassSecurityTrustResourceUrl(relativePath);
     }
 
-    const path = relativePath.startsWith('/') ? relativePath : `/${relativePath}`;
-
-    const apiUrl = `${this.backendUrl}/uploads${path}`;
-
-    console.log(`Created file URL: ${apiUrl}`);
+    // Bereinigung des Pfades
+    let cleanPath = relativePath;
+    
+    // Entferne führende Slashes
+    while (cleanPath.startsWith('/')) {
+      cleanPath = cleanPath.substring(1);
+    }
+    
+    // Entferne 'uploads/' Prefix, falls vorhanden
+    if (cleanPath.startsWith('uploads/')) {
+      cleanPath = cleanPath.substring(8);
+    }
+    
+    // Erstelle den korrekten API-Pfad
+    const apiUrl = `${this.backendUrl}/uploads/${cleanPath}`;
+    
     return this.sanitizer.bypassSecurityTrustResourceUrl(apiUrl);
   }
 }

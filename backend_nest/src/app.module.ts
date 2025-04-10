@@ -21,10 +21,20 @@ import { UsersModule } from './users/users.module';
     }),
     MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost/lms_db'),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', '..', 'uploads'), 
+      rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
+      exclude: ['/api*'],
       serveStaticOptions: {
-        index: false 
+        index: false,
+        fallthrough: true,
+        maxAge: '1d',
+        setHeaders: (res, path) => {
+          // PDF-Dateien mit korrektem Content-Type ausliefern
+          if (path.endsWith('.pdf')) {
+            res.set('Content-Type', 'application/pdf');
+            res.set('Content-Disposition', 'inline');
+          }
+        }
       }
     }),
     FilesModule,
