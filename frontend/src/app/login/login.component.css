@@ -36,3 +36,33 @@
     width: 150px;
   }
   
+  /* Add this to your existing CSS file */
+
+.error-message-box {
+  background-color: #ffebee;
+  border-left: 4px solid #f44336;
+  color: #b71c1c;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-radius: 4px;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Optional - Add loading indicator styles */
+.submit-button:disabled {
+  background-color: #cccccc;
+  color: #888888;
+}

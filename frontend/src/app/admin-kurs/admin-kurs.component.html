@@ -5,6 +5,7 @@
     <mat-card class="course-header">
       <mat-card-title>{{ courseName }}</mat-card-title>
       <mat-card-subtitle>
+
         <button mat-icon-button (click)="router.navigate(['/user-kurs', courseName])" [attr.aria-label]="'courseDetails' | translate">
           <mat-icon></mat-icon>
         </button>
@@ -95,9 +96,10 @@
         </div>
         <!-- Button zum Hinzufügen einer neuen Aufgabe -->
         <div class="add-task-container">
-          <button mat-button color="primary" (click)="openNewTaskDialog()">
+
+          <button mat-stroked-button color="primary" (click)="openNewTaskDialog()">
             ➕ {{ 'addTask' | translate }}
-          </button>
+         </button>
         </div>
       </mat-card-content>
     </mat-card>
@@ -105,6 +107,7 @@
 
   <!-- Teilnehmerliste -->
   <div class="teilnehmer">
+
     <mat-card>
       <mat-card-title>{{ 'participants' | translate }}</mat-card-title>
       <mat-card-content>
@@ -115,6 +118,7 @@
         </mat-list>
       </mat-card-content>
     </mat-card>
+
   </div>
 </div>
 

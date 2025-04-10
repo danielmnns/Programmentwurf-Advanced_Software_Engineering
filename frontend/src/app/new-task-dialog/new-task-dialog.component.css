@@ -1,27 +1,65 @@
-/* new-task-dialog.component.css */
+/* Container */
+.new-task-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 500px;
+}
 
-/* Stellt sicher, dass Eingabefelder die volle Breite einnehmen */
+/* Überschrift */
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+/* Formularfelder */
 .full-width {
-    width: 100%;
-  }
-  
-  /* Abstand und Breite der Formularfelder */
-  mat-form-field {
-    width: 100%;
-    margin-bottom: 15px;
-  }
-  
-  /* Überschrift zentrieren und etwas Abstand nach unten */
-  h2 {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  /* Container für die Aktions-Buttons (Erstellen/Abbrechen) */
-  .dialog-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-  }
-  
+  width: 100%;
+}
+
+/* Datei-Upload */
+.file-upload {
+  margin-top: 15px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Versteckt das Standard-Input-Element */
+.file-upload input[type="file"] {
+  display: none;
+}
+
+/* Benutzerdefinierter Button für Datei-Upload */
+.file-upload label {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3s;
+  font-weight: bold;
+  display: inline-block;
+}
+
+/* Hover-Effekt für den Button */
+.file-upload label:hover {
+  background-color: #0056b3;
+}
+
+/* Anzeigebereich für den Dateinamen */
+#file-name {
+  font-size: 14px;
+  color: #555;
+  margin-top: 10px;
+}
+
+/* Buttons */
+.dialog-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
