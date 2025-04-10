@@ -13,7 +13,7 @@
         <span 
           class="edit-icon" 
           (click)="navigateToAdminKurs(course.title)" 
-          title="Kurs bearbeiten"
+          title="{{ 'edit' | translate }}"
         >
           ✏️
         </span>
@@ -22,7 +22,7 @@
         <span 
           class="delete-icon" 
           (click)="deleteCourse(course)" 
-          title="Kurs löschen"
+          title="{{ 'delete' | translate }}"
         >
           🗑️
         </span>
@@ -38,7 +38,7 @@
     class="button-standard" 
     (click)="openAddCourseModal()"
   >
-    ➕ Kurs hinzufügen
+    ➕ {{ 'addCourse' | translate }}
   </button>
 
   <!-- "Zur User-Verwaltung" rechts -->
@@ -46,23 +46,23 @@
     class="button-standard" 
     (click)="navigateToUserVerwaltung()"
   >
-    👥 Zur User-Verwaltung
+    👥 {{ 'userManagement' | translate }}
   </button>
 </div>
 
 <!-- Modal für Kurs hinzufügen -->
 <div class="modal" *ngIf="showAddCourseModal">
   <div class="modal-content">
-    <h3>Neuen Kurs erstellen</h3>
+    <h3>{{ 'addCourse' | translate }}</h3>
     <input
       type="text"
       [(ngModel)]="newCourseTitle"
-      placeholder="Kursname eingeben"
+      placeholder="{{ 'courseName' | translate }}"
       class="course-input"
     />
     <div class="modal-buttons">
-      <button (click)="addCourse()">Hinzufügen</button>
-      <button class="cancel-button" (click)="closeAddCourseModal()">Abbrechen</button>
+      <button (click)="addCourse()">{{ 'submit' | translate }}</button>
+      <button class="cancel-button" (click)="closeAddCourseModal()">{{ 'cancel' | translate }}</button>
     </div>
   </div>
 </div>

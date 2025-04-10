@@ -1,13 +1,13 @@
-import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
+import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
-import { MatDialogModule } from '@angular/material/dialog';
-import { RouterModule } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
-import { Router } from '@angular/router';
-import { CourseService } from '../services/course.service'; // Adjust the path as necessary
+import { MatCardModule } from '@angular/material/card';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../auth/auth.service'; // Adjust the path as necessary
+import { TranslatePipe } from '../pipes/translate.pipe'; // Adjust the path as necessary
+import { CourseService } from '../services/course.service'; // Adjust the path as necessary
+import { LanguageService } from '../services/language.service'; // Adjust the path as necessary
 import { EnrollmentDialogComponent } from './enrollment-dialog/enrollment-dialog.component'; // Adjust the path as necessary
 
 @Component({
@@ -20,7 +20,8 @@ import { EnrollmentDialogComponent } from './enrollment-dialog/enrollment-dialog
     MatCardModule,
     MatButtonModule,
     MatDialogModule,
-    RouterModule
+    RouterModule,
+    TranslatePipe
   ]
 })
 export class UserDashboardComponent {
@@ -30,7 +31,8 @@ export class UserDashboardComponent {
     private courseService: CourseService,
     private authService: AuthService,
     private dialog: MatDialog,
-    private router: Router
+    private router: Router,
+    public languageService: LanguageService
   ) {}
 
   ngOnInit(): void {

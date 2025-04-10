@@ -12,7 +12,10 @@ import { MatListModule } from '@angular/material/list'; // Add this for mat-list
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { NewTaskDialogComponent } from '../new-task-dialog/new-task-dialog.component';
+import { TranslatePipe } from '../pipes/translate.pipe';
 import { FileUrlService } from '../services/file-url.service';
+import { LanguageService } from '../services/language.service';
+import { StatusService } from '../services/status.service';
 
 export interface DocumentFile {
   name: string;
@@ -41,7 +44,8 @@ export interface Task {
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
-    MatListModule
+    MatListModule,
+    TranslatePipe
   ]
 })
 export class AdminKursComponent implements OnInit {
@@ -59,7 +63,9 @@ export class AdminKursComponent implements OnInit {
     private http: HttpClient,
     private dialog: MatDialog,
     public fileUrlService: FileUrlService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public languageService: LanguageService,
+    private statusService: StatusService
   ) {}
 
   ngOnInit(): void {
@@ -69,23 +75,23 @@ export class AdminKursComponent implements OnInit {
   }
 
   // remove documents
-removeDocument(doc: DocumentFile): void {
-  const payload = {
-    courseName: this.courseName,
-    documentName: doc.name
-  };
+  removeDocument(doc: DocumentFile): void {
+    const payload = {
+      courseName: this.courseName,
+      documentName: doc.name
+    };
 
-  this.http.request('delete', `${this.apiUrl}/admin/removeDocument`, { body: payload }).subscribe(
-    (response: any) => {
-      this.uploadedDocuments = this.uploadedDocuments.filter(d => d.name !== doc.name);
-      alert(response.message || 'Dokument erfolgreich gelöscht');
-    },
-    (error) => {
-      console.error('Fehler beim Löschen des Dokuments:', error);
-      alert('Fehler beim Löschen des Dokuments');
-    }
-  );
-}
+    this.http.request('delete', `${this.apiUrl}/admin/removeDocument`, { body: payload }).subscribe(
+      (response: any) => {
+        this.uploadedDocuments = this.uploadedDocuments.filter(d => d.name !== doc.name);
+        this.statusService.showSuccess('removeMaterialSuccess', { name: doc.name });
+      },
+      (error) => {
+        console.error('Fehler beim Löschen des Dokuments:', error);
+        this.statusService.showError('removeMaterialError');
+      }
+    );
+  }
 
   loadCourseData(): void {
     const url = `${this.apiUrl}/user-kurs?courseName=${encodeURIComponent(this.courseName)}`;
@@ -129,12 +135,12 @@ removeDocument(doc: DocumentFile): void {
 
       this.http.post(`${this.apiUrl}/admin/addDocument`, formData).subscribe(
         (response: any) => {
-          alert('Dokument erfolgreich hinzugefügt!');
+          this.statusService.showSuccess('addMaterialSuccess');
           this.loadCourseData();
         },
         (error) => {
           console.error('Fehler beim Hinzufügen des Dokuments:', error);
-          alert('Fehler beim Hinzufügen des Dokuments');
+          this.statusService.showError('addMaterialError');
         }
       );
     }
@@ -147,10 +153,11 @@ removeDocument(doc: DocumentFile): void {
 
     this.http.post('http://localhost:3000/api/tasks/admin/updateTask', payload).subscribe(
       (response: any) => {
-        alert(response.message || 'Aufgabe wurde erfolgreich aktualisiert!');
+        this.statusService.showSuccess('saveSuccess');
       },
       (error) => {
         console.error('Fehler beim Aktualisieren der Aufgabe:', error);
+        this.statusService.showError('updateTaskError');
       }
     );
   }
@@ -163,35 +170,39 @@ openPdfPreview(url: string): void {
   this.showPdfPreview = true;
 }
 
-closePdfPreview(): void {
+closePdfPreview():void {
   this.showPdfPreview = false;
   this.currentPdfUrl = '';
 }
 
   // Löscht eine Aufgabe
   deleteTask(task: Task): void {
-    const payload = { courseName: this.courseName, taskId: task.taskId };
-    
-    this.http.post('http://localhost:3000/api/tasks/admin/deleteTask', payload).subscribe(
-      (response: any) => {
-        alert(response.message || 'Aufgabe wurde erfolgreich gelöscht!');
-        // Aktualisiere die lokale Aufgabenliste oder lade die Daten neu
-        this.loadCourseData();
-      },
-      (error) => {
-        console.error('Fehler beim Löschen der Aufgabe:', error);
-      }
-    );
+    if (this.statusService.confirmAction('deleteConfirm', { name: task.name })) {
+      const payload = { courseName: this.courseName, taskId: task.taskId };
+      
+      this.http.post('http://localhost:3000/api/tasks/admin/deleteTask', payload).subscribe(
+        (response: any) => {
+          this.statusService.showSuccess('deleteTaskSuccess');
+          // Aktualisiere die lokale Aufgabenliste oder lade die Daten neu
+          this.loadCourseData();
+        },
+        (error) => {
+          console.error('Fehler beim Löschen der Aufgabe:', error);
+          this.statusService.showError('deleteTaskError');
+        }
+      );
+    }
   }
 
   updateText(): void {
     const payload = { courseName: this.courseName, textContent: this.textContent };
     this.http.post(`${this.apiUrl}/admin/updateText`, payload).subscribe(
       (response: any) => {
-        alert(response.message || 'Text wurde erfolgreich aktualisiert!');
+        this.statusService.showSuccess('saveSuccess');
       },
       (error) => {
         console.error('Fehler beim Aktualisieren des Textes:', error);
+        this.statusService.showError('updateTextError');
       }
     );
   }

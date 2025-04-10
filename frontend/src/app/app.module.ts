@@ -24,6 +24,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Komponenten
+import { CommonModule } from '@angular/common';
 import { AccountComponent } from './account/account.component';
 import { AdminAufgabeComponent } from './admin-aufgabe/admin-aufgabe.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
@@ -39,6 +40,11 @@ import { EnrollmentDialogComponent } from './user-dashboard/enrollment-dialog/en
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 import { KursComponent } from './user-kurs/user-kurs.component';
 import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.component';
+
+
+
+
+
 
 @NgModule({
   // AppComponent muss hier deklariert werden, damit sie als bootstrap-Komponente verwendet werden kann
@@ -71,6 +77,7 @@ import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.compo
     MatDividerModule,
     MatTooltipModule,
     A11yModule,
+    CommonModule,
 
     // Import standalone components
     LoginComponent,

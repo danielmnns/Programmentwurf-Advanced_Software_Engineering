@@ -1,63 +1,54 @@
 <div class="user-task-container">
     <!-- Zurück-Button -->
     <div class="back-button-container">
-      <button class="btn-back" (click)="navigateBack()">← Zurück zum Kurs</button>
+      <button class="btn-back" (click)="navigateBack()">← {{ 'back' | translate }}</button>
     </div>
   
     <h1>{{ taskName }}</h1>
     <p>{{ taskDescription }}</p>
   
     <div class="upload-section">
-      <h3>Abgabe hochladen</h3>
+      <h3>{{ 'submitWork' | translate }}</h3>
       <input type="file" accept="application/pdf" (change)="handleFileUpload($event)" />
     </div>
   
     <div class="submission-file" *ngIf="submissionFile">
-      <h3>Abgabe</h3>
+      <h3>{{ 'submission' | translate }}</h3>
       <p>
         <a [href]="submissionFile.url" target="_blank">{{ submissionFile.name }}</a>
       </p>
       <!-- Button, der das Lösch-Popup öffnet -->
-      <button class="btn-delete" (click)="openDeletePopup()">Abgabe löschen</button>
+      <button class="btn-delete" (click)="openDeletePopup()">{{ 'delete' | translate }} {{ 'submission' | translate }}</button>
     </div>
   
     <div class="submission-feedback" *ngIf="feedback">
-      <h3>Feedback</h3>
-      <p>Feedback von: <strong>{{ feedback.feedbackFrom }}</strong></p>
+      <h3>{{ 'feedback' | translate }}</h3>
+      <p>{{ 'feedback' | translate }} {{ 'from' | translate }}: <strong>{{ feedback.feedbackFrom }}</strong></p>
       <p>{{ feedback.text }}</p>
     </div>
-  </div>
   
-  <!-- Löschbestätigungspopup -->
-  <div class="modal" *ngIf="showDeletePopup">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h2>Löschbestätigung</h2>
-        <button class="close-btn" (click)="cancelDelete()">✖</button>
-      </div>
-      <div class="modal-body">
-        <p>Möchten Sie die Abgabe wirklich löschen?</p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-confirm" (click)="confirmDelete()">Ja, löschen</button>
-        <button class="btn-cancel" (click)="cancelDelete()">Abbrechen</button>
+    <!-- Löschbestätigungspopup -->
+    <div class="modal" *ngIf="showDeletePopup">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>{{ 'deleteConfirm' | translate }}</h2>
+          <button class="close-btn" (click)="cancelDelete()">✖</button>
+        </div>
+        <div class="modal-body">
+          <p>{{ 'deleteConfirm' | translate }}?</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-confirm" (click)="confirmDelete()">{{ 'confirm' | translate }}</button>
+          <button class="btn-cancel" (click)="cancelDelete()">{{ 'cancel' | translate }}</button>
+        </div>
       </div>
     </div>
-  </div>
   
-  <!-- Benachrichtigungs-Popup -->
-  <div class="modal" *ngIf="showNotification">
-    <div class="modal-content notification">
-      <div class="modal-header">
-        <h2>Hinweis</h2>
-        <button class="close-btn" (click)="closeNotification()">✖</button>
-      </div>
-      <div class="modal-body">
+    <!-- Benachrichtigungs-Popup -->
+    <div class="notification" *ngIf="showNotification">
+      <div class="notification-content">
         <p>{{ notificationMessage }}</p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-confirm" (click)="closeNotification()">OK</button>
+        <button (click)="closeNotification()">{{ 'close' | translate }}</button>
       </div>
     </div>
   </div>
-  

@@ -7,7 +7,7 @@
         class="edit-icon"
         *ngIf="isAuthorized"
         (click)="navigateToAdminCourse(courseName)"
-        title="Kurs bearbeiten"
+        title="{{ 'edit' | translate }}"
       >
         ✏️
       </span>
@@ -16,7 +16,7 @@
       <!-- Beschreibung -->
       <li *ngIf="textContent">
         <mat-card>
-          <mat-card-title>Beschreibung</mat-card-title>
+          <mat-card-title>{{ 'courseDescription' | translate }}</mat-card-title>
           <mat-card-content>
             <p>{{ textContent }}</p>
           </mat-card-content>
@@ -26,12 +26,12 @@
       <!-- Kurs-Dokumente -->
       <li *ngIf="uploadedFiles.documents.length">
         <mat-card>
-          <mat-card-title>Dokumente</mat-card-title>
+          <mat-card-title>{{ 'materials' | translate }}</mat-card-title>
           <mat-card-content>
             <ul>
               <li *ngFor="let file of uploadedFiles.documents">
                 <a [href]="file.url" target="_blank">{{ file.name }}</a>
-                <button (click)="openPdfPreview(file.url)" class="preview-button">Vorschau</button>
+                <button (click)="openPdfPreview(file.url)" class="preview-button">{{ 'preview' | translate }}</button>
               </li>
             </ul>
           </mat-card-content>
@@ -89,7 +89,7 @@
   </div>
 
   <div class="teilnehmer">
-    <h2>Teilnehmer</h2>
+    <h2>{{ 'participants' | translate }}</h2>
     <ul>
       <li *ngFor="let participant of participants">{{ participant }}</li>
     </ul>
@@ -99,10 +99,10 @@
 <!-- Bestätigungsdialog -->
 <div *ngIf="showConfirmationDialog" class="confirmation-dialog">
   <div class="dialog-content">
-    <p>Möchten Sie die Datei "{{ fileToDelete?.name }}" wirklich löschen?</p>
+    <p>{{ 'deleteConfirm' | translate }} "{{ fileToDelete?.name }}"?</p>
     <div class="dialog-actions">
-      <button (click)="deleteFile()" class="confirm-btn">Bestätigen</button>
-      <button (click)="cancelDeletion()" class="cancel-btn">Abbrechen</button>
+      <button (click)="deleteFile()" class="confirm-btn">{{ 'confirm' | translate }}</button>
+      <button (click)="cancelDeletion()" class="cancel-btn">{{ 'cancel' | translate }}</button>
     </div>
   </div>
 </div>

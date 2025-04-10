@@ -10,7 +10,9 @@ import { Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { AuthService } from '../auth/auth.service'; // Adjust the path as necessary
+import { TranslatePipe } from '../pipes/translate.pipe'; // Add this
 import { CourseService } from '../services/course.service'; // Adjust the path as necessary
+import { LanguageService } from '../services/language.service'; // Add this
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -25,7 +27,8 @@ import { CourseService } from '../services/course.service'; // Adjust the path a
     MatButtonModule,
     MatIconModule,
     MatInputModule,
-    MatFormFieldModule
+    MatFormFieldModule,
+    TranslatePipe // Add this
   ]
 })
 export class AdminDashboardComponent {
@@ -38,7 +41,8 @@ export class AdminDashboardComponent {
   constructor(
     private courseService: CourseService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    public languageService: LanguageService // Add this
   ) {}
 
   ngOnInit(): void {

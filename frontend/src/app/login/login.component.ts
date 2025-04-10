@@ -8,6 +8,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { Router } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { TranslatePipe } from '../pipes/translate.pipe';
+import { LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-login',
@@ -21,14 +23,19 @@ import { AuthService } from '../auth/auth.service';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatSelectModule
+    MatSelectModule,
+    TranslatePipe
   ]
 })
 export class LoginComponent {
   username: string = '';
   password: string = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService, 
+    private router: Router,
+    public languageService: LanguageService
+  ) {}
 
   onSubmit(): void {
     console.log('LoginComponent: Login-Formular abgeschickt');

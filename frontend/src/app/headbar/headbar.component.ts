@@ -3,9 +3,12 @@ import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../auth/auth.service';
+import { TranslatePipe } from '../pipes/translate.pipe';
+import { Language, LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-headbar',
@@ -17,7 +20,9 @@ import { AuthService } from '../auth/auth.service';
     RouterModule,
     MatToolbarModule,
     MatButtonModule,
-    MatIconModule
+    MatIconModule,
+    MatMenuModule,
+    TranslatePipe
   ]
 })
 export class HeadbarComponent {
@@ -25,16 +30,29 @@ export class HeadbarComponent {
   currentTime: string = '';
   userName: string | null = '';
   userType: string | null = '';
+  currentLanguage: Language;
 
-  constructor(private router: Router, private authService: AuthService, private http: HttpClient) {}
+  constructor(
+    private router: Router, 
+    private authService: AuthService, 
+    private http: HttpClient,
+    public languageService: LanguageService
+  ) {
+    this.currentLanguage = this.languageService.getCurrentLanguage();
+  }
 
   ngOnInit(): void {
     this.updateDateTime();
     setInterval(() => {
       this.updateDateTime();
-    }, 1000); // Jede Minute aktualisieren
+    }, 1000); // Jede Sekunde aktualisieren
 
     this.loadUserData();
+    
+    // Subscribe to language changes
+    this.languageService.currentLanguage$.subscribe(lang => {
+      this.currentLanguage = lang;
+    });
   }
 
   loadUserData(): void {
@@ -54,11 +72,11 @@ export class HeadbarComponent {
     );
   }
 
-    updateDateTime(): void {
+  updateDateTime(): void {
     const now = new Date();
     this.currentDate = now.toLocaleDateString();
     this.currentTime = now.toLocaleTimeString();
-    }
+  }
 
   navigateToHome(): void {
     if (this.userType === 'admin' || this.userType === 'studiengangsleiter') {
@@ -72,5 +90,23 @@ export class HeadbarComponent {
 
   navigateToAccount(): void {
     this.router.navigate(['/account']);
+  }
+
+  // Change language method
+  changeLanguage(lang: Language): void {
+    // Nutze die verbesserte setLanguage-Methode des LanguageService
+    // Die Angular Change Detection wird innerhalb des Service erzwungen
+    this.languageService.setLanguage(lang);
+    
+    // Das UI wird automatisch aktualisiert durch die Observable-Subscription
+    // in der ngOnInit-Methode
+  }
+
+  getLanguageLabel(): string {
+    return this.languageService.translate(this.currentLanguage === 'de' ? 'german' : 'english');
+  }
+
+  getLanguageFlag(): string {
+    return this.currentLanguage === 'de' ? '🇩🇪' : '🇬🇧';
   }
 }

@@ -4,6 +4,7 @@
       <span 
         class="course-title unenrolled" 
         *ngIf="!course.enrolled"
+        title="{{ 'courseEnrollmentRequired' | translate }}"
       >
         {{ course.title }}
       </span>
@@ -11,6 +12,7 @@
         class="course-title enrolled" 
         *ngIf="course.enrolled" 
         (click)="navigateToCourse(course.title)"
+        title="{{ 'viewCourse' | translate }}"
       >
         {{ course.title }}
       </span>
@@ -18,6 +20,7 @@
         *ngIf="!course.enrolled" 
         class="lock-icon" 
         (click)="openEnrollmentDialog(course.title)"
+        title="{{ 'enrollInCourse' | translate }}"
       >
         🔒
       </span>

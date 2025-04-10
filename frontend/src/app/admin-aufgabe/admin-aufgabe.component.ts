@@ -133,6 +133,6 @@ export class AdminAufgabeComponent implements OnInit {
 
   // Navigiert zurück zur Kursverwaltungs-Seite (Pfad ggf. anpassen)
   navigateBack(): void {
-    this.router.navigate(['/user-kurs', this.courseName]);
+    this.router.navigate(['/admin-kurs', this.courseName]);
   }
 }

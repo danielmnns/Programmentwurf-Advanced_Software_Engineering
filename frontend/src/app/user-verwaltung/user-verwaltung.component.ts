@@ -15,6 +15,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { TranslatePipe } from '../pipes/translate.pipe';
+import { LanguageService } from '../services/language.service';
 
 interface User {
   _id: number;
@@ -53,7 +55,8 @@ interface UserType {
     MatListModule,
     MatIconModule,
     MatCheckboxModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    TranslatePipe
   ]
 })
 export class UserVerwaltungComponent implements OnInit, OnDestroy {
@@ -115,7 +118,8 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private snackBar: MatSnackBar,
     private dialog: MatDialog,
-    private focusMonitor: FocusMonitor
+    private focusMonitor: FocusMonitor,
+    public languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
