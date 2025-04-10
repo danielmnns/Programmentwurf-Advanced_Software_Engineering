@@ -1,20 +1,16 @@
 <!-- Header -->
 <div class="header">
   <div class="home">
-      <mat-icon class="home-icon" (click)="navigateToHome()">home</mat-icon>
-  </div>
-
-  <div class="date-time">
-    <p>{{ currentDate }} | {{ currentTime }}</p>
+    <mat-icon class="home-icon" (click)="navigateToHome()">home</mat-icon>
   </div>
 
   <div class="user-section">
-    <!-- Übersetzung für Sprache anzeigen -->
+    <!-- Sprache -->
     <div class="language">
-      <span>{{ 'language' | translate }}: {{ getLanguageLabel() }}</span>
-      <span class="flag">{{ getLanguageFlag() }}</span>
-      <button mat-button [matMenuTriggerFor]="languageMenu">
+      <button mat-button [matMenuTriggerFor]="languageMenu" class="lang-button">
         <mat-icon>language</mat-icon>
+        <span>{{ getLanguageLabel() }}</span>
+        <span class="flag">{{ getLanguageFlag() }}</span>
       </button>
       <mat-menu #languageMenu="matMenu">
         <button mat-menu-item (click)="changeLanguage('de')">
@@ -26,12 +22,13 @@
       </mat-menu>
     </div>
 
-    <div class="user-info">
-      <!-- Übersetzung für Benutzerrolle -->
-      <span class="user-type">{{ (userType || 'defaultUserType') | translate }}</span>
-      <span class="username">{{ userName }}</span>
-      
-      <mat-icon class="benutzer-icon" (click)="navigateToAccount()">account_circle</mat-icon>
+    <!-- Benutzerinfo -->
+    <div class="user-info" (click)="navigateToAccount()">
+      <div class="user-text">
+        <span class="user-type">{{ (userType || 'defaultUserType') | translate }}</span>
+        <span class="username">{{ userName }}</span>
+      </div>
+      <mat-icon class="benutzer-icon">account_circle</mat-icon>
     </div>
   </div>
 </div>
