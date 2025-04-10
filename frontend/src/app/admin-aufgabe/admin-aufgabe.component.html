@@ -22,19 +22,10 @@
     </div>
   </div>
   
-  <!-- Benachrichtigungs-Popup -->
-  <div class="modal" *ngIf="showNotification">
-    <div class="modal-content notification">
-      <div class="modal-header">
-        <h2>Hinweis</h2>
-        <button class="close-btn" (click)="closeNotification()">✖</button>
-      </div>
-      <div class="modal-body">
-        <p>{{ notificationMessage }}</p>
-      </div>
-      <div class="modal-footer">
-        <button class="btn-confirm" (click)="closeNotification()">OK</button>
-      </div>
+  <!-- Benachrichtigungs-Popup (Toast-Style) -->
+  <div class="notification" *ngIf="showNotification">
+    <div class="notification-content">
+      <p>{{ notificationMessage }}</p>
+      <button (click)="closeNotification()">Schließen</button>
     </div>
   </div>
-  

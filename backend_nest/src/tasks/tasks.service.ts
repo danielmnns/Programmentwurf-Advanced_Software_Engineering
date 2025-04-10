@@ -67,44 +67,49 @@ export class TasksService {
   }
 
   async createSubmission(courseName: string, taskName: string, username: string, file: any): Promise<any> {
-    const task = await this.taskModel.findOne({
-      courseName,
-      taskName,
-    }).exec();
-
-    if (!task) {
-      throw new NotFoundException(`Aufgabe ${taskName} im Kurs ${courseName} nicht gefunden`);
-    }
-
-    // Prüfen ob der Benutzer bereits eine Abgabe hat
-    const existingSubmissionIndex = task.submissions.findIndex(sub => sub.userName === username);
-    
-    const submission = {
-      userName: username,
-      file: {
-        name: file.originalname,
-        url: `/uploads/submissions/${file.filename}`,
-      },
-    };
-
-    if (existingSubmissionIndex >= 0) {
-      // Alte Datei löschen, wenn vorhanden
-      const oldSubmission = task.submissions[existingSubmissionIndex];
-      if (oldSubmission.file && oldSubmission.file.url) {
-        const oldFilePath = path.join(__dirname, '..', '..', oldSubmission.file.url);
-        if (fs.existsSync(oldFilePath)) {
-          fs.unlinkSync(oldFilePath);
-        }
+    try {
+      const task = await this.taskModel.findOne({
+        courseName,
+        taskName,
+      }).exec();
+  
+      if (!task) {
+        throw new NotFoundException(`Aufgabe ${taskName} im Kurs ${courseName} nicht gefunden`);
       }
-      // Bestehende Abgabe aktualisieren
-      task.submissions[existingSubmissionIndex] = submission;
-    } else {
-      // Neue Abgabe hinzufügen
-      task.submissions.push(submission);
+  
+      // Prüfen ob der Benutzer bereits eine Abgabe hat
+      const existingSubmissionIndex = task.submissions.findIndex(sub => sub.userName === username);
+      
+      const submission = {
+        userName: username,
+        file: {
+          name: file.originalname,
+          url: `/uploads/submissions/${file.filename}`,
+        },
+      };
+  
+      if (existingSubmissionIndex >= 0) {
+        // Alte Datei löschen, wenn vorhanden
+        const oldSubmission = task.submissions[existingSubmissionIndex];
+        if (oldSubmission.file && oldSubmission.file.url) {
+          const oldFilePath = path.join(__dirname, '..', '..', oldSubmission.file.url);
+          if (fs.existsSync(oldFilePath)) {
+            fs.unlinkSync(oldFilePath);
+          }
+        }
+        // Bestehende Abgabe aktualisieren
+        task.submissions[existingSubmissionIndex] = submission;
+      } else {
+        // Neue Abgabe hinzufügen
+        task.submissions.push(submission);
+      }
+  
+      await task.save();
+      return { message: 'Abgabe erfolgreich gespeichert', submission };
+    } catch (error) {
+      console.error('Fehler beim Speichern der Abgabe:', error);
+      throw error;
     }
-
-    await task.save();
-    return { message: 'Abgabe erfolgreich gespeichert', submission };
   }
 
   async getSubmissionsForTask(courseName: string, taskName: string): Promise<any> {

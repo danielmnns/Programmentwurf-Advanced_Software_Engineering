@@ -2,26 +2,16 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AuthService } from '../auth/auth.service';
+import { TranslatePipe } from '../pipes/translate.pipe';
 import { FileUrlService } from '../services/file-url.service';
+import { LanguageService } from '../services/language.service';
 
-interface TaskDetails {
-  courseName: string;
-  taskName: string;
-  taskDescription: string;
-  submission?: {
-    file?: {
-      name: string;
-      url: string;
-    },
-    feedback?: {
-      text: string;
-    },
-    feedbackFrom?: string;
-  };
+interface Feedback {
+  text: string;
+  feedbackFrom: string;
 }
 
 @Component({
@@ -29,130 +19,64 @@ interface TaskDetails {
   templateUrl: './user-aufgabe.component.html',
   styleUrls: ['./user-aufgabe.component.css'],
   standalone: true,
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatCardModule,
-    MatButtonModule,
-    RouterModule
-  ]
+  imports: [CommonModule, FormsModule, TranslatePipe]
 })
 export class UserAufgabeComponent implements OnInit {
   courseName: string = '';
   taskName: string = '';
   taskDescription: string = '';
-  description: string = ''; // Add description property
-  submissionFile?: { name: string; url: SafeResourceUrl; originalUrl: string };
-  task?: any; // Define the task property with an appropriate type
-  feedback?: { text: string; feedbackFrom: string };
-  submissionText: string = ''; // Add submissionText property
-  dueDate?: Date | null; // Add dueDate property
-  submissionDate?: Date | null; // Add submissionDate property
-  grade?: number | null; // Add grade property
-  taskId?: string; // Add taskId property
-  uploadedDocuments: { name: string; url: string; originalUrl: string }[] = []; // Add uploadedDocuments property
-  hasSubmission: boolean = false; // Add hasSubmission property
-
-  // Zustände für Popups
+  submissionFile: { name: string, url: SafeResourceUrl } | null = null;
+  feedback: Feedback | null = null;
   showDeletePopup: boolean = false;
   showNotification: boolean = false;
   notificationMessage: string = '';
-  loading: boolean = false; // Lade-Indikator
-  errorMessage: string = ''; // Fehlermeldung für den Benutzer
-
-  private apiUrl = 'http://localhost:3000/api/tasks';
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private http: HttpClient,
-    private sanitizer: DomSanitizer,
-    private fileUrlService: FileUrlService
-  ) {}
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly http: HttpClient,
+    private readonly sanitizer: DomSanitizer,
+    private readonly authService: AuthService,
+    private readonly fileUrlService: FileUrlService,
+    public readonly languageService: LanguageService
+  ) { }
 
-  ngOnInit(): void {
-    this.courseName = this.route.snapshot.paramMap.get('courseName')!;
-    this.taskName = this.route.snapshot.paramMap.get('taskName')!;
-    this.loadTaskData();
+  ngOnInit() {
+    this.route.params.subscribe(params => {
+      this.courseName = params['courseName'];
+      this.taskName = params['taskName'];
+      this.loadTaskDetails();
+    });
   }
 
-  loadTaskData(): void {
-    this.loading = true; // Lade-Indikator anzeigen (falls vorhanden)
+  loadTaskDetails() {
+    const apiUrl = `http://localhost:3000/api/tasks/user-task`;
+    const userName = this.authService.getUserName();
 
-    // Erhalte taskId entweder aus der Klasse oder aus der Route
-    const taskId = this.taskId || this.route.snapshot.paramMap.get('taskId');
-    const courseName = this.courseName || this.route.snapshot.paramMap.get('courseName');
-
-    if (!taskId) {
-      console.error('Keine Aufgaben-ID gefunden');
-      this.loading = false;
-      return;
-    }
-
-    // API-Aufruf für Aufgabendetails
-    this.http.get<any>(`${this.apiUrl}/tasks/${taskId}`).subscribe(
-      (data) => {
-        console.log('Aufgabendaten erhalten:', data);
-
-        // Grundlegende Aufgabeninformationen setzen
-        this.task = data;
-        this.taskName = data.name;
-        this.description = data.description;
-        this.dueDate = data.dueDate ? new Date(data.dueDate) : null;
-
-        // Aufgabendokumente verarbeiten mit konsistenter URL-Transformation
-        if (data.documents && data.documents.length > 0) {
-          this.uploadedDocuments = data.documents.map((doc: { name: string; url: string }) => ({
-            name: doc.name,
-            url: doc.url,  // Der originale URL-String vom Backend
-            originalUrl: this.fileUrlService.getFileUrl(doc.url) // Die transformierte URL für die Anzeige
-          }));
-          console.log('Dokumente geladen:', this.uploadedDocuments);
-        } else {
-          this.uploadedDocuments = [];
-          console.log('Keine Dokumente für diese Aufgabe gefunden');
-        }
-
-        // Einreichungsdaten verarbeiten, falls vorhanden
-        if (data.submission) {
-          this.hasSubmission = true;
-          this.submissionText = data.submission.text || '';
-
-          if (data.submission.file) {
-            this.submissionFile = {
-              name: data.submission.file.name,
-              url: this.fileUrlService.getFileUrl(data.submission.file.url),
-              originalUrl: data.submission.file.url
-            };
+    this.http.get(`${apiUrl}?courseName=${this.courseName}&taskName=${this.taskName}&userName=${userName}`).subscribe({
+      next: (response: any) => {
+        this.taskDescription = response.description || '';
+        
+        // Prüfen, ob eine Abgabe vorhanden ist
+        if (response.submission?.file) {
+          this.submissionFile = {
+            name: response.submission.file.name,
+            url: this.fileUrlService.getFileUrl(response.submission.file.url)
+          };
+          
+          // Prüfen, ob Feedback vorhanden ist
+          if (response.submission.feedback) {
+            this.feedback = response.submission.feedback;
           }
-
-          this.submissionDate = data.submission.submissionDate
-            ? new Date(data.submission.submissionDate)
-            : null;
-
-          this.grade = data.submission.grade || null;
-          this.feedback = data.submission.feedback || '';
-        } else {
-          this.hasSubmission = false;
-          this.submissionText = '';
-          this.submissionFile = undefined;
-          this.submissionDate = null;
-          this.grade = null;
-          this.feedback = { text: '', feedbackFrom: '' };
         }
-
-        this.loading = false; // Lade-Indikator ausblenden
       },
-      (error) => {
-        console.error('Fehler beim Laden der Aufgabendaten:', error);
-        this.loading = false;
-        // Optional: Fehlermeldung für den Benutzer anzeigen
-        this.errorMessage = 'Die Aufgabendaten konnten nicht geladen werden. Bitte versuchen Sie es später erneut.';
+      error: (error) => {
+        console.error('Fehler beim Laden der Aufgabendetails:', error);
       }
-    );
+    });
   }
 
-  handleFileUpload(event: Event): void {
+  handleFileUpload(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
@@ -160,69 +84,67 @@ export class UserAufgabeComponent implements OnInit {
       formData.append('file', file);
       formData.append('courseName', this.courseName);
       formData.append('taskName', this.taskName);
+      
+      const userName = this.authService.getUserName();
+      formData.append('userName', userName || '');
 
-      this.http.post(`${this.apiUrl}/upload`, formData).subscribe(
-        (response) => {
-          console.log('Datei erfolgreich hochgeladen', response);
-          this.showNotificationPopup("Datei erfolgreich hochgeladen.");
-          this.loadTaskData();
+      this.http.post('http://localhost:3000/api/tasks/submit', formData).subscribe({
+        next: (response: any) => {
+          if (response.submission?.file) {
+            this.submissionFile = {
+              name: response.submission.file.name,
+              url: this.fileUrlService.getFileUrl(response.submission.file.url)
+            };
+            this.showNotification = true;
+            this.notificationMessage = 'Datei erfolgreich hochgeladen';
+          }
         },
-        (error) => {
-          console.error('Fehler beim Hochladen der Datei:', error);
-          this.showNotificationPopup("Fehler beim Hochladen der Datei.");
+        error: (error) => {
+          console.error('Fehler beim Hochladen der Abgabe:', error);
+          this.showNotification = true;
+          this.notificationMessage = 'Fehler beim Hochladen der Datei';
         }
-      );
+      });
     }
   }
 
-  // Öffnet das Lösch-Popup
-  openDeletePopup(): void {
+  navigateBack() {
+    this.router.navigate(['/', this.courseName]);
+  }
+
+  openDeletePopup() {
     this.showDeletePopup = true;
   }
 
-  // Bestätigt die Löschung und führt deleteSubmission aus
-  confirmDelete(): void {
-    this.showDeletePopup = false;
-    this.deleteSubmission();
-  }
-
-  // Bricht die Löschung ab
-  cancelDelete(): void {
+  cancelDelete() {
     this.showDeletePopup = false;
   }
 
-  deleteSubmission(): void {
+  confirmDelete() {
+    const apiUrl = `http://localhost:3000/api/tasks/delete-submission`;
     const payload = {
       courseName: this.courseName,
-      taskName: this.taskName
+      taskName: this.taskName,
+      userName: this.authService.getUserName() || '' // Fix auch hier für den Benutzernamen
     };
 
-    this.http.post(`${this.apiUrl}/tasks/delete`, payload).subscribe(
-      (response) => {
-        console.log('Abgabe erfolgreich gelöscht', response);
-        this.showNotificationPopup("Abgabe erfolgreich gelöscht.");
-        this.loadTaskData();
+    this.http.request('delete', apiUrl, { body: payload }).subscribe({
+      next: (response) => {
+        this.submissionFile = null;
+        this.feedback = null;
+        this.showDeletePopup = false;
+        this.showNotification = true;
+        this.notificationMessage = 'Abgabe erfolgreich gelöscht';
       },
-      (error) => {
+      error: (error) => {
         console.error('Fehler beim Löschen der Abgabe:', error);
-        this.showNotificationPopup("Fehler beim Löschen der Abgabe.");
+        this.showNotification = true;
+        this.notificationMessage = 'Fehler beim Löschen der Abgabe';
       }
-    );
+    });
   }
 
-  // Zeigt das Benachrichtigungspopup an
-  showNotificationPopup(message: string): void {
-    this.notificationMessage = message;
-    this.showNotification = true;
-  }
-
-  closeNotification(): void {
+  closeNotification() {
     this.showNotification = false;
-    this.notificationMessage = '';
-  }
-
-  // Navigiert zurück zur ursprünglichen User-Kurs-Seite
-  navigateBack(): void {
-    this.router.navigate(['/user-kurs', this.courseName]);
   }
 }

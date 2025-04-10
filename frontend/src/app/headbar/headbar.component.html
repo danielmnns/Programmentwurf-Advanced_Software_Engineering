@@ -1,13 +1,37 @@
 <!-- Header -->
 <div class="header">
-  <div class="home-icon" (click)="navigateToHome()">🏠</div>
+  <div class="date-time">
+    <p>{{ currentDate }} | {{ currentTime }}</p>
+  </div>
 
   <div class="user-section">
-    <span class="language">🌍 Deutsch (de) ▼</span>
+    <!-- Übersetzung für Sprache anzeigen -->
+    <div class="language">
+      <span>{{ 'language' | translate }}: {{ getLanguageLabel() }}</span>
+      <span class="flag">{{ getLanguageFlag() }}</span>
+      <button mat-button [matMenuTriggerFor]="languageMenu">
+        <mat-icon>language</mat-icon>
+      </button>
+      <mat-menu #languageMenu="matMenu">
+        <button mat-menu-item (click)="changeLanguage('de')">
+          {{ 'german' | translate }} 🇩🇪
+        </button>
+        <button mat-menu-item (click)="changeLanguage('en')">
+          {{ 'english' | translate }} 🇬🇧
+        </button>
+      </mat-menu>
+    </div>
 
-    <div class="user-info" (click)="navigateToAccount()">
-      <p>{{ userName }} ({{ userType }})</p> <!-- Benutzername und Typ anzeigen -->
-      <div class="benutzer-icon">👤</div>
+    <div class="user-info">
+      <!-- Übersetzung für Benutzerrolle -->
+      <span class="user-type">{{ (userType || 'defaultUserType') | translate }}</span>
+      <span class="username">{{ userName }}</span>
+      
+      <mat-icon class="benutzer-icon" (click)="navigateToAccount()">account_circle</mat-icon>
+    </div>
+
+    <div class="home">
+      <mat-icon class="home-icon" (click)="navigateToHome()">home</mat-icon>
     </div>
   </div>
 </div>

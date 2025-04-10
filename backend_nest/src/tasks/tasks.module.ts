@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { MulterModule } from '@nestjs/platform-express';
+import * as fs from 'fs';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { CoursesModule } from '../courses/courses.module';
@@ -15,20 +16,35 @@ import { TasksService } from './tasks.service';
     MongooseModule.forFeature([
       { name: Task.name, schema: TaskSchema },
       { name: Submission.name, schema: SubmissionSchema },
-      { name: Course.name, schema: CourseSchema } // CourseSchema hinzufügen
+      { name: Course.name, schema: CourseSchema }
     ]),
     CoursesModule,
     MulterModule.register({
       storage: diskStorage({
-        destination: './uploads',
+        destination: (req, file, cb) => {
+          // Stellen Sie sicher, dass das Unterverzeichnis existiert
+          const uploadsDir = './uploads';
+          const submissionsDir = './uploads/submissions';
+          
+          if (!fs.existsSync(uploadsDir)) {
+            fs.mkdirSync(uploadsDir);
+          }
+          
+          if (!fs.existsSync(submissionsDir)) {
+            fs.mkdirSync(submissionsDir);
+          }
+          
+          cb(null, submissionsDir);
+        },
         filename: (req, file, cb) => {
-          const randomName = Array(32)
-            .fill(null)
-            .map(() => Math.round(Math.random() * 16).toString(16))
-            .join('');
-          return cb(null, `${randomName}${extname(file.originalname)}`);
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          cb(null, `${uniqueSuffix}${ext}`);
         },
       }),
+      limits: {
+        fileSize: 10 * 1024 * 1024 // 10 MB in Bytes
+      },
     }),
   ],
   controllers: [TasksController],

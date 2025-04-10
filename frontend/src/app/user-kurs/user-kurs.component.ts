@@ -6,7 +6,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { TranslatePipe } from '../pipes/translate.pipe';
 import { FileUrlService } from '../services/file-url.service';
+import { LanguageService } from '../services/language.service';
 
 export interface DocumentFile {
   name: string;
@@ -35,7 +37,8 @@ export interface Task {
     FormsModule,
     MatCardModule,
     MatButtonModule,
-    RouterModule
+    RouterModule,
+    TranslatePipe
   ]
 })
 export class KursComponent implements OnInit, OnDestroy {
@@ -65,7 +68,8 @@ export class KursComponent implements OnInit, OnDestroy {
     private router: Router,
     private http: HttpClient,
     private sanitizer: DomSanitizer,
-    public fileUrlService: FileUrlService
+    public fileUrlService: FileUrlService,
+    public languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
