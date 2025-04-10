@@ -1,21 +1,21 @@
-<h2>Neue Aufgabe erstellen</h2>
+<h2>{{ 'addTask' | translate }}</h2>
 <div class="new-task-container">
   <mat-form-field appearance="outline" class="full-width">
-    <input matInput placeholder="Aufgabenname" [(ngModel)]="taskName" />
+    <input matInput placeholder="{{ 'taskName' | translate }}" [(ngModel)]="taskName" />
   </mat-form-field>
 
   <mat-form-field appearance="outline" class="full-width">
-    <textarea matInput placeholder="Aufgabentext" [(ngModel)]="taskText"></textarea>
+    <textarea matInput placeholder="{{ 'taskDescription' | translate }}" [(ngModel)]="taskText"></textarea>
   </mat-form-field>
 
   <div class="file-upload">
     <input type="file" id="fileInput" multiple (change)="onFileSelected($event)" />
-    <label for="fileInput">📁 Datei auswählen</label>
-    <span id="file-name">Keine Datei ausgewählt</span>
+    <label for="fileInput">📁 {{ 'selectFile' | translate }}</label>
+    <span id="file-name">{{ 'noFileSelected' | translate }}</span>
   </div>
 
   <div class="dialog-actions">
-    <button mat-raised-button color="primary" (click)="createTask()">Erstellen</button>
-    <button mat-raised-button color="warn" (click)="cancel()">Abbrechen</button>
+    <button mat-raised-button color="primary" (click)="createTask()">{{ 'submit' | translate }}</button>
+    <button mat-raised-button color="warn" (click)="cancel()">{{ 'cancel' | translate }}</button>
   </div>
 </div>
