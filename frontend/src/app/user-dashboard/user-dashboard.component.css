@@ -1,8 +1,10 @@
 .course-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding: 16px;
+  width: 90%;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  padding: 10px;
 }
 
 .course-box {
@@ -24,6 +26,8 @@
 
 .course-title {
   font-size: 1.2rem;
+  cursor: pointer;
+  text-decoration: none;
 }
 
 .course-title.unenrolled {
@@ -32,9 +36,8 @@
 }
 
 .course-title.enrolled {
-  color: #1976d2; /* Blau */
+  color: #000;
   cursor: pointer;
-  text-decoration: underline;
 }
 
 .lock-icon {

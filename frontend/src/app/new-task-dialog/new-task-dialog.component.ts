@@ -35,11 +35,21 @@ export class NewTaskDialogComponent {
     @Inject(MAT_DIALOG_DATA) public data: { courseName: string }
   ) {}
 
-  onFileSelected(event: any): void {
-    if (event.target.files) {
-      this.selectedFiles = Array.from(event.target.files);
+  onFileSelected(event: any) {
+  const fileInput = event.target as HTMLInputElement;
+  if (fileInput.files && fileInput.files.length > 0) {
+    const fileNameElement = document.getElementById("file-name");
+    if (fileNameElement) {
+      fileNameElement.textContent = fileInput.files[0].name;
+    }
+  } else {
+    const fileNameElement = document.getElementById("file-name");
+    if (fileNameElement) {
+      fileNameElement.textContent = "Keine Datei ausgewählt";
     }
   }
+}
+
 
   createTask(): void {
     if (!this.taskName || !this.taskText) {

@@ -1,6 +1,13 @@
 <div class="login-container">
   <mat-card>
+
     <h2>{{ 'login' | translate }}</h2>
+
+    <!-- Error Message Box -->
+    <div *ngIf="loginFailed" class="error-message-box">
+      <p>{{ errorMessage }}</p>
+    </div>
+
     <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
       <mat-form-field appearance="fill" class="form-field">
         <mat-label>{{ 'username' | translate }}</mat-label>

@@ -14,12 +14,41 @@
 
 .teilnehmer {
   flex: 1;
-  min-width: 250px;
+  padding: 20px;
+  background-color: #e3f2fd;
+  border-radius: 8px;
+  overflow-y: auto;
+}
+
+.teilnehmer ul {
+  list-style: none;
+  padding: 0;
+}
+
+.teilnehmer li {
+  margin-bottom: 20px;
+}
+
+mat-card{
+    padding: 10px;
 }
 
 /* Kurskopf */
 .course-header {
   margin-bottom: 20px;
+}
+
+.course-header mat-card-title {
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.course-header mat-card-subtitle {
+  margin-top: 10px;
+}
+
+mat-back-button {
+  
 }
 
 /* Allgemeine Karten für Abschnitte */
@@ -81,7 +110,7 @@ mat-list-item {
 /* Container für "Neue Aufgabe hinzufügen" */
 .add-task-container {
   margin-top: 15px;
-  text-align: center;
+  text-align: left;
 }
 
 /* Normale Buttons mit Hover-Effekt */
