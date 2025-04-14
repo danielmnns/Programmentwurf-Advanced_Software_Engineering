@@ -175,24 +175,34 @@ closePdfPreview():void {
   this.currentPdfUrl = '';
 }
 
-  // Löscht eine Aufgabe
-  deleteTask(task: Task): void {
-    if (this.statusService.confirmAction('deleteConfirm', { name: task.name })) {
-      const payload = { courseName: this.courseName, taskId: task.taskId };
-      
-      this.http.post('http://localhost:3000/api/tasks/admin/deleteTask', payload).subscribe(
-        (response: any) => {
-          this.statusService.showSuccess('deleteTaskSuccess');
-          // Aktualisiere die lokale Aufgabenliste oder lade die Daten neu
+// Löscht eine Aufgabe
+deleteTask(task: Task): void {
+  if (this.statusService.confirmAction('deleteConfirm', { name: task.name })) {
+    // Sofort visuell aus der Liste entfernen
+    this.tasks = this.tasks.filter(t => t.taskId !== task.taskId);
+    
+    const payload = { courseName: this.courseName, taskId: task.taskId };
+    
+    this.http.post('http://localhost:3000/api/tasks/admin/deleteTask', payload).subscribe(
+      (response: any) => {
+        console.log('Löschantwort vom Server:', response);
+        this.statusService.showSuccess('deleteTaskSuccess');
+        
+        // Komplette Liste nach kurzer Verzögerung neu laden
+        setTimeout(() => {
           this.loadCourseData();
-        },
-        (error) => {
-          console.error('Fehler beim Löschen der Aufgabe:', error);
-          this.statusService.showError('deleteTaskError');
-        }
-      );
-    }
+        }, 500);
+      },
+      (error) => {
+        console.error('Fehler beim Löschen der Aufgabe:', error);
+        this.statusService.showError('deleteTaskError');
+        
+        // Bei Fehler die Aufgabe wieder zur Liste hinzufügen
+        this.loadCourseData();
+      }
+    );
   }
+}
 
   updateText(): void {
     const payload = { courseName: this.courseName, textContent: this.textContent };

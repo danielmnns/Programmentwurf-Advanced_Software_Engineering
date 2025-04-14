@@ -1,0 +1,48 @@
+erDiagram
+    USER {
+        string ID PK "Primärschlüssel"
+        string Name "Benutzername"
+        string Email "E-Mail-Adresse"
+        string Password "Verschlüsseltes Passwort"
+        enum Role "ADMIN, TEACHER, STUDENT"
+        datetime LastLogin "Letzter Login"
+    }
+    
+    COURSE {
+        string ID PK "Primärschlüssel"
+        string Name "Kursname"
+        string Description "Kursbeschreibung"
+        string CreatedBy FK "Ersteller (FK zu USER)"
+    }
+    
+    MATERIAL {
+        string ID PK "Primärschlüssel"
+        string Title "Titel"
+        string FileURL "Dateipfad"
+        string CourseID FK "Zugehöriger Kurs (FK zu COURSE)"
+    }
+    
+    TASK {
+        string ID PK "Primärschlüssel"
+        string Title "Aufgabentitel"
+        string Description "Aufgabenbeschreibung"
+        datetime Deadline "Abgabefrist"
+        string CourseID FK "Zugehöriger Kurs (FK zu COURSE)"
+        string CreatedBy FK "Ersteller (FK zu USER)"
+    }
+    
+    SUBMISSION {
+        string ID PK "Primärschlüssel"
+        string TaskID FK "Zugehörige Aufgabe (FK zu TASK)"
+        string SubmittedBy FK "Einreichender Benutzer (FK zu USER)"
+        string Grade "Bewertung"
+        string Feedback "Rückmeldung"
+        datetime SubmissionDate "Einreichungsdatum"
+    }
+    
+    USER ||--o{ COURSE : "erstellt >"
+    COURSE ||--o{ MATERIAL : "enthält >"
+    COURSE ||--o{ TASK : "enthält >"
+    USER ||--o{ SUBMISSION : "reicht ein >"
+    TASK ||--o{ SUBMISSION : "gehört zu >"
+    USER }o--o{ COURSE : "nimmt teil >"

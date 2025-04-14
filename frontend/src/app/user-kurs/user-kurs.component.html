@@ -30,8 +30,14 @@
           <mat-card-content>
             <ul>
               <li *ngFor="let file of uploadedFiles.documents">
+                <!-- Debug-Informationen -->
+                <!-- <div style="font-size: 11px; color: #666; margin-bottom: 5px;">
+                  URL: {{file.originalUrl}}
+                </div> -->
+                
+                <!-- Korrigierter Link, der immer auf das PDF zeigt -->
                 <a [href]="file.url" target="_blank">{{ file.name }}</a>
-                <button (click)="openPdfPreview(file.url)" class="preview-button">{{ 'preview' | translate }}</button>
+                <button (click)="openPdfPreview(file.originalUrl || file.url)" class="preview-button">{{ 'preview' | translate }}</button>
               </li>
             </ul>
           </mat-card-content>
@@ -46,37 +52,6 @@
           </mat-card-title>
         </mat-card>
       </li>
-
-      <!-- Allgemeiner Abgabebereich
-      <li>
-        <mat-card>
-          <mat-card-title>Abgabefeld</mat-card-title>
-          <mat-card-content>
-            <input type="file" accept="application/pdf" (change)="handleFileUpload($event, 'abgaben')" />
-            <ul>
-              <li *ngFor="let file of uploadedFiles.abgaben; let i = index">
-                <a [href]="file.url" target="_blank">{{ file.name }}</a>
-                <div class="file-actions">
-                  <button (click)="openPdfPreview(file.url)" class="preview-button">Vorschau</button>
-                  <button (click)="confirmDeletion('abgaben', i)" class="delete-button" aria-label="Datei löschen bestätigen">✖</button>
-                </div>
-              </li>
-            </ul>
-          </mat-card-content>
-        </mat-card>
-      </li>
-    -->
-
-      <!-- Allgemeines Feedback
-      <li *ngIf="feedbackContent">
-        <mat-card>
-          <mat-card-title>Feedback</mat-card-title>
-          <mat-card-content>
-            <p>{{ feedbackContent }}</p>
-          </mat-card-content>
-        </mat-card>
-      </li>
-    -->
     </ul>
 
     <!-- PDF-Vorschau Modal -->

@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Get, Post, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Get, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import * as fs from 'fs';
 import { diskStorage } from 'multer';
@@ -15,7 +15,22 @@ export class TasksController {
     private readonly tasksService: TasksService,
     private readonly coursesService: CoursesService 
   ) {}
-  // Aufgabendetails abrufen
+
+  // Spezifischer Endpunkt für Aufgabendetails (für Studenten)
+  @Get('user-task')
+  @UseGuards(JwtAuthGuard)
+  async getUserTaskDetails(
+    @Query('courseName') courseName: string,
+    @Query('taskName') taskName: string,
+    @Query('userName') userName: string
+  ) {
+    console.log(`Aufgabendetails abgerufen für: Kurs=${courseName}, Aufgabe=${taskName}, Benutzer=${userName}`);
+    const taskDetails = await this.tasksService.getTaskDetailsForStudent(courseName, taskName, userName);
+    console.log('Gefundene Aufgabendetails:', JSON.stringify(taskDetails, null, 2));
+    return taskDetails;
+  }
+  
+  // Aufgabendetails abrufen (allgemein)
   @Get()
   @UseGuards(JwtAuthGuard)
   async getTaskDetails(@Body() payload: { courseName: string; taskName: string }, @Req() req) {
@@ -133,15 +148,32 @@ async uploadSubmission(
   @Post('admin/addTask')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin', 'dozent', 'studiengangsleiter')
-  async addTask(@Body() taskData: any) {
+  @UseInterceptors(FileInterceptor('file', {
+    storage: diskStorage({
+      destination: './uploads/tasks',
+      filename: (req, file, cb) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        const ext = path.extname(file.originalname);
+        cb(null, `${uniqueSuffix}${ext}`);
+      }
+    })
+  }))
+  async addTask(
+    @UploadedFile() file,
+    @Body() taskData: any
+  ) {
     try {
       console.log('Neue Aufgabe wird hinzugefügt:', taskData);
+      console.log('Datei:', file ? file.filename : 'keine');
+      
+      // Expliziter Debug-Log für die Beschreibung
+      console.log('Aufgabenbeschreibung:', taskData.taskDescription);
       
       const task = await this.tasksService.createTask(
         taskData.courseName,
         taskData.taskName,
-        taskData.description || taskData.taskText,
-        null
+        taskData.taskDescription, // Hier den korrekten Feldnamen verwenden
+        file
       );
       
       await this.coursesService.addTaskToCourse(taskData.courseName, task);
