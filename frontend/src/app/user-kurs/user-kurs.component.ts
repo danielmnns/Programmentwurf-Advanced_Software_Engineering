@@ -13,6 +13,7 @@ import { LanguageService } from '../services/language.service';
 export interface DocumentFile {
   name: string;
   url: SafeResourceUrl;
+  originalUrl?: string; // Hinzufügen der originalUrl-Eigenschaft
 }
 
 export interface Submission {
