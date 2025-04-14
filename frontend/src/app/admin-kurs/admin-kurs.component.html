@@ -41,7 +41,7 @@
             <div class="document-item">
               <a [href]="fileUrlService.getFileUrl(doc.url)" target="_blank">{{ doc.name }}</a>
               <button (click)="openPdfPreview(doc.url)" class="preview-button">{{ 'preview' | translate }}</button>
-              <button mat-icon-button color="warn" (click)="removeDocument(doc)" [attr.aria-label]="'removeMaterial' | translate">
+              <button mat-icon-button color="warn" (click)="showDeleteMaterialConfirmationPopup(doc)" [attr.aria-label]="'removeMaterial' | translate">
                 ❌
               </button>
             </div>
@@ -126,5 +126,14 @@
   <div class="pdf-preview-container">
     <button (click)="closePdfPreview()" class="close-button">{{ 'close' | translate }}</button>
     <iframe [src]="currentPdfUrl" width="100%" height="90%"></iframe>
+  </div>
+</div>
+
+<!-- Bestätigungs-Popup für Material löschen -->
+<div class="confirmation-popup" *ngIf="showDeleteMaterialConfirmation">
+  <p>{{ 'deleteConfirm' | translate }} "{{ materialToDelete?.name }}"?</p>
+  <div class="confirmation-buttons">
+    <button (click)="confirmDeleteMaterial()">{{ 'yes' | translate }}</button>
+    <button class="cancel-button" (click)="cancelDeleteMaterial()">{{ 'no' | translate }}</button>
   </div>
 </div>

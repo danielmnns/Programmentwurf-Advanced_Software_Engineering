@@ -54,6 +54,8 @@ export class AdminKursComponent implements OnInit {
   participants: string[] = [];
   uploadedDocuments: DocumentFile[] = [];
   tasks: Task[] = [];
+  showDeleteMaterialConfirmation: boolean = false;
+  materialToDelete: DocumentFile | null = null;
 
   private apiUrl = 'http://localhost:3000/api/courses';
 
@@ -72,6 +74,26 @@ export class AdminKursComponent implements OnInit {
     const encodedCourseName = this.route.snapshot.paramMap.get('courseName')!;
     this.courseName = decodeURIComponent(encodedCourseName);
     this.loadCourseData();
+  }
+
+  // Show material deletion confirmation popup
+  showDeleteMaterialConfirmationPopup(doc: DocumentFile): void {
+    this.materialToDelete = doc;
+    this.showDeleteMaterialConfirmation = true;
+  }
+
+  // Confirm material deletion
+  confirmDeleteMaterial(): void {
+    if (this.materialToDelete) {
+      this.removeDocument(this.materialToDelete);
+      this.cancelDeleteMaterial();
+    }
+  }
+
+  // Cancel material deletion
+  cancelDeleteMaterial(): void {
+    this.showDeleteMaterialConfirmation = false;
+    this.materialToDelete = null;
   }
 
   // remove documents
