@@ -47,9 +47,29 @@ mat-card{
   margin-top: 10px;
 }
 
-mat-back-button {
-  
+.back-button {
+  background-color: #007bff; /* Einheitliches Blau */
+  color: white; /* Weißer Text */
+  font-size: 16px; /* Gleiche Schriftgröße */
+  padding: 10px 20px; /* Einheitliche Größe */
+  border: none;
+  border-radius: 8px; /* Abgerundete Ecken */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Einheitlicher Schatten */
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s; /* Einheitliche Übergänge */
+  text-align: center; /* Zentrierter Text */
 }
+
+.back-button:hover {
+  transform: scale(1.05); /* Leichtes Vergrößern beim Hover */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Stärkerer Schatten */
+}
+
+.back-button:active {
+  transform: scale(0.98); /* Leichtes Schrumpfen beim Klick */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Weniger Schatten */
+}
+
 
 /* Allgemeine Karten für Abschnitte */
 .section-card {
@@ -165,5 +185,170 @@ mat-list-item {
 mat-list-item {
   height: auto !important;
   margin-bottom: 8px;
+}
+
+/* PDF Preview Overlay */
+.pdf-preview-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pdf-preview-container {
+  width: 90%;
+  height: 90%;
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+/* Material Deletion Confirmation Popup */
+.confirmation-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  text-align: center;
+  min-width: 300px;
+  max-width: 80%;
+}
+
+.confirmation-popup p {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.confirmation-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+}
+
+.confirmation-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  background-color: #007bff;
+  color: white;
+}
+
+.confirmation-buttons button:hover {
+  background-color: #0056b3;
+}
+
+.confirmation-buttons button.cancel-button {
+  background-color: #f44336;
+}
+
+.confirmation-buttons button.cancel-button:hover {
+  background-color: #d32f2f;
+}
+
+/* Material Creation Success Popup */
+.success-confirmation-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  animation: fadeInPopup 0.3s ease-out;
+}
+
+@keyframes fadeInPopup {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.success-confirmation-popup .popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 5px solid #4caf50;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  min-width: 300px;
+  max-width: 90%;
+  text-align: center;
+}
+
+.success-confirmation-popup h3 {
+  color: #4caf50;
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.success-confirmation-popup p {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.popup-buttons button {
+  padding: 8px 24px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.popup-buttons button:hover {
+  background-color: #388e3c;
+}
+
+/* Material Removal Success Popup */
+.success-confirmation-popup.removal-popup .popup-content {
+  border-left: 5px solid #ff5722; /* Orange accent color for removal */
+}
+
+.success-confirmation-popup.removal-popup h3 {
+  color: #ff5722; /* Orange text color for removal */
+}
+
+.success-confirmation-popup.removal-popup .popup-buttons button {
+  background-color: #ff5722; /* Orange button for removal */
+}
+
+.success-confirmation-popup.removal-popup .popup-buttons button:hover {
+  background-color: #e64a19; /* Darker orange on hover */
 }
 

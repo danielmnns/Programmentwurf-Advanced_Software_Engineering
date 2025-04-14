@@ -1,18 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms'; // Add this import
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field'; // Add this
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input'; // Add this
+import { MatInputModule } from '@angular/material/input';
 import { Router, RouterModule } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
-import { AuthService } from '../auth/auth.service'; // Adjust the path as necessary
-import { TranslatePipe } from '../pipes/translate.pipe'; // Add this
-import { CourseService } from '../services/course.service'; // Adjust the path as necessary
-import { LanguageService } from '../services/language.service'; // Add this
+import { AuthService } from '../auth/auth.service';
+import { TranslatePipe } from '../pipes/translate.pipe';
+import { CourseService } from '../services/course.service';
+import { LanguageService } from '../services/language.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -21,14 +21,14 @@ import { LanguageService } from '../services/language.service'; // Add this
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule, // Required for ngModel binding
+    FormsModule,
     RouterModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
     MatInputModule,
     MatFormFieldModule,
-    TranslatePipe // Add this
+    TranslatePipe
   ]
 })
 export class AdminDashboardComponent {
@@ -36,13 +36,16 @@ export class AdminDashboardComponent {
   isAdmin: boolean = false;
   showAddCourseModal: boolean = false;
   newCourseTitle: string = '';
+  showSuccessPopup: boolean = false;
+  showDeleteConfirmation: boolean = false;
+  courseToDelete: any = null;
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
     private courseService: CourseService,
     private router: Router,
     private authService: AuthService,
-    public languageService: LanguageService // Add this
+    public languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
@@ -62,32 +65,34 @@ export class AdminDashboardComponent {
     );
   }
 
-  // Modal zum Hinzufügen eines Kurses öffnen
   openAddCourseModal(): void {
     this.showAddCourseModal = true;
   }
 
-  // Modal schließen
   closeAddCourseModal(): void {
     this.showAddCourseModal = false;
     this.newCourseTitle = '';
   }
 
-  // Kurs hinzufügen
   addCourse(): void {
     if (!this.newCourseTitle.trim()) {
       alert('Bitte geben Sie einen Kursnamen ein.');
       return;
     }
 
-    const kursName = this.newCourseTitle; // Kursnamen für die Nachricht sichern
+    const kursName = this.newCourseTitle;
     const newCourse = { title: kursName };
 
     this.courseService.addCourse(newCourse).subscribe(
       (response) => {
         this.courses.push(response);
-        alert(`Kurs "${kursName}" wurde erfolgreich hinzugefügt.`);
         this.closeAddCourseModal();
+
+        // Popup anzeigen
+        this.showSuccessPopup = true;
+        setTimeout(() => {
+          this.showSuccessPopup = false;
+        }, 3000);
       },
       (error) => {
         console.error('Fehler beim Hinzufügen des Kurses:', error);
@@ -96,7 +101,6 @@ export class AdminDashboardComponent {
     );
   }
 
-  // Methode zur Admin-Prüfung
   checkAdmin(): void {
     this.isAdmin = this.authService.getUserType() === 'admin';
   }
@@ -109,7 +113,6 @@ export class AdminDashboardComponent {
     this.router.navigate(['/admin-kurs', encodeURIComponent(courseName)]);
   }
 
-  // Methode zur Navigation zur User-Verwaltung
   navigateToUserVerwaltung(): void {
     this.router.navigate(['/user-verwaltung']);
   }
@@ -131,5 +134,22 @@ export class AdminDashboardComponent {
           console.error('Fehler beim Löschen des Kurses:', error);
         }
       });
+  }
+
+  showDeleteConfirmationPopup(course: any): void {
+    this.showDeleteConfirmation = true;
+    this.courseToDelete = course;
+  }
+
+  confirmDeleteCourse(): void {
+    if (this.courseToDelete) {
+      this.deleteCourse(this.courseToDelete);
+      this.cancelDeleteCourse();
+    }
+  }
+
+  cancelDeleteCourse(): void {
+    this.showDeleteConfirmation = false;
+    this.courseToDelete = null;
   }
 }

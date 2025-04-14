@@ -5,9 +5,8 @@
     <mat-card class="course-header">
       <mat-card-title>{{ courseName }}</mat-card-title>
       <mat-card-subtitle>
-
-        <button mat-icon-button (click)="router.navigate(['/user-kurs', courseName])" [attr.aria-label]="'courseDetails' | translate">
-          <mat-icon></mat-icon>
+        <button class="back-button" (click)="router.navigate(['/user-kurs', courseName])" [attr.aria-label]="'courseDetails' | translate">
+          {{ 'back' | translate }}
         </button>
       </mat-card-subtitle>
     </mat-card>
@@ -42,7 +41,7 @@
             <div class="document-item">
               <a [href]="fileUrlService.getFileUrl(doc.url)" target="_blank">{{ doc.name }}</a>
               <button (click)="openPdfPreview(doc.url)" class="preview-button">{{ 'preview' | translate }}</button>
-              <button mat-icon-button color="warn" (click)="removeDocument(doc)" [attr.aria-label]="'removeMaterial' | translate">
+              <button mat-icon-button color="warn" (click)="showDeleteMaterialConfirmationPopup(doc)" [attr.aria-label]="'removeMaterial' | translate">
                 ❌
               </button>
             </div>
@@ -127,5 +126,47 @@
   <div class="pdf-preview-container">
     <button (click)="closePdfPreview()" class="close-button">{{ 'close' | translate }}</button>
     <iframe [src]="currentPdfUrl" width="100%" height="90%"></iframe>
+  </div>
+</div>
+
+<!-- Bestätigungs-Popup für Material löschen -->
+<div class="confirmation-popup" *ngIf="showDeleteMaterialConfirmation">
+  <p>{{ 'deleteConfirm' | translate }} "{{ materialToDelete?.name }}"?</p>
+  <div class="confirmation-buttons">
+    <button (click)="confirmDeleteMaterial()">{{ 'yes' | translate }}</button>
+    <button class="cancel-button" (click)="cancelDeleteMaterial()">{{ 'no' | translate }}</button>
+  </div>
+</div>
+
+<!-- Bestätigungs-Popup für Material erstellen -->
+<div class="success-confirmation-popup" *ngIf="showMaterialCreationConfirmation">
+  <div class="popup-content">
+    <h3>{{ 'materialCreatedSuccess' | translate }}</h3>
+    <p>"{{ createdMaterialName }}" {{ 'wasSuccessfullyAdded' | translate }}</p>
+    <div class="popup-buttons">
+      <button (click)="hideMaterialCreationPopup()">{{ 'ok' | translate }}</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bestätigungs-Popup für Aufgaben-Material erstellen -->
+<div class="success-confirmation-popup" *ngIf="showTaskMaterialConfirmation">
+  <div class="popup-content">
+    <h3>{{ 'taskMaterialCreatedSuccess' | translate }}</h3>
+    <p>"{{ createdTaskMaterialName }}" {{ 'wasSuccessfullyAddedToTask' | translate }} "{{ currentTaskForMaterial?.name }}"</p>
+    <div class="popup-buttons">
+      <button (click)="hideTaskMaterialCreationPopup()">{{ 'ok' | translate }}</button>
+    </div>
+  </div>
+</div>
+
+<!-- Erfolgsmeldung für Material löschen -->
+<div class="success-confirmation-popup removal-popup" *ngIf="showMaterialRemovalSuccess">
+  <div class="popup-content">
+    <h3>{{ 'materialRemovedSuccess' | translate }}</h3>
+    <p>"{{ removedMaterialName }}" {{ 'wasSuccessfullyRemoved' | translate }}</p>
+    <div class="popup-buttons">
+      <button (click)="hideMaterialRemovalSuccessPopup()">{{ 'ok' | translate }}</button>
+    </div>
   </div>
 </div>

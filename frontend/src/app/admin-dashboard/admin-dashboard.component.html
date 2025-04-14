@@ -41,6 +41,27 @@
         >
           🗑️
         </span>
+        
+        <!-- Container für Stift- und Mülleimer-Icons -->
+        <div class="icon-container">
+          <!-- Stift-Icon zur Admin-Kurs-Seite -->
+          <span 
+            class="edit-icon" 
+            (click)="navigateToAdminKurs(course.title)" 
+            title="{{ 'edit' | translate }}"
+          >
+            ✏️
+          </span>
+          
+          <!-- Mülleimer-Icon zum Löschen des Kurses -->
+          <span 
+            class="delete-icon" 
+            (click)="showDeleteConfirmationPopup(course)" 
+            title="{{ 'delete' | translate }}"
+          >
+            🗑️
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -60,5 +81,19 @@
       <button (click)="addCourse()">{{ 'submit' | translate }}</button>
       <button class="cancel-button" (click)="closeAddCourseModal()">{{ 'cancel' | translate }}</button>
     </div>
+  </div>
+</div>
+
+<!-- Erfolgs-Popup -->
+<div class="success-popup" *ngIf="showSuccessPopup">
+  ✅ {{ 'courseCreatedSuccess' | translate }}
+</div>
+
+<!-- Bestätigungs-Popup für Kurs löschen -->
+<div class="confirmation-popup" *ngIf="showDeleteConfirmation">
+  <p>{{ 'confirmDeleteCourse' | translate }}</p>
+  <div class="confirmation-buttons">
+    <button (click)="confirmDeleteCourse()">{{ 'yes' | translate }}</button>
+    <button class="cancel-button" (click)="cancelDeleteCourse()">{{ 'no' | translate }}</button>
   </div>
 </div>
