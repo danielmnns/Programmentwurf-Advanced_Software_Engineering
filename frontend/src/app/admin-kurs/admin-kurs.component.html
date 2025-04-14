@@ -5,9 +5,8 @@
     <mat-card class="course-header">
       <mat-card-title>{{ courseName }}</mat-card-title>
       <mat-card-subtitle>
-
-        <button mat-icon-button (click)="router.navigate(['/user-kurs', courseName])" [attr.aria-label]="'courseDetails' | translate">
-          <mat-icon></mat-icon>
+        <button class="back-button" (click)="router.navigate(['/user-kurs', courseName])" [attr.aria-label]="'courseDetails' | translate">
+          {{ 'back' | translate }}
         </button>
       </mat-card-subtitle>
     </mat-card>
