@@ -26,12 +26,7 @@ Das System unterstützt mehrere Benutzerrollen, Mehrsprachigkeit und Datenexport
 - Erstellung und Veröffentlichung von Aufgaben.
 - Verwaltung der Kursstruktur.
 
-### **4. Sekretärin**
-- Verwaltung der Studentenprofile und deren Einschreibung in Kurse.
-- Organisation von Semesterplänen.
-- Unterstützung bei administrativen Aufgaben.
-
-### **5. Student**
+### **4. Student**
 - Zugriff auf zugewiesene Kurse und Inhalte.
 - Abgabe von Aufgaben.
 - Einsehen von Bewertungen und Kommentaren.
@@ -45,20 +40,12 @@ Das System unterstützt mehrere Benutzerrollen, Mehrsprachigkeit und Datenexport
   - Hinzufügen und Verwalten von Teilnehmern.
   - Übersicht der Kursaktivitäten.
 - **Materialmanagement:**
-  - Hochladen und Organisieren von Lernmaterialien (PDFs, Videos, Präsentationen).
+  - Hochladen und Organisieren von Lernmaterialien (PDFs).
   - Zuweisung von Materialien zu spezifischen Modulen oder Themen.
 - **Aufgabenmanagement:**
   - Erstellung von Aufgaben mit Deadlines.
   - Einsicht und Bewertung eingereichter Aufgaben.
   - Kommentierung von Studentenarbeiten.
-
-### **Für Sekretärinnen**
-- **Studentenverwaltung:**
-  - Hinzufügen und Entfernen von Studierenden.
-  - Einschreibung in Kurse und Zuweisung zu Dozenten.
-  - Verwaltung von Stammdaten (z. B. E-Mail, Matrikelnummer).
-- **Berichts- und Exportfunktionen:**
-  - Export von Teilnehmerlisten und Kursübersichten als CSV oder PDF.
 
 ### **Für Studenten**
 - **Kurszugriff:**
@@ -145,7 +132,7 @@ Das System unterstützt mehrere Benutzerrollen, Mehrsprachigkeit und Datenexport
 ---
 
 ## Wie die Anforderungen umgesetzt werden
-- **Vier Hauptrollen (plus Sekretärin):**  
+- **Vier Hauptrollen:**  
   Klare Trennung der Verantwortlichkeiten.
 - **Mehrsprachigkeit:**  
   Unterstützung von Deutsch und Englisch.

@@ -13,6 +13,7 @@ import { LanguageService } from '../services/language.service';
 export interface DocumentFile {
   name: string;
   url: SafeResourceUrl;
+  originalUrl?: string; // Hinzufügen der originalUrl-Eigenschaft
 }
 
 export interface Submission {
@@ -137,8 +138,9 @@ export class KursComponent implements OnInit, OnDestroy {
             if (task.documents) {
               task.documents = task.documents.map((doc: any) => ({
                 name: doc.name,
-                // Absolute URL verwenden
-                url: this.sanitizer.bypassSecurityTrustResourceUrl(`http://localhost:3000${doc.url}`),
+                // Verwende den fileUrlService für einheitliche URL-Verarbeitung
+                originalUrl: doc.url,
+                url: this.fileUrlService.getFileUrl(doc.url),
               }));
             }
             return task as Task;
