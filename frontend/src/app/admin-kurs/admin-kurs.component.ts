@@ -56,6 +56,13 @@ export class AdminKursComponent implements OnInit {
   tasks: Task[] = [];
   showDeleteMaterialConfirmation: boolean = false;
   materialToDelete: DocumentFile | null = null;
+  showMaterialCreationConfirmation: boolean = false;
+  createdMaterialName: string = '';
+  showTaskMaterialConfirmation: boolean = false;
+  createdTaskMaterialName: string = '';
+  currentTaskForMaterial: Task | null = null;
+  showMaterialRemovalSuccess: boolean = false;
+  removedMaterialName: string = '';
 
   private apiUrl = 'http://localhost:3000/api/courses';
 
@@ -96,6 +103,23 @@ export class AdminKursComponent implements OnInit {
     this.materialToDelete = null;
   }
 
+  // Show material removal success popup
+  showMaterialRemovalSuccessPopup(fileName: string): void {
+    this.removedMaterialName = fileName;
+    this.showMaterialRemovalSuccess = true;
+    
+    // Auto-hide the success message after 3 seconds
+    setTimeout(() => {
+      this.hideMaterialRemovalSuccessPopup();
+    }, 3000);
+  }
+
+  // Hide material removal success popup
+  hideMaterialRemovalSuccessPopup(): void {
+    this.showMaterialRemovalSuccess = false;
+    this.removedMaterialName = '';
+  }
+
   // remove documents
   removeDocument(doc: DocumentFile): void {
     const payload = {
@@ -106,6 +130,8 @@ export class AdminKursComponent implements OnInit {
     this.http.request('delete', `${this.apiUrl}/admin/removeDocument`, { body: payload }).subscribe(
       (response: any) => {
         this.uploadedDocuments = this.uploadedDocuments.filter(d => d.name !== doc.name);
+        // Show the removal success popup
+        this.showMaterialRemovalSuccessPopup(doc.name);
         this.statusService.showSuccess('removeMaterialSuccess', { name: doc.name });
       },
       (error) => {
@@ -145,6 +171,32 @@ export class AdminKursComponent implements OnInit {
   );
   }
 
+  // Show material creation confirmation popup
+  showMaterialCreationPopup(fileName: string): void {
+    this.createdMaterialName = fileName;
+    this.showMaterialCreationConfirmation = true;
+  }
+
+  // Hide material creation confirmation popup
+  hideMaterialCreationPopup(): void {
+    this.showMaterialCreationConfirmation = false;
+    this.createdMaterialName = '';
+  }
+  
+  // Show task material creation confirmation popup
+  showTaskMaterialCreationPopup(fileName: string, task: Task): void {
+    this.createdTaskMaterialName = fileName;
+    this.currentTaskForMaterial = task;
+    this.showTaskMaterialConfirmation = true;
+  }
+  
+  // Hide task material creation confirmation popup
+  hideTaskMaterialCreationPopup(): void {
+    this.showTaskMaterialConfirmation = false;
+    this.createdTaskMaterialName = '';
+    this.currentTaskForMaterial = null;
+  }
+
   // Methode zum Upload allgemeiner Kursdokumente
   handleDocumentUpload(event: Event): void {
     const input = event.target as HTMLInputElement;
@@ -154,10 +206,10 @@ export class AdminKursComponent implements OnInit {
       formData.append('file', file);
       formData.append('courseName', this.courseName);
 
-
       this.http.post(`${this.apiUrl}/admin/addDocument`, formData).subscribe(
         (response: any) => {
-          this.statusService.showSuccess('addMaterialSuccess');
+          // Show confirmation popup with file name
+          this.showMaterialCreationPopup(file.name);
           this.loadCourseData();
         },
         (error) => {
@@ -257,6 +309,9 @@ closePdfPreview():void {
               name: response.document.name,
               url: this.fileUrlService.getFileUrl(response.document.url) as string
             });
+            
+            // Show confirmation popup for task material creation
+            this.showTaskMaterialCreationPopup(file.name, task);
             
             // Nach dem Hinzufügen die Aufgabe aktualisieren
             this.updateTask(task);

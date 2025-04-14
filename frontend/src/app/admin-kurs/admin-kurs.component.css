@@ -272,3 +272,83 @@ mat-list-item {
   background-color: #d32f2f;
 }
 
+/* Material Creation Success Popup */
+.success-confirmation-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1000;
+  animation: fadeInPopup 0.3s ease-out;
+}
+
+@keyframes fadeInPopup {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.success-confirmation-popup .popup-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 5px solid #4caf50;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  min-width: 300px;
+  max-width: 90%;
+  text-align: center;
+}
+
+.success-confirmation-popup h3 {
+  color: #4caf50;
+  margin-top: 0;
+  font-size: 18px;
+}
+
+.success-confirmation-popup p {
+  margin-bottom: 20px;
+  font-size: 16px;
+}
+
+.popup-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.popup-buttons button {
+  padding: 8px 24px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.popup-buttons button:hover {
+  background-color: #388e3c;
+}
+
+/* Material Removal Success Popup */
+.success-confirmation-popup.removal-popup .popup-content {
+  border-left: 5px solid #ff5722; /* Orange accent color for removal */
+}
+
+.success-confirmation-popup.removal-popup h3 {
+  color: #ff5722; /* Orange text color for removal */
+}
+
+.success-confirmation-popup.removal-popup .popup-buttons button {
+  background-color: #ff5722; /* Orange button for removal */
+}
+
+.success-confirmation-popup.removal-popup .popup-buttons button:hover {
+  background-color: #e64a19; /* Darker orange on hover */
+}
+

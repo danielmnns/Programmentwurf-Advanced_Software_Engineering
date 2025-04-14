@@ -137,3 +137,36 @@
     <button class="cancel-button" (click)="cancelDeleteMaterial()">{{ 'no' | translate }}</button>
   </div>
 </div>
+
+<!-- Bestätigungs-Popup für Material erstellen -->
+<div class="success-confirmation-popup" *ngIf="showMaterialCreationConfirmation">
+  <div class="popup-content">
+    <h3>{{ 'materialCreatedSuccess' | translate }}</h3>
+    <p>"{{ createdMaterialName }}" {{ 'wasSuccessfullyAdded' | translate }}</p>
+    <div class="popup-buttons">
+      <button (click)="hideMaterialCreationPopup()">{{ 'ok' | translate }}</button>
+    </div>
+  </div>
+</div>
+
+<!-- Bestätigungs-Popup für Aufgaben-Material erstellen -->
+<div class="success-confirmation-popup" *ngIf="showTaskMaterialConfirmation">
+  <div class="popup-content">
+    <h3>{{ 'taskMaterialCreatedSuccess' | translate }}</h3>
+    <p>"{{ createdTaskMaterialName }}" {{ 'wasSuccessfullyAddedToTask' | translate }} "{{ currentTaskForMaterial?.name }}"</p>
+    <div class="popup-buttons">
+      <button (click)="hideTaskMaterialCreationPopup()">{{ 'ok' | translate }}</button>
+    </div>
+  </div>
+</div>
+
+<!-- Erfolgsmeldung für Material löschen -->
+<div class="success-confirmation-popup removal-popup" *ngIf="showMaterialRemovalSuccess">
+  <div class="popup-content">
+    <h3>{{ 'materialRemovedSuccess' | translate }}</h3>
+    <p>"{{ removedMaterialName }}" {{ 'wasSuccessfullyRemoved' | translate }}</p>
+    <div class="popup-buttons">
+      <button (click)="hideMaterialRemovalSuccessPopup()">{{ 'ok' | translate }}</button>
+    </div>
+  </div>
+</div>
