@@ -47,9 +47,29 @@ mat-card{
   margin-top: 10px;
 }
 
-mat-back-button {
-  
+.back-button {
+  background-color: #007bff; /* Einheitliches Blau */
+  color: white; /* Weißer Text */
+  font-size: 16px; /* Gleiche Schriftgröße */
+  padding: 10px 20px; /* Einheitliche Größe */
+  border: none;
+  border-radius: 8px; /* Abgerundete Ecken */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Einheitlicher Schatten */
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s; /* Einheitliche Übergänge */
+  text-align: center; /* Zentrierter Text */
 }
+
+.back-button:hover {
+  transform: scale(1.05); /* Leichtes Vergrößern beim Hover */
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Stärkerer Schatten */
+}
+
+.back-button:active {
+  transform: scale(0.98); /* Leichtes Schrumpfen beim Klick */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Weniger Schatten */
+}
+
 
 /* Allgemeine Karten für Abschnitte */
 .section-card {
