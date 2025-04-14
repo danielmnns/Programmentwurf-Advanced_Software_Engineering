@@ -156,3 +156,44 @@
   90% { opacity: 1; transform: translateY(0); }
   100% { opacity: 0; transform: translateY(20px); }
 }
+
+/* Bestätigungs-Popup für Kurs löschen */
+.confirmation-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  text-align: center;
+}
+
+.confirmation-buttons {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 15px;
+}
+
+.confirmation-buttons button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.confirmation-buttons button:hover {
+  background-color: #0056b3;
+}
+
+.confirmation-buttons button.cancel-button {
+  background-color: #f44336;
+}
+
+.confirmation-buttons button.cancel-button:hover {
+  background-color: #d32f2f;
+}

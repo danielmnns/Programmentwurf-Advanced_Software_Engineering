@@ -37,6 +37,8 @@ export class AdminDashboardComponent {
   showAddCourseModal: boolean = false;
   newCourseTitle: string = '';
   showSuccessPopup: boolean = false;
+  showDeleteConfirmation: boolean = false;
+  courseToDelete: any = null;
   private destroy$: Subject<void> = new Subject<void>();
 
   constructor(
@@ -132,5 +134,22 @@ export class AdminDashboardComponent {
           console.error('Fehler beim Löschen des Kurses:', error);
         }
       });
+  }
+
+  showDeleteConfirmationPopup(course: any): void {
+    this.showDeleteConfirmation = true;
+    this.courseToDelete = course;
+  }
+
+  confirmDeleteCourse(): void {
+    if (this.courseToDelete) {
+      this.deleteCourse(this.courseToDelete);
+      this.cancelDeleteCourse();
+    }
+  }
+
+  cancelDeleteCourse(): void {
+    this.showDeleteConfirmation = false;
+    this.courseToDelete = null;
   }
 }

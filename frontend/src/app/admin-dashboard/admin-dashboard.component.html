@@ -39,7 +39,7 @@
           <!-- Mülleimer-Icon zum Löschen des Kurses -->
           <span 
             class="delete-icon" 
-            (click)="deleteCourse(course)" 
+            (click)="showDeleteConfirmationPopup(course)" 
             title="{{ 'delete' | translate }}"
           >
             🗑️
@@ -70,4 +70,13 @@
 <!-- Erfolgs-Popup -->
 <div class="success-popup" *ngIf="showSuccessPopup">
   ✅ {{ 'courseCreatedSuccess' | translate }}
+</div>
+
+<!-- Bestätigungs-Popup für Kurs löschen -->
+<div class="confirmation-popup" *ngIf="showDeleteConfirmation">
+  <p>{{ 'confirmDeleteCourse' | translate }}</p>
+  <div class="confirmation-buttons">
+    <button (click)="confirmDeleteCourse()">{{ 'yes' | translate }}</button>
+    <button class="cancel-button" (click)="cancelDeleteCourse()">{{ 'no' | translate }}</button>
+  </div>
 </div>
