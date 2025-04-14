@@ -27,7 +27,7 @@ import { TranslatePipe } from '../pipes/translate.pipe';
 export class NewTaskDialogComponent {
   taskName: string = '';
   taskText: string = '';
-  selectedFiles: File[] = [];
+  selectedFile: File | null = null;
 
   private apiUrl = 'http://localhost:3000/api';
 
@@ -38,36 +38,40 @@ export class NewTaskDialogComponent {
   ) {}
 
   onFileSelected(event: any) {
-  const fileInput = event.target as HTMLInputElement;
-  if (fileInput.files && fileInput.files.length > 0) {
-    const fileNameElement = document.getElementById("file-name");
-    if (fileNameElement) {
-      fileNameElement.textContent = fileInput.files[0].name;
-    }
-  } else {
-    const fileNameElement = document.getElementById("file-name");
-    if (fileNameElement) {
-      fileNameElement.textContent = "Keine Datei ausgewählt";
+    const fileInput = event.target as HTMLInputElement;
+    if (fileInput.files && fileInput.files.length > 0) {
+      this.selectedFile = fileInput.files[0];
+      const fileNameElement = document.getElementById("file-name");
+      if (fileNameElement) {
+        fileNameElement.textContent = this.selectedFile.name;
+      }
+    } else {
+      this.selectedFile = null;
+      const fileNameElement = document.getElementById("file-name");
+      if (fileNameElement) {
+        fileNameElement.textContent = "Keine Datei ausgewählt";
+      }
     }
   }
-}
-
 
   createTask(): void {
     if (!this.taskName || !this.taskText) {
       alert('Bitte Aufgabenname und Aufgabentext eingeben!');
       return;
     }
-  
-    // Payload für Backend erstellen
-    const taskData = {
-      courseName: this.data.courseName,
-      taskName: this.taskName,
-      description: this.taskText
-    };
     
+    // FormData für Dateiupload erstellen
+    const formData = new FormData();
+    formData.append('courseName', this.data.courseName);
+    formData.append('taskName', this.taskName);
+    formData.append('taskDescription', this.taskText); // Hier den korrekten Feldnamen verwenden
     
-    this.http.post(`${this.apiUrl}/tasks/admin/addTask`, taskData).subscribe(
+    // Füge die Datei hinzu, wenn eine ausgewählt wurde
+    if (this.selectedFile) {
+      formData.append('file', this.selectedFile);
+    }
+    
+    this.http.post(`${this.apiUrl}/tasks/admin/addTask`, formData).subscribe(
       (response: any) => {
         alert('Aufgabe erfolgreich erstellt!');
         this.dialogRef.close(true);
