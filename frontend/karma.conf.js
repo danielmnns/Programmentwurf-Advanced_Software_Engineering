@@ -8,9 +8,11 @@ module.exports = function (config) {
     plugins: [
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
+      require('karma-edge-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage'),
-      require('@angular-devkit/build-angular/plugins/karma')
+      require('@angular-devkit/build-angular/plugins/karma'),
+      require('karma-puppeteer-launcher')  // Puppeteer hinzufügen
     ],
     client: {
       jasmine: {
@@ -37,8 +39,22 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ['Chrome'],
+    
+    // Puppeteer als Browser verwenden
+    browsers: ['Puppeteer'],
+    customLaunchers: {
+      Puppeteer: {
+        base: 'Puppeteer',
+        flags: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security'],
+        debug: true
+      }
+    },
+    
     singleRun: false,
-    restartOnFileChange: true
+    restartOnFileChange: true,
+    hostname: 'localhost',
+    captureTimeout: 60000,  // Längeres Timeout für langsame Systeme
+    browserDisconnectTimeout: 10000,
+    browserNoActivityTimeout: 60000
   });
 };
