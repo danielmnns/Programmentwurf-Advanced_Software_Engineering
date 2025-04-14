@@ -1,7 +1,7 @@
 /* Grundlegendes Layout für Kurse */
-.courses{
-    width: 90%;
-    margin: 0 auto;
+.courses {
+  width: 90%;
+  margin: 0 auto;
 }
 
 .course-container {
@@ -10,7 +10,6 @@
   gap: 10px; 
   padding-top: 10px;
 }
-
 
 .course-box {
   background-color: #f9f9f9;
@@ -30,48 +29,48 @@
 }
 
 .course-title {
-  font-size: 1.2rem;; 
+  font-size: 1.2rem;
   cursor: pointer;
   text-decoration: none;
 }
 
 .edit-icon,
 .delete-icon {
-  margin-left: 10px; /* Abstand zwischen den Icons */
+  margin-left: 10px;
   cursor: pointer;
-  font-size: 20px; /* Größe der Icons */
+  font-size: 20px;
 }
 
 /* Layout für die Buttons */
 .user-management-container {
   display: flex;
-  justify-content: space-between; /* Buttons links und rechts positionieren */
-  align-items: center; /* Vertikale Zentrierung */
+  justify-content: space-between;
+  align-items: center;
   margin-top: 20px;
 }
 
 /* Einheitliche Button-Klasse */
 .button-standard {
-  background-color: #007bff; /* Einheitliches Blau */
-  color: white; /* Weißer Text */
-  font-size: 16px; /* Gleiche Schriftgröße */
-  padding: 10px 20px; /* Einheitliche Größe */
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  padding: 10px 20px;
   border: none;
-  border-radius: 8px; /* Abgerundete Ecken */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Einheitlicher Schatten */
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s; /* Einheitliche Übergänge */
-  text-align: center; /* Zentrierter Text */
+  transition: transform 0.2s, box-shadow 0.2s;
+  text-align: center;
 }
 
 .button-standard:hover {
-  transform: scale(1.05); /* Leichtes Vergrößern beim Hover */
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Stärkerer Schatten */
+  transform: scale(1.05);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
 }
 
 .button-standard:active {
-  transform: scale(0.98); /* Leichtes Schrumpfen beim Klick */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Weniger Schatten */
+  transform: scale(0.98);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 /* Modal für Kurs hinzufügen */
@@ -81,11 +80,11 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Dunkler Hintergrund */
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  justify-content: center; /* Horizontale Zentrierung */
-  align-items: center; /* Vertikale Zentrierung */
-  z-index: 1000; /* Modal über allem anzeigen */
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
 .modal-content {
@@ -93,9 +92,9 @@
   padding: 20px;
   border-radius: 8px;
   width: 400px;
-  max-width: 90%; /* Passt sich an kleine Bildschirme an */
+  max-width: 90%;
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Leichter Schatten */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
 }
 
 .course-input {
@@ -107,11 +106,10 @@
   font-size: 16px;
 }
 
-/* Modal-Buttons */
 .modal-buttons {
   display: flex;
   justify-content: space-between;
-  gap: 10px; /* Abstand zwischen den Buttons */
+  gap: 10px;
 }
 
 .modal-buttons button {
@@ -126,13 +124,35 @@
 }
 
 .modal-buttons button:hover {
-  background-color: #0056b3; /* Dunkleres Blau beim Hover */
+  background-color: #0056b3;
 }
 
 .modal-buttons button.cancel-button {
-  background-color: #f44336; /* Rot für Abbrechen */
+  background-color: #f44336;
 }
 
 .modal-buttons button.cancel-button:hover {
-  background-color: #d32f2f; /* Dunkleres Rot beim Hover */
+  background-color: #d32f2f;
+}
+
+/* Erfolgs-Popup */
+.success-popup {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #4caf50;
+  color: white;
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+  z-index: 2000;
+  animation: fadeInOut 3s ease-in-out forwards;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(20px); }
 }
