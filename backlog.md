@@ -90,11 +90,11 @@
    - **Akzeptanzkriterien:** Einsicht der Einreichungen, Bewertung und Feedback
 
 ### Studentenverwaltung
-1. **Story:** Als Sekretärin möchte ich neue Studentenprofile erstellen können.
+1. **Story:** Als Admin möchte ich neue Studentenprofile erstellen können.
    - **Akzeptanzkriterien:** Eingabe von Studentendaten, Speichern des Profils
-2. **Story:** Als Sekretärin möchte ich Studenten in Kurse einschreiben können.
+2. **Story:** Als Kursleiter möchte ich Studenten in Kurse einschreiben können.
    - **Akzeptanzkriterien:** Auswahl von Kursen, Zuweisung zu Studenten
-3. **Story:** Als Sekretärin möchte ich Studentenprofile bearbeiten können.
+3. **Story:** Als Kursleiter möchte ich Studentenprofile bearbeiten können.
    - **Akzeptanzkriterien:** Bearbeitung der Profildaten, Speichern der Änderungen
 
 ### Authentifizierung und Autorisierung
