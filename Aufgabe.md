@@ -26,12 +26,7 @@ Das System unterstützt mehrere Benutzerrollen, Mehrsprachigkeit und Datenexport
 - Erstellung und Veröffentlichung von Aufgaben.
 - Verwaltung der Kursstruktur.
 
-### **4. Sekretärin**
-- Verwaltung der Studentenprofile und deren Einschreibung in Kurse.
-- Organisation von Semesterplänen.
-- Unterstützung bei administrativen Aufgaben.
-
-### **5. Student**
+### **4. Student**
 - Zugriff auf zugewiesene Kurse und Inhalte.
 - Abgabe von Aufgaben.
 - Einsehen von Bewertungen und Kommentaren.
