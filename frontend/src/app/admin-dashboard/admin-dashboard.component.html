@@ -19,7 +19,7 @@
   </div>
 
   <div class="course-list">
-    <div *ngFor="let course of courses" class="course-content">
+    <div *ngFor="let course of courses" class="course-content" (click)="navigateToAdminKurs(course.title)" style="cursor: pointer;">
       <h3>{{ course.title }}</h3>
       
       <!-- Container für Stift- und Mülleimer-Icons -->
@@ -29,7 +29,7 @@
           <!-- Stift-Icon zur Admin-Kurs-Seite -->
           <span 
             class="edit-icon" 
-            (click)="navigateToAdminKurs(course.title)" 
+            (click)="navigateToAdminKurs(course.title); $event.stopPropagation();" 
             title="{{ 'edit' | translate }}"
           >
             ✏️
@@ -38,7 +38,7 @@
           <!-- Mülleimer-Icon zum Löschen des Kurses -->
           <span 
             class="delete-icon" 
-            (click)="showDeleteConfirmationPopup(course)" 
+            (click)="showDeleteConfirmationPopup(course); $event.stopPropagation();" 
             title="{{ 'delete' | translate }}"
           >
             🗑️
