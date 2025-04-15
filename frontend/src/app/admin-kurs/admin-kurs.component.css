@@ -1,5 +1,7 @@
 /* Container: Zwei Spalten, responsives Layout */
 .container {
+  width: 90%;
+  margin: 20px auto;
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
@@ -7,16 +9,26 @@
   justify-content: center;
 }
 
+/* Linker Bereich (Hauptinhalt) */
+.users {
+  flex: 2;
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+}
+
 .content {
   flex: 2;
   min-width: 300px;
 }
 
+/* Rechter Bereich (Teilnehmerliste) */
 .teilnehmer {
   flex: 1;
   padding: 20px;
   background-color: #e3f2fd;
   border-radius: 8px;
+  max-height: 600px;
   overflow-y: auto;
 }
 
@@ -71,28 +83,268 @@ mat-card{
 }
 
 .back-button {
-  background-color: #007bff; /* Einheitliches Blau */
-  color: white; /* Weißer Text */
-  font-size: 16px; /* Gleiche Schriftgröße */
-  padding: 10px 20px; /* Einheitliche Größe */
+  background-color: #6c757d;
+  color: white;
   border: none;
-  border-radius: 8px; /* Abgerundete Ecken */
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Einheitlicher Schatten */
+  border-radius: 4px;
+  padding: 5px 12px;
+  font-size: 14px;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s; /* Einheitliche Übergänge */
-  text-align: center; /* Zentrierter Text */
+  transition: background-color 0.3s;
 }
 
 .back-button:hover {
-  transform: scale(1.05); /* Leichtes Vergrößern beim Hover */
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2); /* Stärkerer Schatten */
+  background-color: #5a6268;
 }
 
-.back-button:active {
-  transform: scale(0.98); /* Leichtes Schrumpfen beim Klick */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Weniger Schatten */
+/* Überschriften und Basisstile */
+h2 {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
 }
 
+/* Listen-Stil */
+.users ul,
+.teilnehmer ul {
+  list-style: none;
+  padding: 0;
+}
+
+.users li,
+.teilnehmer li {
+  margin-bottom: 20px;
+}
+
+/* Material Cards */
+mat-card {
+  margin-bottom: 20px;
+  padding: 15px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1) !important;
+}
+
+mat-card-content {
+  padding-top: 10px;
+}
+
+/* Neue Styles für den Aufgabenbereich */
+.task-card {
+  border: 1px solid #ccc !important;
+  border-radius: 4px !important;
+  padding: 10px !important;
+  background-color: #ffffff !important;
+  margin-bottom: 15px;
+}
+
+/* Volle Breite für Formularfelder */
+.full-width {
+  width: 100%;
+}
+
+/* Container für Button-Anordnungen */
+.button-container {
+  margin-top: 10px;
+  text-align: right;
+}
+
+/* Upload-Bereich */
+.upload-section {
+  margin: 15px 0;
+}
+
+/* Dokumente und Listen */
+.document-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
+}
+
+.document-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.document-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Buttons */
+.preview-button {
+  padding: 5px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.preview-button:hover {
+  background-color: #0056b3;
+}
+
+.delete-button {
+  background: none;
+  border: none;
+  color: #e53935;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 5px;
+}
+
+.delete-button:hover {
+  color: #c62828;
+}
+
+/* Task Actions */
+.task-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Aufgabenliste */
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Add Task Button Container */
+.add-task-container {
+  margin-top: 15px;
+  text-align: left;
+}
+
+/* PDF Preview Modal */
+.pdf-preview {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pdf-container {
+  width: 90%;
+  height: 90%;
+  background-color: white;
+  border-radius: 8px;
+  padding: 20px;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1010;
+}
+
+/* Confirmation Dialog */
+.confirmation-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  z-index: 1100;
+  min-width: 300px;
+  max-width: 90%;
+}
+
+.dialog-content {
+  text-align: center;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.confirm-btn, .cancel-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.confirm-btn {
+  background-color: #4caf50;
+  color: white;
+}
+
+.confirm-btn:hover {
+  background-color: #388e3c;
+}
+
+.cancel-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #d32f2f;
+}
+
+/* Success Dialog */
+.success-dialog .dialog-content {
+  border-left: 5px solid #4caf50;
+}
+
+.success-dialog h3 {
+  color: #4caf50;
+  margin-top: 0;
+}
+
+/* Warning Dialog */
+.warning-dialog .dialog-content {
+  border-left: 5px solid #ff9800;
+}
+
+.warning-dialog h3 {
+  color: #ff9800;
+  margin-top: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .teilnehmer {
+    max-height: none;
+  }
+}
 
 /* Allgemeine Karten für Abschnitte */
 .section-card {
@@ -132,6 +384,7 @@ mat-list-item {
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: #ffffff;
 }
 
 /* Dokumente innerhalb der Aufgabe */

@@ -4,34 +4,33 @@
   margin: 0 auto;
 }
 
-.course-container {
+.course-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr); 
-  gap: 10px; 
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
   padding-top: 10px;
-}
-
-.course-box {
-  background-color: #f9f9f9;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 10px 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
 }
 
 .course-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%;
+  padding: 0 16px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .course-title {
   font-size: 1.2rem;
   cursor: pointer;
   text-decoration: none;
+}
+
+.icons-container {
+  display: flex;
+  margin-left: auto;
 }
 
 .edit-icon,
@@ -98,12 +97,14 @@
 }
 
 .course-input {
-  width: 90%;
+  width: 100%;
   padding: 10px;
-  margin: 15px 0;
+  margin: 15px auto;
   border: 1px solid #ddd;
   border-radius: 5px;
   font-size: 16px;
+  display: block;
+  box-sizing: border-box;
 }
 
 .modal-buttons {

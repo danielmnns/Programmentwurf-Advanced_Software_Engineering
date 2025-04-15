@@ -18,9 +18,7 @@
       </span>
       <span 
         *ngIf="!course.enrolled" 
-        class="lock-icon" 
-        (click)="openEnrollmentDialog(course.title)"
-        title="{{ 'enrollInCourse' | translate }}"
+        class="lock-icon"
       >
         🔒
       </span>
