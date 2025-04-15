@@ -190,3 +190,14 @@
     </div>
   </div>
 </div>
+
+<!-- Export-Erfolgsmeldung -->
+<div *ngIf="showExportSuccess" class="confirmation-dialog success-dialog">
+  <div class="dialog-content">
+    <h3>{{ 'exportSuccess' | translate }}</h3>
+    <p>{{ 'participantListExported' | translate }} {{ exportType }}</p>
+    <div class="dialog-actions">
+      <button (click)="hideExportSuccessPopup()" class="confirm-btn">{{ 'ok' | translate }}</button>
+    </div>
+  </div>
+</div>
