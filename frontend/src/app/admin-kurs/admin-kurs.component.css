@@ -25,7 +25,7 @@
 /* Rechter Bereich (Teilnehmerliste) */
 .teilnehmer {
   flex: 1;
-  padding: 20px;
+  padding: 20px 10px;
   background-color: #e3f2fd;
   border-radius: 8px;
   max-height: 600px;
@@ -55,8 +55,9 @@ mat-card{
 
 .export-buttons button {
   flex: 1;
+  min-width: 180px; /* Erhöhte Mindestbreite */
   white-space: nowrap;
-  padding: 10px 15px;
+  padding: 10px 35px; /* Mehr horizontales Padding */
   border-radius: 8px !important;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
   font-weight: 500;
