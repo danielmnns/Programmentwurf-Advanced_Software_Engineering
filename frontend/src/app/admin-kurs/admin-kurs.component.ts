@@ -450,4 +450,13 @@ deleteTask(task: Task): void {
     // Erfolgsmeldung anzeigen
     this.showExportSuccessPopup('CSV');
   }
+
+  /**
+   * Navigiert zur Aufgabendetailseite
+   */
+  navigateToTask(task: Task): void {
+    this.router.navigate(['/admin-aufgabe', this.courseName, task.name]).catch((error) => {
+      console.error('Fehler beim Navigieren zur Aufgabenseite:', error);
+    });
+  }
 }
