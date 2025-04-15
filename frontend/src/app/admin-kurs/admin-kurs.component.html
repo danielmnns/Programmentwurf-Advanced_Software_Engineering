@@ -119,14 +119,13 @@
   <div class="teilnehmer">
     <h2>{{ 'participants' | translate }}</h2>
   <mat-card>
-      <mat-card-title>{{ 'participants' | translate }}</mat-card-title>
       <mat-card-content>
         <!-- Export-Buttons -->
         <div class="export-buttons">
-          <button mat-stroked-button color="primary" (click)="exportParticipantsToPDF()">
-            <span class="export-icon">📄</span> {{ 'exportPDF' | translate }}
+          <button mat-stroked-button (click)="exportParticipantsToPDF()">
+            <span class="export-icon">📑</span> {{ 'exportPDF' | translate }}
           </button>
-          <button mat-stroked-button color="primary" (click)="exportParticipantsToCSV()">
+          <button mat-stroked-button (click)="exportParticipantsToCSV()">
             <span class="export-icon">📊</span> {{ 'exportCSV' | translate }}
           </button>
         </div>
