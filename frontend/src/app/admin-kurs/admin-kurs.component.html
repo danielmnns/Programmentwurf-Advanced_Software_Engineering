@@ -110,6 +110,15 @@
     <mat-card>
       <mat-card-title>{{ 'participants' | translate }}</mat-card-title>
       <mat-card-content>
+        <!-- Export-Buttons -->
+        <div class="export-buttons">
+          <button mat-stroked-button color="primary" (click)="exportParticipantsToPDF()">
+            <span class="export-icon">📄</span> {{ 'exportPDF' | translate }}
+          </button>
+          <button mat-stroked-button color="primary" (click)="exportParticipantsToCSV()">
+            <span class="export-icon">📊</span> {{ 'exportCSV' | translate }}
+          </button>
+        </div>
         <mat-list>
           <mat-list-item *ngFor="let participant of participants">
             {{ participant }}

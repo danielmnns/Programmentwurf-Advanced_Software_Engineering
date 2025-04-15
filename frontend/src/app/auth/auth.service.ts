@@ -14,7 +14,10 @@ export class AuthService {
   private userName: string | null = null;
   private token: string | null = null;
 
-  constructor(private http: HttpClient, private userDataService: UserDataService) {
+  constructor(
+    private http: HttpClient, 
+    private userDataService: UserDataService
+  ) {
     this.restoreSession();
   }
 
@@ -28,6 +31,10 @@ export class AuthService {
       this.token = token;
       this.userType = userType;
       this.userName = userName;
+      
+      // Wir initialisieren die Inaktivitätsüberwachung nicht hier,
+      // da wir eine zirkuläre Abhängigkeit vermeiden wollen.
+      // Der InactivityService wird im app.component.ts initialisiert.
     }
   }
 
@@ -51,6 +58,9 @@ export class AuthService {
           localStorage.setItem('userName', this.userName || '');
   
           this.userDataService.fetchUserData().subscribe();
+          
+          // Die Inaktivitätsüberwachung wird in app.component.ts gestartet
+          // nachdem der Login erfolgreich war
         } else {
           this.loggedIn = false;
         }
@@ -79,11 +89,13 @@ export class AuthService {
     localStorage.removeItem('userType');
     localStorage.removeItem('userName');
     this.userDataService.clearUserData();
+    
+    // Die Inaktivitätsüberwachung wird in app.component.ts gestoppt
   }
 
   changePassword(payload: { userName: string | null; password: string; newPassword: string }): Observable<{ passwordChangeSuccess: boolean }> {
     console.log('AuthService: Passwortänderung gestartet');
-    return this.http.post<{ passwordChangeSuccess: boolean }>('http://localhost:3000/api/auth/Schange-password', payload).pipe(
+    return this.http.post<{ passwordChangeSuccess: boolean }>('http://localhost:3000/api/auth/change-password', payload).pipe(
       tap((response) => {
         console.log('AuthService: Passwortänderung-Antwort erhalten', response);
       })

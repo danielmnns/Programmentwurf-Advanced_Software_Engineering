@@ -1,13 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { Router, RouterModule } from '@angular/router';
+import { Subscription, interval } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { TranslatePipe } from '../pipes/translate.pipe';
+import { InactivityService } from '../services/inactivity.service';
 import { Language, LanguageService } from '../services/language.service';
 
 @Component({
@@ -25,18 +27,27 @@ import { Language, LanguageService } from '../services/language.service';
     TranslatePipe
   ]
 })
-export class HeadbarComponent {
+export class HeadbarComponent implements OnInit, OnDestroy {
   currentDate: string = '';
   currentTime: string = '';
   userName: string | null = '';
   userType: string | null = '';
   currentLanguage: Language;
+  
+  // Neue Eigenschaften für die Sitzungszeitanzeige
+  remainingTime: string = '';
+  isLoggedIn: boolean = false;
+  isTimerWarning: boolean = false;
+  timerActive: boolean = false; // Für Sichtbarkeitssteuerung des Timers
+  private sessionTimerSubscription?: Subscription;
+  private readonly WARNING_THRESHOLD = 5 * 60 * 1000; // 5 Minuten in Millisekunden
 
   constructor(
     private router: Router, 
     private authService: AuthService, 
     private http: HttpClient,
-    public languageService: LanguageService
+    public languageService: LanguageService,
+    private inactivityService: InactivityService
   ) {
     this.currentLanguage = this.languageService.getCurrentLanguage();
   }
@@ -53,6 +64,19 @@ export class HeadbarComponent {
     this.languageService.currentLanguage$.subscribe(lang => {
       this.currentLanguage = lang;
     });
+    
+    // Login-Status prüfen und Timer starten
+    this.isLoggedIn = this.authService.isLoggedIn();
+    if (this.isLoggedIn) {
+      this.startSessionTimer();
+    }
+  }
+  
+  ngOnDestroy(): void {
+    // Aufräumen der Subscription beim Zerstören der Komponente
+    if (this.sessionTimerSubscription) {
+      this.sessionTimerSubscription.unsubscribe();
+    }
   }
 
   loadUserData(): void {
@@ -62,12 +86,18 @@ export class HeadbarComponent {
           this.userName = response.user.username;
           this.userType = response.user.userType;
           console.log('Benutzerdaten erfolgreich geladen:', response.user);
+          this.isLoggedIn = true;
+          
+          // Timer neu starten, wenn Benutzerdaten geladen wurden
+          this.startSessionTimer();
         } else {
           console.error('Ungültige Antwort von /api/user/userdata:', response);
+          this.isLoggedIn = false;
         }
       },
       (error) => {
         console.error('Fehler beim Abrufen der Benutzerdaten:', error);
+        this.isLoggedIn = false;
       }
     );
   }
@@ -108,5 +138,48 @@ export class HeadbarComponent {
 
   getLanguageFlag(): string {
     return this.currentLanguage === 'de' ? '🇩🇪' : '🇬🇧';
+  }
+  
+  /**
+   * Startet den Timer für die Sitzungszeitanzeige
+   */
+  startSessionTimer(): void {
+    // Alte Subscription aufräumen, falls vorhanden
+    if (this.sessionTimerSubscription) {
+      this.sessionTimerSubscription.unsubscribe();
+    }
+    
+    // Alle Sekunde die verbleibende Zeit aktualisieren
+    this.sessionTimerSubscription = interval(1000).subscribe(() => {
+      // Timer-Status aus dem Service abfragen
+      this.timerActive = this.inactivityService.isTimerActive();
+      
+      // Nur verbleibende Zeit berechnen, wenn Timer aktiv ist
+      if (this.timerActive) {
+        const timeLeft = this.inactivityService.getTimeoutDuration();
+        
+        if (timeLeft > 0) {
+          // Verbleibende Zeit formatieren
+          this.formatRemainingTime(timeLeft);
+          
+          // Warnung anzeigen, wenn weniger als 5 Minuten übrig sind
+          this.isTimerWarning = timeLeft <= this.WARNING_THRESHOLD;
+        } else {
+          this.remainingTime = '0:00';
+          this.isTimerWarning = true;
+        }
+      }
+    });
+  }
+  
+  /**
+   * Formatiert die verbleibende Zeit in Minuten und Sekunden (MM:SS)
+   */
+  private formatRemainingTime(timeInMs: number): void {
+    const totalSeconds = Math.floor(timeInMs / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    
+    this.remainingTime = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   }
 }
