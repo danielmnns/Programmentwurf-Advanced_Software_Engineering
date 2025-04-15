@@ -109,7 +109,8 @@ export class UserAufgabeComponent implements OnInit {
   }
 
   navigateBack() {
-    this.router.navigate(['/', this.courseName]);
+    // Navigate to the user-kurs route with the course name
+    this.router.navigate(['/user-kurs', encodeURIComponent(this.courseName)]);
   }
 
   openDeletePopup() {
