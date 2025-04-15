@@ -1,172 +1,177 @@
 <div class="container">
   <!-- Hauptbereich: Kursinhalte -->
-  <div class="content">
-    <!-- Kurskopf -->
-    <mat-card class="course-header">
-      <mat-card-title>{{ courseName }}</mat-card-title>
-      <mat-card-subtitle>
-        <button class="back-button" (click)="goBack()" [attr.aria-label]="'back' | translate">
-          {{ 'back' | translate }}
-        </button>
-      </mat-card-subtitle>
-    </mat-card>
+  <div class="users">
+    <h2>
+      {{ courseName }}
+      <button class="back-button" (click)="goBack()" [attr.aria-label]="'back' | translate">
+        ← {{ 'back' | translate }}
+      </button>
+    </h2>
 
-    <!-- Textbereich -->
-    <mat-card class="section-card">
-      <mat-card-title>{{ 'courseDescription' | translate }}</mat-card-title>
-      <mat-card-content>
-        <mat-form-field appearance="outline" class="full-width">
-          <textarea matInput placeholder="{{ 'courseDescription' | translate }}" [(ngModel)]="textContent"></textarea>
-        </mat-form-field>
-        <div class="button-container">
-          <button mat-flat-button color="primary" (click)="updateText()">
-            💾 {{ 'save' | translate }}
-          </button>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- Dokumente des Kurses -->
-    <mat-card class="section-card">
-      <mat-card-title>{{ 'materials' | translate }}</mat-card-title>
-      <mat-card-content>
-        <div class="upload-section">
-          <input type="file" #docInput hidden accept="application/pdf" (change)="handleDocumentUpload($event)" />
-          <button mat-stroked-button color="primary" (click)="docInput.click()">
-            ➕ {{ 'addMaterial' | translate }}
-          </button>
-        </div>
-        <mat-list>
-          <mat-list-item *ngFor="let doc of uploadedDocuments">
-            <div class="document-item">
-              <a [href]="fileUrlService.getFileUrl(doc.url)" target="_blank">{{ doc.name }}</a>
-              <button (click)="openPdfPreview(doc.url)" class="preview-button">{{ 'preview' | translate }}</button>
-              <button mat-icon-button color="warn" (click)="showDeleteMaterialConfirmationPopup(doc)" [attr.aria-label]="'removeMaterial' | translate">
-                ❌
-              </button>
-            </div>
-          </mat-list-item>
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- Aufgabenbereich -->
-    <mat-card class="section-card">
-      <mat-card-title>{{ 'tasks' | translate }}</mat-card-title>
-      <mat-card-content>
-        <div class="task-list">
-          <mat-card *ngFor="let task of tasks" class="task-card">
-            <mat-card-content>
-              <mat-form-field appearance="outline" class="full-width">
-                <input matInput placeholder="{{ 'taskName' | translate }}" [(ngModel)]="task.name" />
-              </mat-form-field>
-              <mat-form-field appearance="outline" class="full-width">
-                <textarea matInput placeholder="{{ 'taskDescription' | translate }}" [(ngModel)]="task.description"></textarea>
-              </mat-form-field>
-              <!-- Dokumente innerhalb der Aufgabe -->
-              <div class="task-documents" *ngIf="(task.documents || []).length > 0">
-                <h4>{{ 'materials' | translate }}</h4>
-                <mat-list>
-                  <mat-list-item *ngFor="let d of (task.documents || []); let i = index">
-                    <span>{{ d.name }}</span>
-                    <button mat-icon-button color="warn" (click)="removeTaskDocument(task, i)" [attr.aria-label]="'removeMaterial' | translate">
-                      ❌
-                    </button>
-                  </mat-list-item>
-                </mat-list>
-              </div>
-              <!-- Datei-Upload für neue Dokumente in der Aufgabe -->
-              <div class="upload-section">
-                <input type="file" #taskDocInput hidden accept="application/pdf" (change)="addTaskDocument(task, $event)" />
-                <button mat-stroked-button color="accent" (click)="taskDocInput.click()">
-                  ➕ {{ 'addMaterial' | translate }}
-                </button>
-              </div>
-            </mat-card-content>
-            <mat-card-actions class="task-actions">
-              <button mat-flat-button color="primary" (click)="updateTask(task)">
+    <ul>
+      <!-- Textbereich -->
+      <li>
+        <mat-card class="section-card">
+          <mat-card-title>{{ 'courseDescription' | translate }}</mat-card-title>
+          <mat-card-content>
+            <mat-form-field appearance="outline" class="full-width">
+              <textarea matInput placeholder="{{ 'courseDescription' | translate }}" [(ngModel)]="textContent"></textarea>
+            </mat-form-field>
+            <div class="button-container">
+              <button mat-raised-button color="primary" (click)="updateText()">
                 💾 {{ 'save' | translate }}
               </button>
-              <button mat-flat-button color="warn" (click)="deleteTask(task)">
-                🗑️ {{ 'delete' | translate }}
-              </button>
-            </mat-card-actions>
-          </mat-card>
-        </div>
-        <!-- Button zum Hinzufügen einer neuen Aufgabe -->
-        <div class="add-task-container">
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </li>
 
-          <button mat-stroked-button color="primary" (click)="openNewTaskDialog()">
-            ➕ {{ 'addTask' | translate }}
-         </button>
-        </div>
-      </mat-card-content>
-    </mat-card>
+      <!-- Dokumente des Kurses -->
+      <li>
+        <mat-card class="section-card">
+          <mat-card-title>{{ 'materials' | translate }}</mat-card-title>
+          <mat-card-content>
+            <div class="upload-section">
+              <input type="file" #docInput hidden accept="application/pdf" (change)="handleDocumentUpload($event)" />
+              <button mat-stroked-button color="primary" (click)="docInput.click()">
+                ➕ {{ 'addMaterial' | translate }}
+              </button>
+            </div>
+            <ul class="document-list">
+              <li *ngFor="let doc of uploadedDocuments">
+                <div class="document-item">
+                  <a [href]="fileUrlService.getFileUrl(doc.url)" target="_blank">{{ doc.name }}</a>
+                  <div class="document-actions">
+                    <button class="preview-button" (click)="openPdfPreview(doc.url)">{{ 'preview' | translate }}</button>
+                    <button class="delete-button" (click)="showDeleteMaterialConfirmationPopup(doc)">❌</button>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </mat-card-content>
+        </mat-card>
+      </li>
+
+      <!-- Aufgabenbereich -->
+      <li>
+        <mat-card class="section-card">
+          <mat-card-title>{{ 'tasks' | translate }}</mat-card-title>
+          <mat-card-content>
+            <div class="task-list">
+              <div *ngFor="let task of tasks">
+                <mat-card class="task-card">
+                  <mat-card-title>{{ task.name }}</mat-card-title>
+                  <mat-card-content>
+                    <!-- Aufgabenbeschreibung -->
+                    <mat-form-field appearance="outline" class="full-width">
+                      <textarea matInput placeholder="{{ 'taskDescription' | translate }}" [(ngModel)]="task.description"></textarea>
+                    </mat-form-field>
+                    
+                    <!-- Dokumente innerhalb der Aufgabe -->
+                    <div class="task-documents" *ngIf="(task.documents || []).length > 0">
+                      <h4>{{ 'materials' | translate }}</h4>
+                      <ul class="document-list">
+                        <li *ngFor="let d of (task.documents || []); let i = index">
+                          <div class="document-item">
+                            <span>{{ d.name }}</span>
+                            <div class="document-actions">
+                              <button class="preview-button" (click)="openPdfPreview(d.url)">{{ 'preview' | translate }}</button>
+                              <button class="delete-button" (click)="removeTaskDocument(task, i)">❌</button>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <!-- Datei-Upload für neue Dokumente in der Aufgabe -->
+                    <div class="upload-section">
+                      <input type="file" #taskDocInput hidden accept="application/pdf" (change)="addTaskDocument(task, $event)" />
+                      <button mat-stroked-button color="accent" (click)="taskDocInput.click()">
+                        ➕ {{ 'addMaterial' | translate }}
+                      </button>
+                    </div>
+                  </mat-card-content>
+                  <mat-card-actions class="task-actions">
+                    <button mat-raised-button color="primary" (click)="updateTask(task)">
+                      💾 {{ 'save' | translate }}
+                    </button>
+                    <button mat-raised-button color="warn" (click)="deleteTask(task)">
+                      🗑️ {{ 'delete' | translate }}
+                    </button>
+                  </mat-card-actions>
+                </mat-card>
+              </div>
+            </div>
+            
+            <!-- Button zum Hinzufügen einer neuen Aufgabe -->
+            <div class="add-task-container">
+              <button mat-raised-button color="primary" (click)="openNewTaskDialog()">
+                ➕ {{ 'addTask' | translate }}
+              </button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </li>
+    </ul>
   </div>
 
   <!-- Teilnehmerliste -->
   <div class="teilnehmer">
-
-    <mat-card>
-      <mat-card-title>{{ 'participants' | translate }}</mat-card-title>
-      <mat-card-content>
-        <mat-list>
-          <mat-list-item *ngFor="let participant of participants">
-            {{ participant }}
-          </mat-list-item>
-        </mat-list>
-      </mat-card-content>
-    </mat-card>
-
+    <h2>{{ 'participants' | translate }}</h2>
+    <ul>
+      <li *ngFor="let participant of participants">{{ participant }}</li>
+    </ul>
   </div>
 </div>
 
 <!--PDF viewer -->
-<div *ngIf="showPdfPreview" class="pdf-preview-overlay">
-  <div class="pdf-preview-container">
-    <button (click)="closePdfPreview()" class="close-button">{{ 'close' | translate }}</button>
-    <iframe [src]="currentPdfUrl" width="100%" height="90%"></iframe>
+<div *ngIf="showPdfPreview" class="pdf-preview">
+  <div class="pdf-container">
+    <button class="close-button" (click)="closePdfPreview()">✖</button>
+    <iframe [src]="currentPdfUrl" width="100%" height="100%"></iframe>
   </div>
 </div>
 
 <!-- Bestätigungs-Popup für Material löschen -->
-<div class="confirmation-popup" *ngIf="showDeleteMaterialConfirmation">
-  <p>{{ 'deleteConfirm' | translate }} "{{ materialToDelete?.name }}"?</p>
-  <div class="confirmation-buttons">
-    <button (click)="confirmDeleteMaterial()">{{ 'yes' | translate }}</button>
-    <button class="cancel-button" (click)="cancelDeleteMaterial()">{{ 'no' | translate }}</button>
+<div *ngIf="showDeleteMaterialConfirmation" class="confirmation-dialog">
+  <div class="dialog-content">
+    <p>{{ 'deleteConfirm' | translate }} "{{ materialToDelete?.name }}"?</p>
+    <div class="dialog-actions">
+      <button (click)="confirmDeleteMaterial()" class="confirm-btn">{{ 'yes' | translate }}</button>
+      <button (click)="cancelDeleteMaterial()" class="cancel-btn">{{ 'no' | translate }}</button>
+    </div>
   </div>
 </div>
 
 <!-- Bestätigungs-Popup für Material erstellen -->
-<div class="success-confirmation-popup" *ngIf="showMaterialCreationConfirmation">
-  <div class="popup-content">
+<div *ngIf="showMaterialCreationConfirmation" class="confirmation-dialog success-dialog">
+  <div class="dialog-content">
     <h3>{{ 'materialCreatedSuccess' | translate }}</h3>
     <p>"{{ createdMaterialName }}" {{ 'wasSuccessfullyAdded' | translate }}</p>
-    <div class="popup-buttons">
-      <button (click)="hideMaterialCreationPopup()">{{ 'ok' | translate }}</button>
+    <div class="dialog-actions">
+      <button (click)="hideMaterialCreationPopup()" class="confirm-btn">{{ 'ok' | translate }}</button>
     </div>
   </div>
 </div>
 
 <!-- Bestätigungs-Popup für Aufgaben-Material erstellen -->
-<div class="success-confirmation-popup" *ngIf="showTaskMaterialConfirmation">
-  <div class="popup-content">
+<div *ngIf="showTaskMaterialConfirmation" class="confirmation-dialog success-dialog">
+  <div class="dialog-content">
     <h3>{{ 'taskMaterialCreatedSuccess' | translate }}</h3>
     <p>"{{ createdTaskMaterialName }}" {{ 'wasSuccessfullyAddedToTask' | translate }} "{{ currentTaskForMaterial?.name }}"</p>
-    <div class="popup-buttons">
-      <button (click)="hideTaskMaterialCreationPopup()">{{ 'ok' | translate }}</button>
+    <div class="dialog-actions">
+      <button (click)="hideTaskMaterialCreationPopup()" class="confirm-btn">{{ 'ok' | translate }}</button>
     </div>
   </div>
 </div>
 
 <!-- Erfolgsmeldung für Material löschen -->
-<div class="success-confirmation-popup removal-popup" *ngIf="showMaterialRemovalSuccess">
-  <div class="popup-content">
+<div *ngIf="showMaterialRemovalSuccess" class="confirmation-dialog warning-dialog">
+  <div class="dialog-content">
     <h3>{{ 'materialRemovedSuccess' | translate }}</h3>
     <p>"{{ removedMaterialName }}" {{ 'wasSuccessfullyRemoved' | translate }}</p>
-    <div class="popup-buttons">
-      <button (click)="hideMaterialRemovalSuccessPopup()">{{ 'ok' | translate }}</button>
+    <div class="dialog-actions">
+      <button (click)="hideMaterialRemovalSuccessPopup()" class="confirm-btn">{{ 'ok' | translate }}</button>
     </div>
   </div>
 </div>
