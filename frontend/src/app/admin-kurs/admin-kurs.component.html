@@ -4,7 +4,7 @@
     <h2>
       {{ courseName }}
       <button class="back-button" (click)="goBack()" [attr.aria-label]="'back' | translate">
-        ← {{ 'back' | translate }}
+        {{ 'back' | translate }}
       </button>
     </h2>
 
@@ -119,14 +119,13 @@
   <div class="teilnehmer">
     <h2>{{ 'participants' | translate }}</h2>
   <mat-card>
-      <mat-card-title>{{ 'participants' | translate }}</mat-card-title>
       <mat-card-content>
         <!-- Export-Buttons -->
         <div class="export-buttons">
-          <button mat-stroked-button color="primary" (click)="exportParticipantsToPDF()">
-            <span class="export-icon">📄</span> {{ 'exportPDF' | translate }}
+          <button mat-stroked-button (click)="exportParticipantsToPDF()">
+            <span class="export-icon">📑</span> {{ 'exportPDF' | translate }}
           </button>
-          <button mat-stroked-button color="primary" (click)="exportParticipantsToCSV()">
+          <button mat-stroked-button (click)="exportParticipantsToCSV()">
             <span class="export-icon">📊</span> {{ 'exportCSV' | translate }}
           </button>
         </div>
@@ -188,6 +187,17 @@
     <p>"{{ removedMaterialName }}" {{ 'wasSuccessfullyRemoved' | translate }}</p>
     <div class="dialog-actions">
       <button (click)="hideMaterialRemovalSuccessPopup()" class="confirm-btn">{{ 'ok' | translate }}</button>
+    </div>
+  </div>
+</div>
+
+<!-- Export-Erfolgsmeldung -->
+<div *ngIf="showExportSuccess" class="confirmation-dialog success-dialog">
+  <div class="dialog-content">
+    <h3>{{ 'exportSuccess' | translate }}</h3>
+    <p>{{ 'participantListExported' | translate }} {{ exportType }}</p>
+    <div class="dialog-actions">
+      <button (click)="hideExportSuccessPopup()" class="confirm-btn">{{ 'ok' | translate }}</button>
     </div>
   </div>
 </div>

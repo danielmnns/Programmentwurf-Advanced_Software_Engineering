@@ -65,6 +65,8 @@ export class AdminKursComponent implements OnInit {
   currentTaskForMaterial: Task | null = null;
   showMaterialRemovalSuccess: boolean = false;
   removedMaterialName: string = '';
+  showExportSuccess: boolean = false; // Neue Variable für Export-Erfolgsmeldung
+  exportType: string = ''; // Speichert den Typ des Exports (PDF/CSV)
 
   private apiUrl = 'http://localhost:3000/api/courses';
 
@@ -359,6 +361,24 @@ deleteTask(task: Task): void {
   }
 
   /**
+   * Zeigt das Export-Erfolgspopup an
+   */
+  showExportSuccessPopup(exportType: string): void {
+    this.exportType = exportType;
+    this.showExportSuccess = true;
+    
+    // Auto-hide wurde entfernt, damit das Popup bestehen bleibt, bis der Benutzer auf "OK" klickt
+  }
+
+  /**
+   * Verberge das Export-Erfolgspopup
+   */
+  hideExportSuccessPopup(): void {
+    this.showExportSuccess = false;
+    this.exportType = '';
+  }
+
+  /**
    * Exportiert die Teilnehmerliste als PDF-Datei
    */
   exportParticipantsToPDF(): void {
@@ -392,7 +412,7 @@ deleteTask(task: Task): void {
     doc.save(fileName);
     
     // Erfolgsmeldung anzeigen
-    this.statusService.showSuccess('exportSuccess', { type: 'PDF' });
+    this.showExportSuccessPopup('PDF');
   }
 
   /**
@@ -428,6 +448,15 @@ deleteTask(task: Task): void {
     }, 100);
     
     // Erfolgsmeldung anzeigen
-    this.statusService.showSuccess('exportSuccess', { type: 'CSV' });
+    this.showExportSuccessPopup('CSV');
+  }
+
+  /**
+   * Navigiert zur Aufgabendetailseite
+   */
+  navigateToTask(task: Task): void {
+    this.router.navigate(['/admin-aufgabe', this.courseName, task.name]).catch((error) => {
+      console.error('Fehler beim Navigieren zur Aufgabenseite:', error);
+    });
   }
 }
