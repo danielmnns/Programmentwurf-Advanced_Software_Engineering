@@ -59,6 +59,11 @@ export class LanguageService {
       'search': 'Suchen',
       'actions': 'Aktionen',
       
+      // Export functions
+      'exportPDF': 'Als PDF exportieren',
+      'exportCSV': 'Als CSV exportieren',
+      'exportSuccess': '{{type}}-Export erfolgreich',
+      
       // Navigation & Headers
       'dashboard': 'Dashboard',
       'courses': 'Kurse',
@@ -135,7 +140,10 @@ export class LanguageService {
       // Language
       'language': 'Sprache',
       'german': 'Deutsch',
-      'english': 'Englisch'
+      'english': 'Englisch',
+      
+      // Session
+      'sessionTimeout': 'Sitzungszeit verbleibend'
     };
     
     // English translations
@@ -157,6 +165,11 @@ export class LanguageService {
       'preview': 'Preview',
       'search': 'Search',
       'actions': 'Actions',
+      
+      // Export functions
+      'exportPDF': 'Export as PDF',
+      'exportCSV': 'Export as CSV',
+      'exportSuccess': '{{type}} export successful',
       
       // Navigation & Headers
       'dashboard': 'Dashboard',
@@ -234,7 +247,10 @@ export class LanguageService {
       // Language
       'language': 'Language',
       'german': 'German',
-      'english': 'English'
+      'english': 'English',
+      
+      // Session
+      'sessionTimeout': 'Session time remaining'
     };
   }
 

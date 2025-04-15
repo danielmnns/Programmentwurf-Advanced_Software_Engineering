@@ -4,6 +4,13 @@
     <mat-icon class="home-icon" (click)="navigateToHome()">home</mat-icon>
   </div>
 
+  <div class="session-timer" *ngIf="isLoggedIn && timerActive">
+    <div class="timer-container" [ngClass]="{'warning': isTimerWarning}">
+      <mat-icon class="timer-icon">timer</mat-icon>
+      <span class="timer-text">{{ 'sessionTimeout' | translate }}: {{ remainingTime }}</span>
+    </div>
+  </div>
+
   <div class="user-section">
     <!-- Sprache -->
     <div class="language">
