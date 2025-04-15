@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -74,7 +74,8 @@ export class AdminKursComponent implements OnInit {
     public fileUrlService: FileUrlService,
     private sanitizer: DomSanitizer,
     public languageService: LanguageService,
-    private statusService: StatusService
+    private statusService: StatusService,
+    private location: Location // Add Location service
   ) {}
 
   ngOnInit(): void {
@@ -348,6 +349,11 @@ deleteTask(task: Task): void {
         this.loadCourseData();
       }
     });
+  }
+
+  // Navigate back to previous page
+  goBack(): void {
+    this.location.back();
   }
 
 }
