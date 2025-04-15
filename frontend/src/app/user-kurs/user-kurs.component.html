@@ -44,11 +44,11 @@
         </mat-card>
       </li>
 
-      <!-- Aufgabenbereich: Nur ein Link pro Aufgabe -->
+      <!-- Aufgabenbereich-->
       <li *ngFor="let task of tasks">
-        <mat-card class="task-card">
+        <mat-card class="task-card" (click)="openTask(task)" style="cursor: pointer;">
           <mat-card-title>
-            <a (click)="openTask(task)" style="cursor: pointer;">{{ task.name }}</a>
+            {{ task.name }}
           </mat-card-title>
         </mat-card>
       </li>
