@@ -11,6 +11,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list'; // Add this for mat-list
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 import { NewTaskDialogComponent } from '../new-task-dialog/new-task-dialog.component';
 import { TranslatePipe } from '../pipes/translate.pipe';
 import { FileUrlService } from '../services/file-url.service';
@@ -273,4 +275,76 @@ deleteTask(task: Task): void {
     });
   }
 
+  /**
+   * Exportiert die Teilnehmerliste als PDF-Datei
+   */
+  exportParticipantsToPDF(): void {
+    // Erstelle neues PDF-Dokument im A4-Format
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    
+    // Füge Kopfzeile hinzu
+    const titleText = `${this.courseName} - Teilnehmerliste`;
+    doc.setFontSize(18);
+    doc.text(titleText, pageWidth / 2, 20, { align: 'center' });
+    
+    // Datum hinzufügen
+    const currentDate = new Date().toLocaleDateString();
+    doc.setFontSize(12);
+    doc.text(`Exportiert am: ${currentDate}`, pageWidth / 2, 30, { align: 'center' });
+    
+    // Teilnehmerliste als Tabelle einfügen
+    const tableData = this.participants.map((participant, index) => [index + 1, participant]);
+    
+    autoTable(doc, {
+      startY: 40,
+      head: [['#', 'Name']],
+      body: tableData,
+      headStyles: { fillColor: [66, 133, 244], textColor: 255 },
+      alternateRowStyles: { fillColor: [240, 240, 240] }
+    });
+    
+    // Speichere PDF mit einem generierten Dateinamen
+    const fileName = `${this.courseName.replace(/\s+/g, '_')}_Teilnehmerliste.pdf`;
+    doc.save(fileName);
+    
+    // Erfolgsmeldung anzeigen
+    this.statusService.showSuccess('exportSuccess', { type: 'PDF' });
+  }
+
+  /**
+   * Exportiert die Teilnehmerliste als CSV-Datei
+   */
+  exportParticipantsToCSV(): void {
+    // CSV-Header erstellen
+    let csvContent = 'Nr.,Name\n';
+    
+    // Teilnehmerdaten als CSV-Zeilen hinzufügen
+    this.participants.forEach((participant, index) => {
+      // Escape Kommas und Anführungszeichen im Namen
+      const escapedName = participant.includes(',') ? `"${participant.replace(/"/g, '""')}"` : participant;
+      csvContent += `${index + 1},${escapedName}\n`;
+    });
+    
+    // CSV-Datei zum Download erzeugen
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const fileName = `${this.courseName.replace(/\s+/g, '_')}_Teilnehmerliste.csv`;
+    
+    // Moderner Ansatz für alle Browser
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', fileName);
+    document.body.appendChild(link);
+    link.click();
+    
+    // Aufräumen
+    setTimeout(() => {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }, 100);
+    
+    // Erfolgsmeldung anzeigen
+    this.statusService.showSuccess('exportSuccess', { type: 'CSV' });
+  }
 }

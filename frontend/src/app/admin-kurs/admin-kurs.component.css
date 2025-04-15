@@ -33,6 +33,29 @@ mat-card{
     padding: 10px;
 }
 
+/* Export-Buttons */
+.export-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  gap: 10px;
+}
+
+.export-buttons button {
+  flex: 1;
+  white-space: nowrap;
+  transition: transform 0.2s;
+}
+
+.export-buttons button:hover {
+  transform: translateY(-2px);
+}
+
+.export-icon {
+  margin-right: 5px;
+  font-size: 1.2em;
+}
+
 /* Kurskopf */
 .course-header {
   margin-bottom: 20px;

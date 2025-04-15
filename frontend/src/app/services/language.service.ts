@@ -59,6 +59,11 @@ export class LanguageService {
       'search': 'Suchen',
       'actions': 'Aktionen',
       
+      // Export functions
+      'exportPDF': 'Als PDF exportieren',
+      'exportCSV': 'Als CSV exportieren',
+      'exportSuccess': '{{type}}-Export erfolgreich',
+      
       // Navigation & Headers
       'dashboard': 'Dashboard',
       'courses': 'Kurse',
@@ -160,6 +165,11 @@ export class LanguageService {
       'preview': 'Preview',
       'search': 'Search',
       'actions': 'Actions',
+      
+      // Export functions
+      'exportPDF': 'Export as PDF',
+      'exportCSV': 'Export as CSV',
+      'exportSuccess': '{{type}} export successful',
       
       // Navigation & Headers
       'dashboard': 'Dashboard',
