@@ -1,5 +1,11 @@
 # Projekt Setup
 
+## Datenbank
+1. MongoDB Compass öffnen
+2. Add new connection
+3. Standardeingabewerte beibehalten
+4. Save & Connect
+
 ## Backend
 1. In das Backend-Verzeichnis wechseln:
    ```sh
