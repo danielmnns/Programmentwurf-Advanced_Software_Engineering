@@ -3,6 +3,11 @@
 
     <h2>{{ 'login' | translate }}</h2>
 
+    <!-- Info Message Box -->
+    <div *ngIf="infoMessage" class="info-message-box">
+      <p>{{ infoMessage }}</p>
+    </div>
+
     <!-- Error Message Box -->
     <div *ngIf="loginFailed" class="error-message-box">
       <p>{{ errorMessage }}</p>

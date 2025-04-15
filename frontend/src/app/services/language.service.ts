@@ -135,7 +135,10 @@ export class LanguageService {
       // Language
       'language': 'Sprache',
       'german': 'Deutsch',
-      'english': 'Englisch'
+      'english': 'Englisch',
+      
+      // Session
+      'sessionTimeout': 'Sitzungszeit verbleibend'
     };
     
     // English translations
@@ -234,7 +237,10 @@ export class LanguageService {
       // Language
       'language': 'Language',
       'german': 'German',
-      'english': 'English'
+      'english': 'English',
+      
+      // Session
+      'sessionTimeout': 'Session time remaining'
     };
   }
 
