@@ -120,6 +120,7 @@ export class LanguageService {
       'feedback': 'Feedback',
       'grade': 'Note',
       'submitWork': 'Arbeit einreichen',
+      'userFees': 'Benutzerabgaben',
       
       // User management
       'userManagement': 'Benutzerverwaltung',
@@ -242,6 +243,7 @@ export class LanguageService {
       'feedback': 'Feedback',
       'grade': 'Grade',
       'submitWork': 'Submit Work',
+      'userFees': 'User Submissions',
       
       // User management
       'userManagement': 'User Management',
