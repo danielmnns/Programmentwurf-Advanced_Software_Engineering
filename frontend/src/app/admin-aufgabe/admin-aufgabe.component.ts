@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -62,7 +62,8 @@ export class AdminAufgabeComponent implements OnInit {
     private router: Router,
     private http: HttpClient,
     private sanitizer: DomSanitizer,
-    public languageService: LanguageService
+    public languageService: LanguageService,
+    private location: Location
   ) {}
 
   ngOnInit(): void {
@@ -135,8 +136,8 @@ export class AdminAufgabeComponent implements OnInit {
     this.notificationMessage = '';
   }
 
-  // Navigiert zurück zur Kursverwaltungs-Seite (Pfad ggf. anpassen)
+  // Navigiert zurück zur Kursverwaltungs-Seite
   navigateBack(): void {
-    this.router.navigate(['/admin-kurs', this.courseName]);
+    this.location.back();
   }
 }

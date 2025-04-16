@@ -388,7 +388,7 @@ deleteTask(task: Task): void {
 
   // Navigate back to previous page
   goBack(): void {
-    this.location.back();
+    this.router.navigate(['/admin-dashboard']);
   }
 
   /**
