@@ -1,14 +1,16 @@
 <div class="admin-task-container">
     <!-- Zurück-Button -->
     <div class="back-button-container">
-      <button class="btn-back" (click)="navigateBack()">← Zurück zur Kursverwaltung</button>
+      <button class="back-button" (click)="navigateBack()" [attr.aria-label]="'back' | translate">
+        {{ 'back' | translate }}
+      </button>
     </div>
   
     <h1>{{ taskName }}</h1>
     <p>{{ taskDescription }}</p>
     
     <div class="submissions-list">
-      <h3>Benutzerabgaben</h3>
+      <h3>{{ 'userFees' | translate}}</h3>
       <div class="submission-item" *ngFor="let submission of submissions">
         <p><strong>Benutzer:</strong> {{ submission.userName }}</p>
         <p>

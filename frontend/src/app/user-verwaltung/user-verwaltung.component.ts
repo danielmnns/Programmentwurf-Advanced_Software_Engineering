@@ -86,11 +86,15 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
 
   // Dialog-Referenzen
   @ViewChild('participantDialogTemplate') participantDialogTemplate!: TemplateRef<any>;
+  @ViewChild('editUserDialogTemplate') editUserDialogTemplate!: TemplateRef<any>;
   @ViewChild('dialogTrigger') dialogTrigger!: ElementRef;
   participantDialogRef: MatDialogRef<any> | null = null;
+  editUserDialogRef: MatDialogRef<any> | null = null;
 
-  // Ausgewählter Kurs für Dialog
+  // Ausgewählte Objekte für Dialoge
   selectedCourse: Course | null = null;
+  selectedUser: User | null = null;
+  selectedUserType: string = '';
 
   // Suchbegriffe
   participantSearchTerm: string = '';
@@ -158,6 +162,35 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
     // Verwende afterClosed für Fokus-Wiederherstellung
     this.participantDialogRef.afterClosed().subscribe(() => {
       // Manuelles Fokussetzen um sicherzustellen, dass ein Element fokussiert ist
+      if (previouslyFocused && 'focus' in previouslyFocused) {
+        previouslyFocused.focus();
+      }
+    });
+  }
+  
+  openEditUserDialog(user: User) {
+    // Speichere aktiven Element vor Dialog-Öffnung
+    const previouslyFocused = document.activeElement as HTMLElement;
+
+    this.selectedUser = { ...user };
+    this.selectedUserType = user.userType;
+    
+    this.editUserDialogRef = this.dialog.open(this.editUserDialogTemplate, {
+      width: '400px',
+      data: { 
+        user: this.selectedUser,
+        userTypes: this.userTypes
+      },
+      autoFocus: 'dialog',
+      restoreFocus: true,
+      hasBackdrop: true
+    });
+
+    this.editUserDialogRef.afterClosed().subscribe(result => {
+      if (result && result.userType) {
+        this.updateUserType(this.selectedUser!, result.userType);
+      }
+      
       if (previouslyFocused && 'focus' in previouslyFocused) {
         previouslyFocused.focus();
       }
@@ -265,55 +298,50 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
   }
 
   // Benutzer löschen (über ID)
-deleteUser(user: User): void {
-  if (confirm(`Wirklich den Benutzer ${user.username} löschen?`)) {
+  deleteUser(user: User): void {
+    if (confirm(`Wirklich den Benutzer ${user.username} löschen?`)) {
+      const payload = {
+        userId: user._id,
+        operation: 'deleteUserById'
+      };
+
+      this.http.post(this.apiUrl, payload).subscribe(
+        (response: any) => {
+          if (response.success) {
+            this.loadUsers();
+            this.showSuccess('Benutzer erfolgreich gelöscht!');
+          } else {
+            this.showError(response.message || 'Fehler beim Löschen des Benutzers.');
+          }
+        },
+        (error) => this.showError('Fehler beim Löschen des Benutzers: ' + (error.error?.message || error.message || ''))
+      );
+    }
+  }
+
+  // Benutzer-Typ aktualisieren - aktualisierte Version
+  updateUserType(user: User, newUserTypeValue?: string): void {
+    // Wenn kein expliziter neuer Typ übergeben wurde, verwende den aus dem Dialog
+    const newTypeValue = newUserTypeValue || this.selectedUserType;
+    
+    if (!newTypeValue) {
+      this.showError('Kein Benutzertyp ausgewählt!');
+      return;
+    }
+
     const payload = {
-      userId: user._id,
-      operation: 'deleteUserById'
+      username: user.username,
+      newUserType: newTypeValue,
+      operation: 'updateUserType'
     };
 
     this.http.post(this.apiUrl, payload).subscribe(
-      (response: any) => {
-        if (response.success) {
-          this.loadUsers();
-          this.showSuccess('Benutzer erfolgreich gelöscht!');
-        } else {
-          this.showError(response.message || 'Fehler beim Löschen des Benutzers.');
-        }
+      () => {
+        this.loadUsers();
+        this.showSuccess('Benutzertyp erfolgreich aktualisiert!');
       },
-      (error) => this.showError('Fehler beim Löschen des Benutzers: ' + (error.error?.message || error.message || ''))
+      () => this.showError('Fehler beim Aktualisieren des Benutzertyps.')
     );
-  }
-}
-
-  // Benutzer-Typ aktualisieren
-  updateUserType(user: User): void {
-    const currentTypeObj = this.userTypes.find(t => t.value === user.userType) || this.userTypes[0];
-    const options = this.userTypes.map(t => t.label).join(', ');
-
-    const newTypeLabel = prompt(`Neuer Benutzertyp für ${user.username} (${options}):`, currentTypeObj.label);
-
-    if (newTypeLabel) {
-      const newTypeObj = this.userTypes.find(t => t.label === newTypeLabel);
-
-      if (newTypeObj) {
-        const payload = {
-          username: user.username,
-          newUserType: newTypeObj.value,
-          operation: 'updateUserType'
-        };
-
-        this.http.post(this.apiUrl, payload).subscribe(
-          () => {
-            this.loadUsers();
-            this.showSuccess('Benutzertyp erfolgreich aktualisiert!');
-          },
-          () => this.showError('Fehler beim Aktualisieren des Benutzertyps.')
-        );
-      } else {
-        this.showError('Ungültiger Benutzertyp!');
-      }
-    }
   }
 
   // Kurs hinzufügen

@@ -145,7 +145,8 @@ export class UserAufgabeComponent implements OnInit {
     });
   }
 
-  closeNotification() {
+  closeNotification(): void {
     this.showNotification = false;
+    this.notificationMessage = '';
   }
 }
