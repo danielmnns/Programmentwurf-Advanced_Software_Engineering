@@ -155,9 +155,12 @@ export class KursComponent implements OnInit, OnDestroy {
 
   // Öffnet die PDF-Vorschau
   openPdfPreview(url: SafeResourceUrl | string) {
+    // Sicherstellen, dass die URL ordnungsgemäß verarbeitet und sanitisiert wird
     if (typeof url === 'string') {
+      // String-URL durch fileUrlService verarbeiten
       this.currentPdfUrl = this.fileUrlService.getFileUrl(url);
     } else {
+      // Wenn es bereits eine SafeResourceUrl ist, direkt verwenden
       this.currentPdfUrl = url;
     }
     this.showPdfPreview = true;
@@ -165,7 +168,8 @@ export class KursComponent implements OnInit, OnDestroy {
 
   closePdfPreview(): void {
     this.showPdfPreview = false;
-    this.currentPdfUrl = '';
+    // Das Zurücksetzen auf einen leeren String erzeugt Probleme, da currentPdfUrl als SafeResourceUrl definiert ist
+    this.currentPdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
   }
 
   handleFileUpload(event: Event, type: string): void {
