@@ -170,12 +170,6 @@ h3 {
   width: 100%;
 }
 
-/* Aktionszelle in der Benutzertabelle */
-.action-cell {
-  display: flex;
-  gap: 8px;
-}
-
 /* Dialog Animationen */
 .mat-dialog-container {
   border-radius: 8px;
