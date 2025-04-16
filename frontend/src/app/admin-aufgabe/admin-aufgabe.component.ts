@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { LanguageService } from '../services/language.service';
+import { TranslatePipe } from '../pipes/translate.pipe';
 
 interface DocumentFile {
   name: string;
@@ -57,7 +58,8 @@ interface AdminTaskDetails {
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    RouterModule
+    RouterModule,
+    TranslatePipe
   ]
 })
 export class AdminAufgabeComponent implements OnInit {
@@ -205,6 +207,6 @@ export class AdminAufgabeComponent implements OnInit {
 
   // Navigiert zurück zur Kursverwaltungs-Seite (Pfad ggf. anpassen)
   navigateBack(): void {
-    this.router.navigate(['/admin-kurs', this.courseName]);
+    this.router.navigate(['/user-kurs', this.courseName]);
   }
 }

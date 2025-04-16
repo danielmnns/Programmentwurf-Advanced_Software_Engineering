@@ -396,8 +396,8 @@ deleteTask(task: Task): void {
   }
 
   // Navigate back to previous page
-  goBack(): void {
-    this.location.back();
+  navigateBack(): void {
+    this.router.navigate(['/user-kurs', this.courseName]);
   }
 
   /**
