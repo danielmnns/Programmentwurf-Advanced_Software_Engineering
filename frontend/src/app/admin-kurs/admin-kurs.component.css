@@ -55,9 +55,8 @@ mat-card{
 
 .export-buttons button {
   flex: 1;
-  min-width: 180px; /* Erhöhte Mindestbreite */
   white-space: nowrap;
-  padding: 10px 35px; /* Mehr horizontales Padding */
+  padding: 10px 35px; 
   border-radius: 8px !important;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.15);
   font-weight: 500;
@@ -67,6 +66,17 @@ mat-card{
   transition: all 0.3s ease;
   border: 1px solid rgba(25, 118, 210, 0.1);
   background: linear-gradient(to bottom, #2196f3, #1976d2) !important;
+}
+
+/* Responsive Layout für Export-Buttons unter 1500px */
+@media (max-width: 1500px) {
+  .export-buttons {
+    flex-direction: column;
+  }
+  
+  .export-buttons button {
+    margin-bottom: 10px;
+  }
 }
 
 .export-buttons button:hover {
