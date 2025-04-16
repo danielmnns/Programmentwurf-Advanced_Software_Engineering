@@ -44,7 +44,7 @@
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>{{ 'actions' | translate }}</th>
           <td mat-cell *matCellDef="let user" class="action-cell">
-            <button mat-button color="primary" (click)="updateUserType(user)" class="full-width">
+            <button mat-button color="primary" (click)="openEditUserDialog(user)" class="full-width">
               {{ 'edit' | translate }}
             </button>
             <button mat-button color="warn" (click)="deleteUser(user)" class="full-width">
@@ -61,96 +61,124 @@
 
   <!-- Kursverwaltung: Kurse und Teilnehmer -->
   <div class="section course-management-container" #coursesTableContainer tabindex="-1">
-  <h2>{{ 'courseManagement' | translate }}</h2>
+    <h2>{{ 'courseManagement' | translate }}</h2>
 
-  <!-- Kursliste -->
-  <table mat-table [dataSource]="courseDataSource" class="mat-elevation-z8">
-    <!-- Kursname Spalte -->
-    <ng-container matColumnDef="courseName">
-      <th mat-header-cell *matHeaderCellDef>{{ 'courseName' | translate }}</th>
-      <td mat-cell *matCellDef="let course">{{ course.courseName }}</td>
-    </ng-container>
+    <!-- Kursliste -->
+    <table mat-table [dataSource]="courseDataSource" class="mat-elevation-z8">
+      <!-- Kursname Spalte -->
+      <ng-container matColumnDef="courseName">
+        <th mat-header-cell *matHeaderCellDef>{{ 'courseName' | translate }}</th>
+        <td mat-cell *matCellDef="let course">{{ course.courseName }}</td>
+      </ng-container>
 
-    <!-- Teilnehmerzahl Spalte -->
-    <ng-container matColumnDef="participantCount">
-      <th mat-header-cell *matHeaderCellDef>{{ 'participants' | translate }}</th>
-      <td mat-cell *matCellDef="let course">{{ course.participants.length }}</td>
-    </ng-container>
+      <!-- Teilnehmerzahl Spalte -->
+      <ng-container matColumnDef="participantCount">
+        <th mat-header-cell *matHeaderCellDef>{{ 'participants' | translate }}</th>
+        <td mat-cell *matCellDef="let course">{{ course.participants.length }}</td>
+      </ng-container>
 
-    <!-- Aktionen Spalte -->
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef>{{ 'actions' | translate }}</th>
-      <td mat-cell *matCellDef="let course">
-        <button mat-icon-button color="primary" #dialogTrigger
-        (click)="openParticipantDialog(course)"
-        title="{{ 'participants' | translate }}">
-          <mat-icon>🔧</mat-icon>
-        </button>
-      </td>
-    </ng-container>
+      <!-- Aktionen Spalte -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>{{ 'actions' | translate }}</th>
+        <td mat-cell *matCellDef="let course">
+          <button mat-icon-button color="primary" #dialogTrigger
+          (click)="openParticipantDialog(course)"
+          title="{{ 'participants' | translate }}">
+            <mat-icon>🔧</mat-icon>
+          </button>
+        </td>
+      </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="['courseName', 'participantCount', 'actions']"></tr>
-    <tr mat-row *matRowDef="let row; columns: ['courseName', 'participantCount', 'actions'];"></tr>
-  </table>
-</div>
-
-<!-- Teilnehmer-Dialog Template -->
-<ng-template #participantDialogTemplate>
-  <div class="participant-dialog">
-    <h2 mat-dialog-title tabindex="-1">{{ 'participants' | translate }} "{{ selectedCourse?.courseName }}"</h2>
-
-    <mat-dialog-content>
-      <div class="participant-sections">
-        <!-- Aktuelle Teilnehmer -->
-        <div class="current-participants">
-          <h3>{{ 'participants' | translate }}</h3>
-          <mat-form-field class="search-field" appearance="outline">
-            <mat-label>{{ 'participants' | translate }}</mat-label>
-            <input matInput [(ngModel)]="participantSearchTerm" placeholder="{{ 'search' | translate }}">
-            <mat-icon matSuffix></mat-icon>
-          </mat-form-field>
-
-          <mat-selection-list #participantsList [multiple]="true">
-            <mat-list-option *ngFor="let participant of filteredParticipants" [value]="participant">
-              {{ participant }}
-            </mat-list-option>
-          </mat-selection-list>
-
-          <div class="action-buttons">
-            <button mat-raised-button color="warn" [disabled]="!participantsList.selectedOptions.selected.length"
-                    (click)="removeParticipants(participantsList.selectedOptions.selected)">
-              <mat-icon></mat-icon> {{ 'removeParticipant' | translate }}
-            </button>
-          </div>
-        </div>
-
-        <!-- Verfügbare Benutzer -->
-        <div class="available-users">
-          <h3>{{ 'addUser' | translate }}</h3>
-          <mat-form-field class="search-field" appearance="outline">
-            <mat-label>{{ 'search' | translate }}</mat-label>
-            <input matInput [(ngModel)]="userSearchTerm" placeholder="{{ 'search' | translate }}">
-            <mat-icon matSuffix></mat-icon>
-          </mat-form-field>
-
-          <mat-selection-list #usersList [multiple]="true">
-            <mat-list-option *ngFor="let user of filteredAvailableUsers" [value]="user.username">
-              {{ user.username }} ({{ user.userType | translate }})
-            </mat-list-option>
-          </mat-selection-list>
-
-          <div class="action-buttons">
-            <button mat-raised-button color="primary" [disabled]="!usersList.selectedOptions.selected.length"
-                    (click)="addParticipants(usersList.selectedOptions.selected)">
-              <mat-icon></mat-icon> {{ 'addParticipant' | translate }}
-            </button>
-          </div>
-        </div>
-      </div>
-    </mat-dialog-content>
-
-    <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close cdkFocusInitial>{{ 'close' | translate }}</button>
-    </mat-dialog-actions>
+      <tr mat-header-row *matHeaderRowDef="['courseName', 'participantCount', 'actions']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['courseName', 'participantCount', 'actions'];"></tr>
+    </table>
   </div>
-</ng-template>
+
+  <!-- Teilnehmer-Dialog Template -->
+  <ng-template #participantDialogTemplate>
+    <div class="participant-dialog">
+      <h2 mat-dialog-title tabindex="-1">{{ 'participants' | translate }} "{{ selectedCourse?.courseName }}"</h2>
+
+      <mat-dialog-content>
+        <div class="participant-sections">
+          <!-- Aktuelle Teilnehmer -->
+          <div class="current-participants">
+            <h3>{{ 'participants' | translate }}</h3>
+            <mat-form-field class="search-field" appearance="outline">
+              <mat-label>{{ 'participants' | translate }}</mat-label>
+              <input matInput [(ngModel)]="participantSearchTerm" placeholder="{{ 'search' | translate }}">
+              <mat-icon matSuffix></mat-icon>
+            </mat-form-field>
+
+            <mat-selection-list #participantsList [multiple]="true">
+              <mat-list-option *ngFor="let participant of filteredParticipants" [value]="participant">
+                {{ participant }}
+              </mat-list-option>
+            </mat-selection-list>
+
+            <div class="action-buttons">
+              <button mat-raised-button color="warn" [disabled]="!participantsList.selectedOptions.selected.length"
+                      (click)="removeParticipants(participantsList.selectedOptions.selected)">
+                <mat-icon></mat-icon> {{ 'removeParticipant' | translate }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Verfügbare Benutzer -->
+          <div class="available-users">
+            <h3>{{ 'addUser' | translate }}</h3>
+            <mat-form-field class="search-field" appearance="outline">
+              <mat-label>{{ 'search' | translate }}</mat-label>
+              <input matInput [(ngModel)]="userSearchTerm" placeholder="{{ 'search' | translate }}">
+              <mat-icon matSuffix></mat-icon>
+            </mat-form-field>
+
+            <mat-selection-list #usersList [multiple]="true">
+              <mat-list-option *ngFor="let user of filteredAvailableUsers" [value]="user.username">
+                {{ user.username }} ({{ user.userType | translate }})
+              </mat-list-option>
+            </mat-selection-list>
+
+            <div class="action-buttons">
+              <button mat-raised-button color="primary" [disabled]="!usersList.selectedOptions.selected.length"
+                      (click)="addParticipants(usersList.selectedOptions.selected)">
+                <mat-icon></mat-icon> {{ 'addParticipant' | translate }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </mat-dialog-content>
+
+      <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close cdkFocusInitial>{{ 'close' | translate }}</button>
+      </mat-dialog-actions>
+    </div>
+  </ng-template>
+  
+  <!-- Benutzer bearbeiten Dialog Template -->
+  <ng-template #editUserDialogTemplate>
+    <div class="edit-user-dialog">
+      <h2 mat-dialog-title>{{ 'editUser' | translate }}: {{ selectedUser?.username }}</h2>
+      
+      <mat-dialog-content>
+        <div class="user-edit-form">
+          <mat-form-field appearance="fill" class="full-width">
+            <mat-label>{{ 'defaultUserType' | translate }}</mat-label>
+            <mat-select [(ngModel)]="selectedUserType" name="selectedUserType">
+              <mat-option *ngFor="let type of userTypes" [value]="type.value">
+                {{ type.label | translate }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </mat-dialog-content>
+      
+      <mat-dialog-actions align="end">
+        <button mat-button mat-dialog-close>{{ 'cancel' | translate }}</button>
+        <button mat-raised-button color="primary" [mat-dialog-close]="{userType: selectedUserType}">
+          {{ 'save' | translate }}
+        </button>
+      </mat-dialog-actions>
+    </div>
+  </ng-template>
+</div>
