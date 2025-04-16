@@ -42,6 +42,8 @@ export class LanguageService {
     // German translations (default)
     this.translations.de = {
       // Common
+      'yes': 'Ja',
+      'no': 'Nein',
       'login': 'Anmeldung',
       'logout': 'Abmelden',
       'username': 'Benutzername',
@@ -60,6 +62,11 @@ export class LanguageService {
       'actions': 'Aktionen',
       'selectFile': 'Datei auswählen',
       'noFileSelected': 'Keine Datei ausgewählt',
+      
+      // Footer links
+      'privacyPolicy': 'Datenschutzerklärung',
+      'termsOfService': 'Nutzungsbedingungen',
+      'contact': 'Kontakt',
       
       // Export functions
       'exportPDF': 'Als PDF exportieren',
@@ -97,6 +104,10 @@ export class LanguageService {
       'materials': 'Materialien',
       'addMaterial': 'Material hinzufügen',
       'removeMaterial': 'Material entfernen',
+      'confirmDeleteCourse': 'Möchten Sie diesen Kurs wirklich löschen?',
+      'courseCreatedSuccess': 'Kurs wurde erfolgreich erstellt!',
+      'courseCreationError': 'Fehler beim Erstellen des Kurses.',
+      'enterCourseName': 'Bitte geben Sie einen Kursnamen ein.',
       
       // Task related
       'taskName': 'Aufgabenname',
@@ -157,6 +168,8 @@ export class LanguageService {
     // English translations
     this.translations.en = {
       // Common
+      'yes': 'Yes',
+      'no': 'No',
       'login': 'Login',
       'logout': 'Logout',
       'username': 'Username',
@@ -175,6 +188,11 @@ export class LanguageService {
       'actions': 'Actions',
       'selectFile': 'Select File',
       'noFileSelected': 'No file selected',
+      
+      // Footer links
+      'privacyPolicy': 'Privacy Policy',
+      'termsOfService': 'Terms of Service',
+      'contact': 'Contact',
       
       // Export functions
       'exportPDF': 'Export as PDF',
@@ -212,6 +230,10 @@ export class LanguageService {
       'materials': 'Materials',
       'addMaterial': 'Add Material',
       'removeMaterial': 'Remove Material',
+      'confirmDeleteCourse': 'Do you really want to delete this course?',
+      'courseCreatedSuccess': 'Course was successfully created!',
+      'courseCreationError': 'Error creating the course.',
+      'enterCourseName': 'Please enter a course name.',
       
       // Task related
       'taskName': 'Task Name',
