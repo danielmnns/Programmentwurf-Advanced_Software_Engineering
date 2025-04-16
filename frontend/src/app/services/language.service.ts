@@ -59,6 +59,11 @@ export class LanguageService {
       'search': 'Suchen',
       'actions': 'Aktionen',
       
+      // Footer links
+      'privacyPolicy': 'Datenschutzerklärung',
+      'termsOfService': 'Nutzungsbedingungen',
+      'contact': 'Kontakt',
+      
       // Export functions
       'exportPDF': 'Als PDF exportieren',
       'exportCSV': 'Als CSV exportieren',
@@ -165,6 +170,11 @@ export class LanguageService {
       'preview': 'Preview',
       'search': 'Search',
       'actions': 'Actions',
+      
+      // Footer links
+      'privacyPolicy': 'Privacy Policy',
+      'termsOfService': 'Terms of Service',
+      'contact': 'Contact',
       
       // Export functions
       'exportPDF': 'Export as PDF',

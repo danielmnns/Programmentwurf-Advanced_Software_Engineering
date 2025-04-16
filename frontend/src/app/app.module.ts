@@ -32,6 +32,7 @@ import { AdminKursComponent } from './admin-kurs/admin-kurs.component';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { TokenInterceptor } from './auth/token.interceptor';
+import { FooterComponent } from './footer/footer.component';
 import { HeadbarComponent } from './headbar/headbar.component';
 import { LoginComponent } from './login/login.component';
 import { NewTaskDialogComponent } from './new-task-dialog/new-task-dialog.component';
@@ -84,6 +85,7 @@ import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.compo
     AdminDashboardComponent,
     UserDashboardComponent,
     HeadbarComponent,
+    FooterComponent,
     AccountComponent,
     AdminKursComponent,
     KursComponent,
