@@ -68,6 +68,11 @@
   ✅ {{ 'courseCreatedSuccess' | translate }}
 </div>
 
+<!-- Error-Popup -->
+<div class="error-popup" *ngIf="showErrorPopup">
+  ❌ {{ errorMessage }}
+</div>
+
 <!-- Bestätigungs-Popup für Kurs löschen -->
 <div class="confirmation-popup" *ngIf="showDeleteConfirmation">
   <p>{{ 'confirmDeleteCourse' | translate }}</p>

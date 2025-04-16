@@ -100,6 +100,10 @@ export class LanguageService {
       'materials': 'Materialien',
       'addMaterial': 'Material hinzufügen',
       'removeMaterial': 'Material entfernen',
+      'confirmDeleteCourse': 'Möchten Sie diesen Kurs wirklich löschen?',
+      'courseCreatedSuccess': 'Kurs wurde erfolgreich erstellt!',
+      'courseCreationError': 'Fehler beim Erstellen des Kurses.',
+      'enterCourseName': 'Bitte geben Sie einen Kursnamen ein.',
       
       // Task related
       'taskName': 'Aufgabenname',
@@ -212,6 +216,10 @@ export class LanguageService {
       'materials': 'Materials',
       'addMaterial': 'Add Material',
       'removeMaterial': 'Remove Material',
+      'confirmDeleteCourse': 'Do you really want to delete this course?',
+      'courseCreatedSuccess': 'Course was successfully created!',
+      'courseCreationError': 'Error creating the course.',
+      'enterCourseName': 'Please enter a course name.',
       
       // Task related
       'taskName': 'Task Name',
