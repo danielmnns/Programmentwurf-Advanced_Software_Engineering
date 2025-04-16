@@ -9,9 +9,9 @@ import { ActivatedRoute } from '@angular/router';
 export class FileUrlService {
   private readonly backendUrl = 'http://localhost:3000';
 
-  constructor(private sanitizer: DomSanitizer,
-            private http: HttpClient,
-            private route: ActivatedRoute) {}
+  constructor(private readonly sanitizer: DomSanitizer,
+            private readonly http: HttpClient,
+            private readonly route: ActivatedRoute) {}
 
   getFileUrl(relativePath: string | SafeResourceUrl): SafeResourceUrl {
     // Wenn es bereits ein SafeResourceUrl ist, direkt zurückgeben
@@ -35,7 +35,7 @@ export class FileUrlService {
     
     // Identifiziere UUID-basierte Dateinamen (z.B. 40de5b57-e5ba-4a43-8d74-6803771723f1-neuer_kurs_Teilnehmerliste.pdf)
     const uuidPattern = /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:-.+)?\.pdf$/;
-    const uuidMatch = cleanPath.match(uuidPattern);
+    const uuidMatch = RegExp.prototype.exec.call(uuidPattern, cleanPath);
     
     // Bei PDF-Dateien, die mit einer UUID beginnen, direkt auf die Datei im Root-Upload-Verzeichnis zugreifen
     if (cleanPath.endsWith('.pdf') && uuidMatch) {

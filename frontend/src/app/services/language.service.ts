@@ -11,16 +11,16 @@ export interface Translations {
 })
 export class LanguageService {
   // Default language is German
-  private currentLanguageSubject = new BehaviorSubject<Language>('de');
-  public currentLanguage$ = this.currentLanguageSubject.asObservable();
+  private readonly currentLanguageSubject = new BehaviorSubject<Language>('de');
+  public readonly currentLanguage$ = this.currentLanguageSubject.asObservable();
   
   // Store translations for each language
-  private translations: { [key in Language]: Translations } = {
+  private readonly translations: { [key in Language]: Translations } = {
     de: {},
     en: {}
   };
 
-  constructor(private ngZone: NgZone) {
+  constructor(private readonly ngZone: NgZone) {
     // Zuerst Übersetzungen laden
     this.loadTranslations();
     

@@ -48,7 +48,7 @@ export class KursComponent implements OnInit, OnDestroy {
   textContent: string = '';
   feedbackContent: string = '';
   showPdfPreview: boolean = false;
-  currentPdfUrl: SafeResourceUrl = '';
+  currentPdfUrl: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
   participants: string[] = [];
 
   uploadedFiles = {
@@ -59,16 +59,16 @@ export class KursComponent implements OnInit, OnDestroy {
   tasks: Task[] = [];
 
   isAuthorized: boolean = false;
-  private apiUrl = 'http://localhost:3000/api/courses';
+  private readonly apiUrl = 'http://localhost:3000/api/courses';
   showConfirmationDialog: boolean = false;
   fileToDelete: DocumentFile | null = null;
   fileToDeleteIndex: number | null = null;
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private http: HttpClient,
-    private sanitizer: DomSanitizer,
+    private readonly route: ActivatedRoute,
+    private readonly router: Router,
+    private readonly http: HttpClient,
+    private readonly sanitizer: DomSanitizer,
     public fileUrlService: FileUrlService,
     public languageService: LanguageService
   ) {}
@@ -83,8 +83,8 @@ export class KursComponent implements OnInit, OnDestroy {
 
   checkAuthorization(): void {
     const userRoles = ['admin', 'dozent', 'studiengangsleiter'];
-    this.http.get('http://localhost:3000/api/user/userdata').subscribe(
-      (response: any) => {
+    this.http.get('http://localhost:3000/api/user/userdata').subscribe({
+      next: (response: any) => {
         if (response.success && response.user) {
           this.isAuthorized = userRoles.includes(response.user.userType);
           this.userName = response.user.userName; // Setze den aktuellen Benutzernamen
@@ -92,10 +92,10 @@ export class KursComponent implements OnInit, OnDestroy {
           console.error('Ungültige API-Antwort:', response);
         }
       },
-      (error) => {
+      error: (error) => {
         console.error('Fehler beim Abrufen der Benutzerrolle:', error);
       }
-    );
+    });
   }
 
   // Navigiert zur Admin-Kursseite
@@ -108,12 +108,12 @@ export class KursComponent implements OnInit, OnDestroy {
 
   loadCourseData(): void {
     const url = `${this.apiUrl}/user-kurs?courseName=${encodeURIComponent(this.courseName)}`;
-    this.http.get(url).subscribe(
-      (response: any) => {
+    this.http.get(url).subscribe({
+      next: (response: any) => {
         // Kursinformationen
-        this.textContent = response.textContent || '';
-        this.feedbackContent = response.feedbackContent || '';
-        this.participants = response.participants || [];
+        this.textContent = response.textContent ?? '';
+        this.feedbackContent = response.feedbackContent ?? '';
+        this.participants = response.participants ?? [];
 
         // Kursdokumente mit absoluten URLs
         if (response.documents) {
@@ -147,10 +147,10 @@ export class KursComponent implements OnInit, OnDestroy {
           });
         }
       },
-      (error) => {
+      error: (error) => {
         console.error('Fehler beim Abrufen der Kursdaten:', error);
       }
-    );
+    });
   }
 
   // Öffnet die PDF-Vorschau
@@ -193,9 +193,7 @@ export class KursComponent implements OnInit, OnDestroy {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       const fileUrl = URL.createObjectURL(file);
-      if (!task.submissions) {
-        task.submissions = {};
-      }
+      task.submissions ??= {};
       task.submissions[this.userName] = {
         file: {
           name: file.name,
@@ -241,16 +239,16 @@ export class KursComponent implements OnInit, OnDestroy {
         userName: this.userName,
         courseName: this.courseName,
       };
-      this.http.delete(`${this.apiUrl}/abgaben`, { body: payload }).subscribe(
-        () => {
+      this.http.delete(`${this.apiUrl}/abgaben`, { body: payload }).subscribe({
+        next: () => {
           this.uploadedFiles.abgaben.splice(this.fileToDeleteIndex!, 1);
           alert(`Datei "${this.fileToDelete?.name}" wurde erfolgreich entfernt.`);
         },
-        (error) => {
+        error: (error) => {
           console.error(`Fehler beim Löschen der Datei "${this.fileToDelete?.name}":`, error);
           alert(`Fehler beim Löschen der Datei "${this.fileToDelete?.name}".`);
         }
-      );
+      });
     } else {
       console.error('Datei oder Index zum Löschen nicht gesetzt.');
     }
