@@ -11,19 +11,19 @@ export interface Translations {
 })
 export class LanguageService {
   // Default language is German
-  private currentLanguageSubject = new BehaviorSubject<Language>('de');
-  public currentLanguage$ = this.currentLanguageSubject.asObservable();
-  
+  private readonly currentLanguageSubject = new BehaviorSubject<Language>('de');
+  public readonly currentLanguage$ = this.currentLanguageSubject.asObservable();
+
   // Store translations for each language
-  private translations: { [key in Language]: Translations } = {
+  private readonly translations: { [key in Language]: Translations } = {
     de: {},
     en: {}
   };
 
-  constructor(private ngZone: NgZone) {
+  constructor(private readonly ngZone: NgZone) {
     // Zuerst Übersetzungen laden
     this.loadTranslations();
-    
+
     // Dann Spracheinstellung laden oder festlegen
     const savedLang = localStorage.getItem('preferredLanguage') as Language;
     if (savedLang && (savedLang === 'de' || savedLang === 'en')) {
@@ -62,17 +62,17 @@ export class LanguageService {
       'actions': 'Aktionen',
       'selectFile': 'Datei auswählen',
       'noFileSelected': 'Keine Datei ausgewählt',
-      
+
       // Footer links
       'privacyPolicy': 'Datenschutzerklärung',
       'termsOfService': 'Nutzungsbedingungen',
       'contact': 'Kontakt',
-      
+
       // Export functions
       'exportPDF': 'Als PDF exportieren',
       'exportCSV': 'Als CSV exportieren',
       'exportSuccess': '{{type}}-Export erfolgreich',
-      
+
       // Navigation & Headers
       'dashboard': 'Dashboard',
       'courses': 'Kurse',
@@ -81,17 +81,15 @@ export class LanguageService {
       'viewCourse': 'Kurs anzeigen',
       'enrollInCourse': 'In Kurs einschreiben',
       'courseEnrollmentRequired': 'Einschreibung erforderlich',
-      
+
       // User Types
       'admin': 'Administrator',
       'student': 'Student',
-      'dozent': 'Dozent',
-      'studiengangsleiter': 'Studiengangsleiter',
-      'teacher': 'Dozent',
-      'secretary': 'Sekretärin',
+      'lecturer': 'Dozent',
+      'director': 'Studiengangsleiter',
       'courseLeader': 'Kursleiter',
-      'defaultUserType': 'Benutzer',
-      
+      'defaultUserType': 'Student',
+
       // Course related
       'courseManagement': 'Kursverwaltung',
       'addCourse': 'Kurs hinzufügen',
@@ -108,7 +106,7 @@ export class LanguageService {
       'courseCreatedSuccess': 'Kurs wurde erfolgreich erstellt!',
       'courseCreationError': 'Fehler beim Erstellen des Kurses.',
       'enterCourseName': 'Bitte geben Sie einen Kursnamen ein.',
-      
+
       // Task related
       'taskName': 'Aufgabenname',
       'taskDescription': 'Aufgabenbeschreibung',
@@ -130,7 +128,7 @@ export class LanguageService {
       'changePassword': 'Passwort ändern',
       'oldPassword': 'Altes Passwort',
       'newPassword': 'Neues Passwort',
-      
+
       // Messages
       'loginSuccess': 'Erfolgreich angemeldet',
       'loginError': 'Anmeldungsfehler',
@@ -139,7 +137,7 @@ export class LanguageService {
       'deleteConfirm': 'Sind Sie sicher, dass Sie dies löschen möchten?',
       'error': 'Fehler',
       'success': 'Erfolg',
-      
+
       // Status messages
       'addMaterialSuccess': 'Material wurde erfolgreich hinzugefügt',
       'addMaterialError': 'Fehler beim Hinzufügen des Materials',
@@ -152,16 +150,16 @@ export class LanguageService {
       'updateTextError': 'Fehler beim Aktualisieren des Textes',
       'courseCreatedError': 'Fehler beim Erstellen des Kurses',
       'courseDeletedSuccess': 'Kurs erfolgreich gelöscht',
-      
+
       // Language
       'language': 'Sprache',
       'german': 'Deutsch',
       'english': 'Englisch',
-      
+
       // Session
       'sessionTimeout': 'Sitzungszeit verbleibend'
     };
-    
+
     // English translations
     this.translations.en = {
       // Common
@@ -185,17 +183,17 @@ export class LanguageService {
       'actions': 'Actions',
       'selectFile': 'Select File',
       'noFileSelected': 'No file selected',
-      
+
       // Footer links
       'privacyPolicy': 'Privacy Policy',
       'termsOfService': 'Terms of Service',
       'contact': 'Contact',
-      
+
       // Export functions
       'exportPDF': 'Export as PDF',
       'exportCSV': 'Export as CSV',
       'exportSuccess': '{{type}} export successful',
-      
+
       // Navigation & Headers
       'dashboard': 'Dashboard',
       'courses': 'Courses',
@@ -204,7 +202,7 @@ export class LanguageService {
       'viewCourse': 'View course',
       'enrollInCourse': 'Enroll in course',
       'courseEnrollmentRequired': 'Enrollment required',
-      
+
       // User Types
       'admin': 'Administrator',
       'student': 'Student',
@@ -214,7 +212,7 @@ export class LanguageService {
       'secretary': 'Secretary',
       'courseLeader': 'Course Leader',
       'defaultUserType': 'User',
-      
+
       // Course related
       'courseManagement': 'Course Management',
       'addCourse': 'Add Course',
@@ -231,7 +229,7 @@ export class LanguageService {
       'courseCreatedSuccess': 'Course was successfully created!',
       'courseCreationError': 'Error creating the course.',
       'enterCourseName': 'Please enter a course name.',
-      
+
       // Task related
       'taskName': 'Task Name',
       'taskDescription': 'Task Description',
@@ -244,7 +242,7 @@ export class LanguageService {
       'grade': 'Grade',
       'submitWork': 'Submit Work',
       'userFees': 'User Submissions',
-      
+
       // User management
       'userManagement': 'User Management',
       'addUser': 'Add User',
@@ -253,7 +251,7 @@ export class LanguageService {
       'changePassword': 'Change Password',
       'oldPassword': 'Old Password',
       'newPassword': 'New Password',
-      
+
       // Messages
       'loginSuccess': 'Successfully logged in',
       'loginError': 'Login error',
@@ -262,7 +260,7 @@ export class LanguageService {
       'deleteConfirm': 'Are you sure you want to delete this?',
       'error': 'Error',
       'success': 'Success',
-      
+
       // Status messages
       'addMaterialSuccess': 'Material has been successfully added',
       'addMaterialError': 'Error adding material',
@@ -273,12 +271,12 @@ export class LanguageService {
       'deleteTaskSuccess': 'Task has been successfully deleted',
       'deleteTaskError': 'Error deleting task',
       'updateTextError': 'Error updating text',
-      
+
       // Language
       'language': 'Language',
       'german': 'German',
       'english': 'English',
-      
+
       // Session
       'sessionTimeout': 'Session time remaining'
     };
@@ -302,13 +300,13 @@ export class LanguageService {
   public translate(key: string): string {
     const lang = this.getCurrentLanguage();
     const translation = this.translations[lang][key];
-    
+
     // Fallback auf Originaltext, wenn keine Übersetzung gefunden
     if (!translation) {
       console.warn(`Keine Übersetzung gefunden für "${key}" in Sprache "${lang}"`);
       return key;
     }
-    
+
     return translation;
   }
 }

@@ -68,18 +68,18 @@ export class AdminKursComponent implements OnInit {
   showExportSuccess: boolean = false; // Neue Variable für Export-Erfolgsmeldung
   exportType: string = ''; // Speichert den Typ des Exports (PDF/CSV)
 
-  private apiUrl = 'http://localhost:3000/api/courses';
+  private readonly apiUrl = 'http://localhost:3000/api/courses';
 
   constructor(
-    private route: ActivatedRoute,
+    private readonly route: ActivatedRoute,
     public router: Router,
-    private http: HttpClient,
-    private dialog: MatDialog,
+    private readonly http: HttpClient,
+    private readonly dialog: MatDialog,
     public fileUrlService: FileUrlService,
-    private sanitizer: DomSanitizer,
+    private readonly sanitizer: DomSanitizer,
     public languageService: LanguageService,
-    private statusService: StatusService,
-    private location: Location // Add Location service
+    private readonly statusService: StatusService,
+    private readonly location: Location // Add Location service
   ) {}
 
   ngOnInit(): void {
@@ -132,29 +132,29 @@ export class AdminKursComponent implements OnInit {
       documentName: doc.name
     };
 
-    this.http.request('delete', `${this.apiUrl}/admin/removeDocument`, { body: payload }).subscribe(
-      (response: any) => {
+    this.http.request('delete', `${this.apiUrl}/admin/removeDocument`, { body: payload }).subscribe({
+      next: (response: any) => {
         this.uploadedDocuments = this.uploadedDocuments.filter(d => d.name !== doc.name);
         // Show the removal success popup
         this.showMaterialRemovalSuccessPopup(doc.name);
         this.statusService.showSuccess('removeMaterialSuccess', { name: doc.name });
       },
-      (error) => {
+      error: (error) => {
         console.error('Fehler beim Löschen des Dokuments:', error);
         this.statusService.showError('removeMaterialError');
       }
-    );
+    });
   }
 
   loadCourseData(): void {
     const url = `${this.apiUrl}/user-kurs?courseName=${encodeURIComponent(this.courseName)}`;
-    this.http.get(url).subscribe(
-      (response: any) => {
+    this.http.get(url).subscribe({
+      next: (response: any) => {
         console.log("Vollständige Backend-Antwort:", response);
         console.log("Aufgaben in der Antwort:", response.tasks);
         
-        this.textContent = response.textContent || '';
-        this.participants = response.participants || [];
+        this.textContent = response.textContent ?? '';
+        this.participants = response.participants ?? [];
         if (response.documents) {
           this.uploadedDocuments = response.documents.map((doc: any) => ({
             name: doc.name,
@@ -186,10 +186,10 @@ export class AdminKursComponent implements OnInit {
           this.tasks = [];
         }
       },
-      (error) => {
+      error: (error) => {
         console.error('Fehler beim Laden der Kursdaten:', error);
       }
-    );
+    });
   }
 
   // Show material creation confirmation popup
@@ -227,8 +227,8 @@ export class AdminKursComponent implements OnInit {
       formData.append('file', file);
       formData.append('courseName', this.courseName);
 
-      this.http.post(`${this.apiUrl}/admin/addDocument`, formData).subscribe(
-        (response: any) => {
+      this.http.post(`${this.apiUrl}/admin/addDocument`, formData).subscribe({
+        next: (response: any) => {
           // Show confirmation popup with file name
           this.showMaterialCreationPopup(file.name);
           
@@ -238,11 +238,11 @@ export class AdminKursComponent implements OnInit {
             this.loadCourseData();
           }, 1000);
         },
-        (error) => {
+        error: (error) => {
           console.error('Fehler beim Hinzufügen des Dokuments:', error);
           this.statusService.showError('addMaterialError');
         }
-      );
+      });
     }
   }
 
@@ -250,16 +250,15 @@ export class AdminKursComponent implements OnInit {
   updateTask(task: Task): void {
     const payload = { courseName: this.courseName, ...task };
 
-
-    this.http.post('http://localhost:3000/api/tasks/admin/updateTask', payload).subscribe(
-      (response: any) => {
+    this.http.post('http://localhost:3000/api/tasks/admin/updateTask', payload).subscribe({
+      next: (response: any) => {
         this.statusService.showSuccess('saveSuccess');
       },
-      (error) => {
+      error: (error) => {
         console.error('Fehler beim Aktualisieren der Aufgabe:', error);
         this.statusService.showError('updateTaskError');
       }
-    );
+    });
   }
 
 currentPdfUrl: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
@@ -280,7 +279,7 @@ openPdfPreview(url: string | SafeResourceUrl): void {
 
 closePdfPreview():void {
   this.showPdfPreview = false;
-  this.currentPdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl('about:blank') as SafeResourceUrl;
+  this.currentPdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
 }
 
 // Löscht eine Aufgabe
@@ -291,8 +290,8 @@ deleteTask(task: Task): void {
     
     const payload = { courseName: this.courseName, taskId: task.taskId };
     
-    this.http.post('http://localhost:3000/api/tasks/admin/deleteTask', payload).subscribe(
-      (response: any) => {
+    this.http.post('http://localhost:3000/api/tasks/admin/deleteTask', payload).subscribe({
+      next: (response: any) => {
         console.log('Löschantwort vom Server:', response);
         this.statusService.showSuccess('deleteTaskSuccess');
         
@@ -301,28 +300,28 @@ deleteTask(task: Task): void {
           this.loadCourseData();
         }, 500);
       },
-      (error) => {
+      error: (error) => {
         console.error('Fehler beim Löschen der Aufgabe:', error);
         this.statusService.showError('deleteTaskError');
         
         // Bei Fehler die Aufgabe wieder zur Liste hinzufügen
         this.loadCourseData();
       }
-    );
+    });
   }
 }
 
   updateText(): void {
     const payload = { courseName: this.courseName, textContent: this.textContent };
-    this.http.post(`${this.apiUrl}/admin/updateText`, payload).subscribe(
-      (response: any) => {
+    this.http.post(`${this.apiUrl}/admin/updateText`, payload).subscribe({
+      next: (response: any) => {
         this.statusService.showSuccess('saveSuccess');
       },
-      (error) => {
+      error: (error) => {
         console.error('Fehler beim Aktualisieren des Textes:', error);
         this.statusService.showError('updateTextError');
       }
-    );
+    });
   }
 
 
@@ -339,10 +338,10 @@ deleteTask(task: Task): void {
       const formData = new FormData();
       formData.append('file', file);
       formData.append('courseName', this.courseName);
-      formData.append('taskId', task.taskId || '');
+      formData.append('taskId', task.taskId ?? '');
   
-      this.http.post('http://localhost:3000/api/tasks/admin/addTaskDocument', formData).subscribe(
-        (response: any) => {
+      this.http.post('http://localhost:3000/api/tasks/admin/addTaskDocument', formData).subscribe({
+        next: (response: any) => {
           console.log('Dokument-Antwort vom Server:', response);
           if (response.document) {
             if (!task.documents) {
@@ -351,7 +350,7 @@ deleteTask(task: Task): void {
             // Die URL transformieren, wie bei anderen Dokumenten auch
             task.documents.push({
               name: response.document.name,
-              url: this.fileUrlService.getFileUrl(response.document.url) as string
+              url: this.fileUrlService.getFileUrl(response.document.url)
             });
             
             // Show confirmation popup for task material creation
@@ -368,11 +367,11 @@ deleteTask(task: Task): void {
             console.error('Unerwartetes Antwortformat vom Server:', response);
           }
         },
-        (error) => {
+        error: (error) => {
           console.error('Fehler beim Hinzufügen des Dokuments zur Aufgabe:', error);
           this.statusService.showError('addTaskDocumentError');
         }
-      );
+      });
     }
   }
 
@@ -383,20 +382,22 @@ deleteTask(task: Task): void {
       data: { courseName: this.courseName }
     });
     
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        // Kurze Verzögerung vor dem Neuladen der Daten, um sicherzustellen, 
-        // dass die Serververarbeitung abgeschlossen ist
-        setTimeout(() => {
-          this.loadCourseData();
-        }, 1000);
+    dialogRef.afterClosed().subscribe({
+      next: (result) => {
+        if (result) {
+          // Kurze Verzögerung vor dem Neuladen der Daten, um sicherzustellen, 
+          // dass die Serververarbeitung abgeschlossen ist
+          setTimeout(() => {
+            this.loadCourseData();
+          }, 1000);
+        }
       }
     });
   }
 
   // Navigate back to previous page
-  goBack(): void {
-    this.router.navigate(['/admin-dashboard']);
+  navigateBack(): void {
+    this.router.navigate(['/user-kurs', this.courseName]);
   }
 
   /**

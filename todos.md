@@ -12,3 +12,4 @@
 - PopUp Aufgabe gelöscht
 - PopUp Aufgabe erstellt
 - PopUp Abgabe löschen
+- Responsives Design

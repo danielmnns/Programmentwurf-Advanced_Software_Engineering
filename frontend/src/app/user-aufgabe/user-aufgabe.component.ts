@@ -9,6 +9,12 @@ import { TranslatePipe } from '../pipes/translate.pipe';
 import { FileUrlService } from '../services/file-url.service';
 import { LanguageService } from '../services/language.service';
 
+interface DocumentFile {
+  name: string;
+  url: SafeResourceUrl;
+  originalUrl?: string;
+}
+
 interface Feedback {
   text: string;
   feedbackFrom: string;
@@ -30,6 +36,7 @@ export class UserAufgabeComponent implements OnInit {
   showDeletePopup: boolean = false;
   showNotification: boolean = false;
   notificationMessage: string = '';
+  taskDocuments: DocumentFile[] = []; // Array für die Aufgabendateien
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -56,14 +63,23 @@ export class UserAufgabeComponent implements OnInit {
     this.http.get(`${apiUrl}?courseName=${this.courseName}&taskName=${this.taskName}&userName=${userName}`).subscribe({
       next: (response: any) => {
         this.taskDescription = response.description || '';
-        
+
+        // Laden der Aufgabendateien
+        if (response.documents && response.documents.length > 0) {
+          this.taskDocuments = response.documents.map((doc: any) => ({
+            name: doc.name,
+            url: this.fileUrlService.getFileUrl(doc.url),
+            originalUrl: doc.url
+          }));
+        }
+
         // Prüfen, ob eine Abgabe vorhanden ist
         if (response.submission?.file) {
           this.submissionFile = {
             name: response.submission.file.name,
             url: this.fileUrlService.getFileUrl(response.submission.file.url)
           };
-          
+
           // Prüfen, ob Feedback vorhanden ist
           if (response.submission.feedback) {
             this.feedback = response.submission.feedback;
@@ -84,7 +100,7 @@ export class UserAufgabeComponent implements OnInit {
       formData.append('file', file);
       formData.append('courseName', this.courseName);
       formData.append('taskName', this.taskName);
-      
+
       const userName = this.authService.getUserName();
       formData.append('userName', userName || '');
 
@@ -148,5 +164,10 @@ export class UserAufgabeComponent implements OnInit {
   closeNotification(): void {
     this.showNotification = false;
     this.notificationMessage = '';
+  }
+
+  // Hilfsmethode zum Öffnen einer Datei in einem neuen Tab
+  openDocument(url: SafeResourceUrl | string) {
+    window.open(url.toString(), '_blank');
   }
 }
