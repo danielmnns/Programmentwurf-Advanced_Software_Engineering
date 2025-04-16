@@ -1,40 +1,33 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import * as fs from 'fs';
 import { Model } from 'mongoose';
-import { join } from 'path';
+import { GridFSService } from '../files/gridfs.service';
 import { Course, CourseDocument } from './schemas/course.schema';
 
 @Injectable()
 export class CoursesService {
   constructor(
-    @InjectModel(Course.name) private courseModel: Model<CourseDocument>
+    @InjectModel(Course.name) private courseModel: Model<CourseDocument>,
+    private readonly gridFsService: GridFSService
   ) {}
 
   async create(createCourseDto: any): Promise<CourseDocument> {
     const existingCourse = await this.courseModel.findOne({ title: createCourseDto.title }).exec();
+    
     if (existingCourse) {
-      throw new BadRequestException(`Ein Kurs mit dem Titel "${createCourseDto.title}" existiert bereits`);
+      throw new BadRequestException(`Kurs "${createCourseDto.title}" existiert bereits`);
     }
-
-    // Erstelle ein neues Course-Dokument, funktioniert sowohl mit echtem Modell als auch mit Mock
-    const newCourse = {
-      title: createCourseDto.title,
-      textContent: '',
-      participants: [],
+    
+    // Initialisiere ein leeres Array für Dokumente
+    const courseData = {
+      ...createCourseDto,
       documents: [],
-      tasks: []
+      tasks: [],
+      participants: []
     };
     
-    // Für Testing: Wenn courseModel ein Mock mit constructor ist
-    if (typeof this.courseModel.constructor === 'function') {
-      const createdCourse = this.courseModel.constructor(newCourse);
-      return createdCourse.save();
-    }
-    
-    // Für Production: Wenn courseModel ein echtes Model ist
-    const createdCourse = new this.courseModel(newCourse);
-    return createdCourse.save();
+    const newCourse = new this.courseModel(courseData);
+    return newCourse.save();
   }
 
   async findAll(): Promise<CourseDocument[]> {
@@ -43,43 +36,99 @@ export class CoursesService {
 
   async findOne(id: string): Promise<CourseDocument> {
     const course = await this.courseModel.findById(id).exec();
+    
     if (!course) {
       throw new NotFoundException(`Kurs mit ID ${id} nicht gefunden`);
     }
+    
+    return course;
+  }
+
+  async findByName(name: string): Promise<CourseDocument> {
+    const course = await this.courseModel.findOne({ title: name }).exec();
+    
+    if (!course) {
+      throw new NotFoundException(`Kurs mit dem Namen "${name}" nicht gefunden`);
+    }
+    
+    return course;
+  }
+
+  async findCoursesForUser(username: string): Promise<CourseDocument[]> {
+    return this.courseModel.find({ participants: username }).exec();
+  }
+
+  async update(id: string, updateCourseDto: any): Promise<CourseDocument> {
+    const course = await this.courseModel
+      .findByIdAndUpdate(id, updateCourseDto, { new: true })
+      .exec();
+      
+    if (!course) {
+      throw new NotFoundException(`Kurs mit ID ${id} nicht gefunden`);
+    }
+    
     return course;
   }
 
   async findCourseDetails(courseName: string): Promise<any> {
-    const course = await this.courseModel.findOne({ title: courseName }).exec();
+    console.log(`Kursdetails werden abgerufen für: ${courseName}`);
+    
+    // Verwende eine direkte Abfrage mit aktuellem Kontext anstatt findOne
+    const course = await this.courseModel
+      .findOne({ title: courseName })
+      .lean()  // Wichtig: Verwende lean() um das reine JS-Objekt zu erhalten
+      .exec();
+    
     if (!course) {
       throw new NotFoundException(`Kurs mit dem Namen "${courseName}" nicht gefunden`);
     }
+
+    console.log(`Kurs gefunden: ${course._id}, Titel: ${course.title}`);
+    console.log(`Tasks im Kurs vorhanden: ${course.tasks && course.tasks.length > 0 ? 'Ja' : 'Nein'}`);
+    console.log(`Anzahl Tasks: ${course.tasks?.length || 0}`);
     
-    console.log('Gefundenes Course-Objekt:', course);
-    console.log('Tasks im Kurs:', course.tasks);
+    if (course.tasks && course.tasks.length > 0) {
+      console.log(`Tasks-Rohstruktur:`, JSON.stringify(course.tasks, null, 2));
+    } else {
+      console.log('Keine Tasks im Kurs gefunden.');
+      
+      // Direkte Datenbank-Prüfung zur Fehlerbehebung
+      const freshCourse = await this.courseModel
+        .findById(course._id)
+        .exec();
+      console.log(`Fresh Course Query - Tasks: ${freshCourse?.tasks?.length || 0}`);
+    }
+
+    // Konvertiere URLs für die Anzeige im Frontend
+    const documentsWithUrls = (course.documents || []).map(doc => ({
+      name: doc.name,
+      url: `/api/gridfs/file/${doc.fileId}`
+    }));
+
+    // Erstelle explizit die Tasks-Struktur für das Frontend
+    const tasksWithUrls = (course.tasks || []).map(task => {
+      console.log(`Verarbeite Task: ${task.name || 'Unbekannt'}, ID: ${task.taskId}`);
+      
+      return {
+        taskId: task.taskId,
+        name: task.name,
+        description: task.description,
+        documents: (task.documents || []).map(doc => ({
+          name: doc.name,
+          url: `/api/gridfs/file/${doc.fileId}`
+        }))
+      };
+    });
     
-    // Stellen Sie sicher, dass alle Felder korrekt zurückgegeben werden
+    console.log(`Aufbereitete Taskliste für Frontend:`, JSON.stringify(tasksWithUrls, null, 2));
+    
     return {
       title: course.title,
-      textContent: course.textContent,
-      participants: course.participants || [],
-      documents: course.documents || [],
-      tasks: course.tasks || []
+      textContent: course.textContent || '',
+      documents: documentsWithUrls,
+      tasks: tasksWithUrls,
+      participants: course.participants || []
     };
-  }
-
-  async update(id: string, updateCourseDto: any): Promise<CourseDocument> {
-    const course = await this.courseModel.findByIdAndUpdate(
-      id, 
-      updateCourseDto,
-      { new: true }
-    ).exec();
-    
-    if (!course) {
-      throw new NotFoundException(`Kurs mit ID ${id} nicht gefunden`);
-    }
-    
-    return course;
   }
 
   async updateCourseText(courseName: string, textContent: string): Promise<any> {
@@ -104,7 +153,7 @@ export class CoursesService {
     
     const document = {
       name: file.originalname,
-      url: `/uploads/courseDocuments/${file.filename}`
+      fileId: file.id
     };
     
     if (!course.documents) {
@@ -114,10 +163,36 @@ export class CoursesService {
     course.documents.push(document);
     await course.save();
     
-    return { message: 'Dokument erfolgreich zum Kurs hinzugefügt', document };
+    return { 
+      message: 'Dokument erfolgreich zum Kurs hinzugefügt', 
+      document: {
+        name: document.name,
+        url: `/api/gridfs/file/${document.fileId}`
+      }
+    };
   }
 
   async remove(id: string): Promise<void> {
+    // Finde den Kurs zuerst, um alle zugehörigen Dateien zu löschen
+    const course = await this.courseModel.findById(id).exec();
+    
+    if (!course) {
+      throw new NotFoundException(`Kurs mit ID ${id} nicht gefunden`);
+    }
+    
+    // Lösche alle Dokumente aus GridFS
+    if (course.documents && course.documents.length > 0) {
+      for (const doc of course.documents) {
+        try {
+          await this.gridFsService.deleteFile(doc.fileId);
+          console.log(`Kursdokument mit ID ${doc.fileId} gelöscht`);
+        } catch (err) {
+          console.error(`Fehler beim Löschen des Kursdokuments mit ID ${doc.fileId}:`, err);
+        }
+      }
+    }
+    
+    // Jetzt den Kurs löschen
     const result = await this.courseModel.deleteOne({ _id: id }).exec();
     
     if (result.deletedCount === 0) {
@@ -125,24 +200,42 @@ export class CoursesService {
     }
   }
 
-  async enrollStudent(courseName: string, username: string): Promise<any> {
-    const course = await this.courseModel.findOne({ title: courseName }).exec();
+  // Teilnehmer zu einem Kurs hinzufügen oder entfernen
+  async updateCourseParticipants(userData: any): Promise<any> {
+    const { courseId, username, action } = userData;
+    
+    if (!courseId || !username || !action) {
+      throw new BadRequestException('Fehlende Parameter: courseId, username oder action');
+    }
+    
+    const course = await this.courseModel.findOne({ title: courseId }).exec();
     
     if (!course) {
-      throw new NotFoundException(`Kurs mit dem Namen "${courseName}" nicht gefunden`);
+      throw new NotFoundException(`Kurs "${courseId}" nicht gefunden`);
     }
     
-    if (course.participants && course.participants.includes(username)) {
-      return { message: 'Benutzer ist bereits für diesen Kurs eingeschrieben' };
+    if (!course.participants) {
+      course.participants = [];
+    }
+
+    if (action === 'add') {
+      if (!course.participants.includes(username)) {
+        course.participants.push(username);
+      }
+    } else if (action === 'remove') {
+      course.participants = course.participants.filter(p => p !== username);
+    } else {
+      throw new BadRequestException('Ungültige Aktion. Erlaubt sind "add" oder "remove"');
     }
     
-    course.participants.push(username);
     await course.save();
     
-    return { message: 'Benutzer erfolgreich eingeschrieben' };
+    return { 
+      message: `Benutzer ${action === 'add' ? 'hinzugefügt' : 'entfernt'}`, 
+      participants: course.participants 
+    };
   }
 
-  
   async addTaskToCourse(courseName: string, task: any): Promise<CourseDocument> {
     console.log("Adding task to course:", courseName);
     console.log("Task object:", JSON.stringify(task, null, 2));
@@ -161,12 +254,18 @@ export class CoursesService {
     console.log("Task properties available:", Object.keys(task));
     console.log("Task description:", task.taskDescription);
     
-    course.tasks.push({
+    // Korrekte Aufgabenstruktur für das Frontend erstellen
+    const taskToAdd = {
       taskId: task._id.toString(),
       name: task.taskName,
-      description: task.taskDescription, // Direkt taskDescription verwenden
-      documents: task.documents || []
-    });
+      description: task.taskDescription,
+      documents: task.documents?.map(doc => ({
+        name: doc.name,
+        fileId: doc.fileId
+      })) || []
+    };
+    
+    course.tasks.push(taskToAdd);
     
     // Explizite Speicherung mit error-handling
     try {
@@ -192,40 +291,24 @@ export class CoursesService {
       throw new NotFoundException(`Dokument "${documentName}" nicht gefunden im Kurs "${courseName}"`);
     }
     
-
     const document = course.documents[documentIndex];
-    const filePath = document.url;
+    const fileId = document.fileId;
     
-    
+    // Entferne das Dokument aus dem Kurs
     course.documents.splice(documentIndex, 1);
     await course.save();
     
+    // Lösche die Datei aus GridFS
     try {
-      const absolutePath = join(process.cwd(), filePath.replace(/^\//, ''));
-      await fs.promises.unlink(absolutePath);
+      await this.gridFsService.deleteFile(fileId);
+      console.log(`Dokument mit ID ${fileId} gelöscht`);
     } catch (error) {
-      console.error(`Error deleting file: ${error.message}`);
+      console.error(`Fehler beim Löschen der Datei mit ID ${fileId}:`, error.message);
     }
     
-    return { message: 'Dokument erfolgreich aus dem Kurs entfernt' };
+    return {
+      message: `Dokument "${documentName}" erfolgreich gelöscht`,
+      documentName
+    };
   }
-
-  async updateCourseParticipants(data: {courseName: string, participants: any[]}) {
-    const course = await this.findCourseByName(data.courseName);
-    if (!course) {
-      throw new NotFoundException(`Kurs "${data.courseName}" nicht gefunden`);
-    }
-    
-    course.participants = data.participants;
-    return await course.save();
-  }
-
-  async findCourseByName(name: string): Promise<CourseDocument> {
-    const course = await this.courseModel.findOne({ title: name }).exec();
-    if (!course) {
-      throw new NotFoundException(`Kurs mit Namen "${name}" nicht gefunden`);
-    }
-    return course;
-  }
-  
 }

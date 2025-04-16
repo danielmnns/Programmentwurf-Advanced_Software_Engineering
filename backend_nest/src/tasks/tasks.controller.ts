@@ -1,19 +1,18 @@
 import { BadRequestException, Body, Controller, Get, Post, Query, Req, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import * as fs from 'fs';
-import { diskStorage } from 'multer';
-import * as path from 'path';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { CoursesService } from '../courses/courses.service';
+import { GridFSService } from '../files/gridfs.service';
 import { TasksService } from './tasks.service';
 
 @Controller('tasks')
 export class TasksController {
   constructor(
     private readonly tasksService: TasksService,
-    private readonly coursesService: CoursesService 
+    private readonly coursesService: CoursesService,
+    private readonly gridFsService: GridFSService
   ) {}
 
   // Spezifischer Endpunkt für Aufgabendetails (für Studenten)
@@ -38,45 +37,52 @@ export class TasksController {
   }
 
   // Abgabe hochladen
-  @Post('upload')
-@UseGuards(JwtAuthGuard)
-@UseInterceptors(FileInterceptor('file', {
-  limits: {
-    fileSize: 10 * 1024 * 1024 // 10 MB in Bytes
-  },
-  fileFilter: (req, file, callback) => {
-    // Prüfe, ob es ein PDF ist
-    if (file.mimetype !== 'application/pdf') {
-      return callback(new BadRequestException('Nur PDF-Dateien sind erlaubt'), false);
-    }
-    callback(null, true);
-  },
-  storage: diskStorage({
-    destination: (req, file, cb) => {
-      const submissionsDir = './uploads/submissions';
-      // Prüfe, ob Verzeichnis existiert, falls nicht, erstelle es
-      if (!fs.existsSync(submissionsDir)) {
-        fs.mkdirSync(submissionsDir, { recursive: true });
-      }
-      cb(null, submissionsDir);
+  @Post('submit')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file', {
+    limits: {
+      fileSize: 10 * 1024 * 1024 // 10 MB in Bytes
     },
-    filename: (req, file, cb) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-      const ext = path.extname(file.originalname);
-      cb(null, `${uniqueSuffix}${ext}`);
+    fileFilter: (req, file, callback) => {
+      // Prüfe, ob es ein PDF ist
+      if (file.mimetype !== 'application/pdf') {
+        return callback(new BadRequestException('Nur PDF-Dateien sind erlaubt'), false);
+      }
+      callback(null, true);
     }
-  })
-}))
-async uploadSubmission(
-  @UploadedFile() file,
-  @Body() body: { courseName: string; taskName: string },
-  @Req() req
-) {
-  if (!file) {
-    throw new BadRequestException('Keine Datei gefunden');
+  }))
+  async uploadSubmission(
+    @UploadedFile() file,
+    @Body() body: { courseName: string; taskName: string },
+    @Req() req
+  ) {
+    if (!file) {
+      throw new BadRequestException('Keine Datei gefunden');
+    }
+
+    // Speichere die Datei in GridFS
+    const fileData = await this.gridFsService.storeFile(
+      file.buffer,
+      file.originalname,
+      file.mimetype,
+      {
+        type: 'submission',
+        courseName: body.courseName,
+        taskName: body.taskName,
+        userName: req.user.username
+      }
+    );
+
+    return this.tasksService.createSubmission(
+      body.courseName, 
+      body.taskName, 
+      req.user.username, 
+      {
+        originalname: file.originalname,
+        id: fileData.id,
+      }
+    );
   }
-  return this.tasksService.createSubmission(body.courseName, body.taskName, req.user.username, file);
-}
 
   // Admin-Route: Abgaben anzeigen
   @Post('admin/submissions')
@@ -128,52 +134,87 @@ async uploadSubmission(
   @Post('admin/addTaskDocument')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin', 'dozent', 'studiengangsleiter')
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: './uploads/taskDocuments',
-      filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        const ext = path.extname(file.originalname);
-        cb(null, `${uniqueSuffix}${ext}`);
-      }
-    })
-  }))
+  @UseInterceptors(FileInterceptor('file'))
   async addTaskDocument(
     @UploadedFile() file,
     @Body() body: { courseName: string; taskId: string }
   ) {
-    return this.tasksService.addDocumentToTask(body.courseName, body.taskId, file);
+    if (!file) {
+      throw new BadRequestException('Keine Datei gefunden');
+    }
+
+    // Speichere die Datei in GridFS
+    const fileData = await this.gridFsService.storeFile(
+      file.buffer,
+      file.originalname,
+      file.mimetype,
+      {
+        type: 'taskDocument',
+        courseName: body.courseName,
+        taskId: body.taskId
+      }
+    );
+
+    return this.tasksService.addDocumentToTask(
+      body.courseName,
+      body.taskId,
+      {
+        originalname: file.originalname,
+        id: fileData.id,
+      }
+    );
   }
 
   @Post('admin/addTask')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin', 'dozent', 'studiengangsleiter')
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: './uploads/tasks',
-      filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        const ext = path.extname(file.originalname);
-        cb(null, `${uniqueSuffix}${ext}`);
-      }
-    })
-  }))
+  @UseInterceptors(FileInterceptor('file'))
   async addTask(
     @UploadedFile() file,
     @Body() taskData: any
   ) {
     try {
+      // Defensive: taskDescription MUSS ein String sein
+      if (typeof taskData.taskDescription !== 'string') {
+        // Falls es ein Objekt ist (z.B. durch fehlerhafte Übertragung), versuche zu konvertieren
+        if (taskData.taskDescription && typeof taskData.taskDescription === 'object') {
+          taskData.taskDescription = JSON.stringify(taskData.taskDescription);
+        } else {
+          taskData.taskDescription = String(taskData.taskDescription ?? '');
+        }
+      }
+      // Debug-Log für Typ und Wert
+      console.log('Typ taskDescription:', typeof taskData.taskDescription, 'Wert:', taskData.taskDescription);
       console.log('Neue Aufgabe wird hinzugefügt:', taskData);
-      console.log('Datei:', file ? file.filename : 'keine');
+      console.log('Datei:', file ? file.originalname : 'keine');
       
       // Expliziter Debug-Log für die Beschreibung
       console.log('Aufgabenbeschreibung:', taskData.taskDescription);
       
+      let fileData = null;
+      
+      if (file) {
+        // Speichere die Datei in GridFS
+        fileData = await this.gridFsService.storeFile(
+          file.buffer,
+          file.originalname,
+          file.mimetype,
+          {
+            type: 'task',
+            courseName: taskData.courseName,
+            taskName: taskData.taskName
+          }
+        );
+      }
+      
       const task = await this.tasksService.createTask(
         taskData.courseName,
         taskData.taskName,
-        taskData.taskDescription, // Hier den korrekten Feldnamen verwenden
-        file
+        taskData.taskDescription,
+        fileData ? {
+          originalname: file.originalname,
+          id: fileData.id
+        } : null
       );
       
       await this.coursesService.addTaskToCourse(taskData.courseName, task);

@@ -14,13 +14,13 @@ export class Task {
   @Prop()
   taskDescription: string;
 
-  @Prop({ type: [{ name: String, url: String }] })
-  documents: { name: string; url: string }[];
+  @Prop({ type: [{ name: String, fileId: String }] })
+  documents: { name: string; fileId: string }[];
 
   @Prop({ type: Array })
   submissions: {
     userName: string;
-    file: { name: string; url: string };
+    file: { name: string; fileId: string };
     feedback?: { 
       text: string;
       feedbackFrom: string;

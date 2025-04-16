@@ -1,18 +1,18 @@
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import * as fs from 'fs';
 import { Model } from 'mongoose';
-import * as path from 'path';
 import { Course, CourseDocument } from '../courses/schemas/course.schema';
+import { GridFSService } from '../files/gridfs.service';
 import { Submission, SubmissionDocument } from './schemas/submission.schema';
 import { Task, TaskDocument } from './schemas/task.schema';
 
 @Injectable()
 export class TasksService {
   constructor(
+    @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
     @InjectModel(Submission.name) private submissionModel: Model<SubmissionDocument>,
     @InjectModel(Course.name) private courseModel: Model<CourseDocument>,
-    @InjectModel(Task.name) private taskModel: Model<TaskDocument>
+    private readonly gridFsService: GridFSService,
   ) {}
 
   async createTask(courseName: string, taskName: string, taskDescription: string, file: any): Promise<TaskDocument> {
@@ -29,7 +29,7 @@ export class TasksService {
     if (file) {
       documents.push({
         name: file.originalname,
-        url: `/uploads/tasks/${file.filename}`,
+        fileId: file.id,
       });
     }
 
@@ -42,15 +42,14 @@ export class TasksService {
       submissions: []
     };
 
-    // Für Testing: Wenn taskModel ein Mock mit constructor ist
-    if (typeof this.taskModel.constructor === 'function' && this.taskModel.constructor !== Object) {
-      const task = this.taskModel.constructor(taskData);
-      return task.save();
+    try {
+      // Direkte Erstellung des Models ohne Prüfung des constructors
+      const task = new this.taskModel(taskData);
+      return await task.save();
+    } catch (error) {
+      console.error('Fehler beim Erstellen der Aufgabe:', error);
+      throw new BadRequestException(`Fehler beim Erstellen der Aufgabe: ${error.message}`);
     }
-    
-    // Für Production: Wenn taskModel ein echtes Model ist
-    const task = new this.taskModel(taskData);
-    return task.save();
   }
 
   async getTaskDetailsForStudent(courseName: string, taskName: string, username: string): Promise<any> {
@@ -70,8 +69,17 @@ export class TasksService {
       taskId: task._id,
       taskName: task.taskName,
       description: task.taskDescription,
-      documents: task.documents,
-      submission: userSubmission || null
+      documents: task.documents.map(doc => ({
+        name: doc.name,
+        url: `/api/gridfs/file/${doc.fileId}`
+      })),
+      submission: userSubmission ? {
+        ...userSubmission,
+        file: userSubmission.file ? {
+          name: userSubmission.file.name,
+          url: `/api/gridfs/file/${userSubmission.file.fileId}`
+        } : null
+      } : null
     };
   }
 
@@ -93,17 +101,19 @@ export class TasksService {
         userName: username,
         file: {
           name: file.originalname,
-          url: `/uploads/submissions/${file.filename}`,
+          fileId: file.id,
         },
       };
   
       if (existingSubmissionIndex >= 0) {
         // Alte Datei löschen, wenn vorhanden
         const oldSubmission = task.submissions[existingSubmissionIndex];
-        if (oldSubmission.file && oldSubmission.file.url) {
-          const oldFilePath = path.join(__dirname, '..', '..', oldSubmission.file.url);
-          if (fs.existsSync(oldFilePath)) {
-            fs.unlinkSync(oldFilePath);
+        if (oldSubmission.file && oldSubmission.file.fileId) {
+          try {
+            await this.gridFsService.deleteFile(oldSubmission.file.fileId);
+            console.log(`Alte Submission-Datei mit ID ${oldSubmission.file.fileId} gelöscht`);
+          } catch (err) {
+            console.error(`Fehler beim Löschen der alten Datei mit ID ${oldSubmission.file.fileId}:`, err);
           }
         }
         // Bestehende Abgabe aktualisieren
@@ -114,7 +124,16 @@ export class TasksService {
       }
   
       await task.save();
-      return { message: 'Abgabe erfolgreich gespeichert', submission };
+      return { 
+        message: 'Abgabe erfolgreich gespeichert', 
+        submission: {
+          ...submission,
+          file: {
+            name: submission.file.name,
+            url: `/api/gridfs/file/${submission.file.fileId}`
+          }
+        } 
+      };
     } catch (error) {
       console.error('Fehler beim Speichern der Abgabe:', error);
       throw error;
@@ -131,11 +150,57 @@ export class TasksService {
       throw new NotFoundException(`Aufgabe ${taskName} im Kurs ${courseName} nicht gefunden`);
     }
 
+    // Konvertiere URLs für die Anzeige im Frontend
+    const submissionsWithUrls = task.submissions.map(sub => ({
+      userName: sub.userName,
+      file: sub.file ? {
+        name: sub.file.name,
+        url: `/api/gridfs/file/${sub.file.fileId}`
+      } : undefined,
+      feedback: sub.feedback
+    }));
+
     return {
       taskName: task.taskName,
       taskDescription: task.taskDescription,
-      submissions: task.submissions
+      submissions: submissionsWithUrls
     };
+  }
+
+  // Füge diese Methode zum TasksService hinzu:
+  async deleteSubmissionForUser(courseName: string, taskName: string, username: string): Promise<any> {
+    const task = await this.taskModel.findOne({
+      courseName,
+      taskName,
+    }).exec();
+  
+    if (!task) {
+      throw new NotFoundException(`Aufgabe ${taskName} im Kurs ${courseName} nicht gefunden`);
+    }
+  
+    // Finde den Index der Benutzerabgabe
+    const submissionIndex = task.submissions.findIndex(sub => sub.userName === username);
+    
+    if (submissionIndex === -1) {
+      throw new NotFoundException(`Keine Abgabe für Benutzer ${username} gefunden`);
+    }
+  
+    // Lösche die alte Datei aus GridFS, wenn vorhanden
+    const oldSubmission = task.submissions[submissionIndex];
+    if (oldSubmission.file && oldSubmission.file.fileId) {
+      try {
+        await this.gridFsService.deleteFile(oldSubmission.file.fileId);
+        console.log(`Submission-Datei mit ID ${oldSubmission.file.fileId} gelöscht`);
+      } catch (err) {
+        console.error(`Fehler beim Löschen der Datei mit ID ${oldSubmission.file.fileId}:`, err);
+      }
+    }
+    
+    // Entferne die Einreichung aus dem Aufgabenobjekt
+    task.submissions.splice(submissionIndex, 1);
+    await task.save();
+    
+    return { message: 'Abgabe erfolgreich gelöscht' };
   }
 
   async saveFeedback(
@@ -171,44 +236,11 @@ export class TasksService {
     };
 
     await task.save();
+
     return { 
-      message: `Feedback für ${studentName}s Abgabe erfolgreich gespeichert`,
+      message: 'Feedback erfolgreich gespeichert',
       feedback: task.submissions[submissionIndex].feedback
     };
-  }
-
-  // Füge diese Methode zum TasksService hinzu:
-
-async deleteSubmissionForUser(courseName: string, taskName: string, username: string): Promise<any> {
-    const task = await this.taskModel.findOne({
-      courseName,
-      taskName,
-    }).exec();
-  
-    if (!task) {
-      throw new NotFoundException(`Aufgabe ${taskName} im Kurs ${courseName} nicht gefunden`);
-    }
-  
-    // Finde den Index der Benutzerabgabe
-    const submissionIndex = task.submissions.findIndex(sub => sub.userName === username);
-    
-    if (submissionIndex === -1) {
-      throw new NotFoundException(`Keine Abgabe für Benutzer ${username} gefunden`);
-    }
-  
-    // Lösche die alte Datei, wenn vorhanden
-    const oldSubmission = task.submissions[submissionIndex];
-    if (oldSubmission.file && oldSubmission.file.url) {
-      const filePath = path.join(__dirname, '..', '..', oldSubmission.file.url);
-      if (fs.existsSync(filePath)) {
-        fs.unlinkSync(filePath);
-      }
-    }
-  
-    task.submissions.splice(submissionIndex, 1);
-    await task.save();
-  
-    return { message: 'Abgabe erfolgreich gelöscht' };
   }
 
   async updateTask(taskData: any): Promise<any> {
@@ -277,40 +309,34 @@ async deleteSubmissionForUser(courseName: string, taskName: string, username: st
         console.log('Kurs nicht gefunden oder hat keine Aufgaben');
       }
   
-      // Lösche alle zugehörigen Dokumente
+      // Lösche alle zugehörigen Dokumente aus GridFS
       if (task.documents && task.documents.length > 0) {
         console.log(`Lösche ${task.documents.length} zugehörige Dokumente`);
-        task.documents.forEach(doc => {
-          if (doc.url) {
-            const filePath = path.join(__dirname, '..', '..', doc.url);
-            if (fs.existsSync(filePath)) {
-              try {
-                fs.unlinkSync(filePath);
-                console.log(`Dokument gelöscht: ${filePath}`);
-              } catch (err) {
-                console.error(`Fehler beim Löschen der Datei ${filePath}:`, err);
-              }
+        for (const doc of task.documents) {
+          if (doc.fileId) {
+            try {
+              await this.gridFsService.deleteFile(doc.fileId);
+              console.log(`Dokument mit ID ${doc.fileId} gelöscht`);
+            } catch (err) {
+              console.error(`Fehler beim Löschen der Datei mit ID ${doc.fileId}:`, err);
             }
           }
-        });
+        }
       }
   
       // Lösche alle zugehörigen Submissions und deren Dateien
       if (task.submissions && task.submissions.length > 0) {
         console.log(`Lösche ${task.submissions.length} zugehörige Submissions`);
-        task.submissions.forEach(submission => {
-          if (submission.file && submission.file.url) {
-            const filePath = path.join(__dirname, '..', '..', submission.file.url);
-            if (fs.existsSync(filePath)) {
-              try {
-                fs.unlinkSync(filePath);
-                console.log(`Submission gelöscht: ${filePath}`);
-              } catch (err) {
-                console.error(`Fehler beim Löschen der Submission-Datei ${filePath}:`, err);
-              }
+        for (const submission of task.submissions) {
+          if (submission.file && submission.file.fileId) {
+            try {
+              await this.gridFsService.deleteFile(submission.file.fileId);
+              console.log(`Submission-Datei mit ID ${submission.file.fileId} gelöscht`);
+            } catch (err) {
+              console.error(`Fehler beim Löschen der Submission-Datei mit ID ${submission.file.fileId}:`, err);
             }
           }
-        });
+        }
       }
       
       // Jetzt die Aufgabe aus der Datenbank löschen - mit deleteOne für mehr Flexibilität
@@ -343,7 +369,7 @@ async deleteSubmissionForUser(courseName: string, taskName: string, username: st
 
     const newDocument = {
       name: file.originalname,
-      url: `/uploads/taskDocuments/${file.filename}`,
+      fileId: file.id,
     };
 
     if (!task.documents) {
@@ -355,7 +381,10 @@ async deleteSubmissionForUser(courseName: string, taskName: string, username: st
 
     return { 
       message: 'Dokument erfolgreich zur Aufgabe hinzugefügt',
-      document: newDocument
+      document: {
+        name: newDocument.name,
+        url: `/api/gridfs/file/${newDocument.fileId}`
+      }
     };
   }
 }

@@ -1,15 +1,17 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import * as path from 'path';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { GridFSService } from '../files/gridfs.service';
 import { CoursesService } from './courses.service';
 
 @Controller('courses')
 export class CoursesController {
-  constructor(private readonly coursesService: CoursesService) {}
+  constructor(
+    private readonly coursesService: CoursesService,
+    private readonly gridFsService: GridFSService
+  ) {}
 
   // Alle Kurse abrufen (rollenbasiert)
   @Get()
@@ -52,18 +54,30 @@ export class CoursesController {
   @Post('admin/addDocument')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('admin', 'dozent', 'studiengangsleiter')
-  @UseInterceptors(FileInterceptor('file', {
-    storage: diskStorage({
-      destination: './uploads/courseDocuments',
-      filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-        const ext = path.extname(file.originalname);
-        cb(null, `${uniqueSuffix}${ext}`);
-      }
-    })
-  }))
+  @UseInterceptors(FileInterceptor('file'))
   async addCourseDocument(@UploadedFile() file, @Body() body: { courseName: string }) {
-    return this.coursesService.addDocumentToCourse(body.courseName, file);
+    if (!file) {
+      throw new Error('Keine Datei übermittelt');
+    }
+
+    // Speichere die Datei in GridFS
+    const fileData = await this.gridFsService.storeFile(
+      file.buffer,
+      file.originalname,
+      file.mimetype,
+      {
+        type: 'courseDocument',
+        courseName: body.courseName
+      }
+    );
+
+    return this.coursesService.addDocumentToCourse(
+      body.courseName, 
+      {
+        originalname: file.originalname,
+        id: fileData.id
+      }
+    );
   }
 
   // Kurs aktualisieren (z.B. für Teilnehmer)
@@ -81,7 +95,6 @@ export class CoursesController {
   async deleteCourse(@Param('id') id: string) {
     return this.coursesService.remove(id);
   }
-  
 
   @Get('user-verwaltung')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -100,10 +113,5 @@ export class CoursesController {
   @Roles('admin', 'studiengangsleiter')
   async manageUsers(@Body() userData: any) {
     return this.coursesService.updateCourseParticipants(userData);
-  }
-
-    @Get('test')
-  async testEndpoint() {
-    return { message: 'Test endpoint working!' };
   }
 }
