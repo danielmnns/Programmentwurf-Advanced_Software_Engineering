@@ -138,8 +138,6 @@ export class LanguageService {
       'deleteConfirm': 'Sind Sie sicher, dass Sie dies löschen möchten?',
       'error': 'Fehler',
       'success': 'Erfolg',
-      'yes': 'Ja',
-      'no': 'Nein',
       
       // Status messages
       'addMaterialSuccess': 'Material wurde erfolgreich hinzugefügt',
@@ -151,9 +149,7 @@ export class LanguageService {
       'deleteTaskSuccess': 'Aufgabe wurde erfolgreich gelöscht',
       'deleteTaskError': 'Fehler beim Löschen der Aufgabe',
       'updateTextError': 'Fehler beim Aktualisieren des Textes',
-      'courseCreatedSuccess': 'Kurs erfolgreich erstellt',
       'courseCreatedError': 'Fehler beim Erstellen des Kurses',
-      'confirmDeleteCourse': 'Sind Sie sicher, dass Sie diesen Kurs löschen möchten?',
       'courseDeletedSuccess': 'Kurs erfolgreich gelöscht',
       
       // Language

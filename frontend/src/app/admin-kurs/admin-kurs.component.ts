@@ -21,7 +21,7 @@ import { StatusService } from '../services/status.service';
 
 export interface DocumentFile {
   name: string;
-  url: string;
+  url: string | SafeResourceUrl;
 }
 
 export interface Task {
@@ -262,17 +262,25 @@ export class AdminKursComponent implements OnInit {
     );
   }
 
-currentPdfUrl: SafeResourceUrl | string = '';
+currentPdfUrl: SafeResourceUrl = this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
 showPdfPreview = false;
 
-openPdfPreview(url: string): void {
-  this.currentPdfUrl = this.fileUrlService.getFileUrl(url);
+openPdfPreview(url: string | SafeResourceUrl): void {
+  // Wenn die URL bereits als SafeResourceUrl vorliegt, direkt verwenden
+  if (typeof url === 'string') {
+    // Erst URL vom Service holen und dann durch DomSanitizer als sichere URL markieren
+    const fileUrl = this.fileUrlService.getFileUrl(url);
+    this.currentPdfUrl = fileUrl;
+  } else {
+    // Wenn es bereits ein SafeResourceUrl ist, direkt verwenden
+    this.currentPdfUrl = url;
+  }
   this.showPdfPreview = true;
 }
 
 closePdfPreview():void {
   this.showPdfPreview = false;
-  this.currentPdfUrl = '';
+  this.currentPdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl('about:blank') as SafeResourceUrl;
 }
 
 // Löscht eine Aufgabe
