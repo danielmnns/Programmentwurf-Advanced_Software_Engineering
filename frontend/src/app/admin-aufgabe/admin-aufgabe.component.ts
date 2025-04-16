@@ -8,6 +8,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { TranslatePipe } from '../pipes/translate.pipe';
+import { LanguageService } from '../services/language.service';
 
 interface Submission {
   userName: string;
@@ -35,7 +37,8 @@ interface AdminTaskDetails {
     MatButtonModule,
     MatFormFieldModule,
     MatInputModule,
-    RouterModule
+    RouterModule,
+    TranslatePipe
   ]
 })
 export class AdminAufgabeComponent implements OnInit {
@@ -58,7 +61,8 @@ export class AdminAufgabeComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private http: HttpClient,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public languageService: LanguageService
   ) {}
 
   ngOnInit(): void {
