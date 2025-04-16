@@ -42,6 +42,8 @@ export class LanguageService {
     // German translations (default)
     this.translations.de = {
       // Common
+      'yes': 'Ja',
+      'no': 'Nein',
       'login': 'Anmeldung',
       'logout': 'Abmelden',
       'username': 'Benutzername',
@@ -158,6 +160,8 @@ export class LanguageService {
     // English translations
     this.translations.en = {
       // Common
+      'yes': 'Yes',
+      'no': 'No',
       'login': 'Login',
       'logout': 'Logout',
       'username': 'Username',
