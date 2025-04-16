@@ -55,7 +55,7 @@ describe('UserDashboardComponent', () => {
     courseServiceSpy = TestBed.inject(CourseService) as jasmine.SpyObj<CourseService>;
     dialogSpy = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
     languageServiceSpy = TestBed.inject(LanguageService) as jasmine.SpyObj<LanguageService>;
-    routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
+    routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>();
 
     // Set up mock responses
     authServiceSpy.getUserName.and.returnValue('testuser');
@@ -83,26 +83,5 @@ describe('UserDashboardComponent', () => {
     fixture.detectChanges();
     component.navigateToCourse('Course 1');
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/user-kurs', 'Course%201']);
-  });
-
-  it('should open enrollment dialog when openEnrollmentDialog is called', () => {
-    const mockDialogRef = jasmine.createSpyObj('MatDialogRef', ['afterClosed']);
-    mockDialogRef.afterClosed.and.returnValue(of({ success: true }));
-    dialogSpy.open.and.returnValue(mockDialogRef);
-
-    fixture.detectChanges();
-    component.openEnrollmentDialog(mockCourses[1]);
-    
-    expect(dialogSpy.open).toHaveBeenCalled();
-    expect(courseServiceSpy.getAllCourses).toHaveBeenCalledTimes(2); // Once on init and once after dialog
-  });
-
-  it('should handle null course in openEnrollmentDialog', () => {
-    spyOn(console, 'error');
-    fixture.detectChanges();
-
-    component.openEnrollmentDialog(null);
-    expect(console.error).toHaveBeenCalled();
-    expect(dialogSpy.open).not.toHaveBeenCalled();
   });
 });

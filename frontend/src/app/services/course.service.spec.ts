@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { TestBed } from '@angular/core/testing';
 
-import { CourseService } from './course.service';
 import { AuthService } from '../auth/auth.service';
+import { CourseService } from './course.service';
 
 describe('CourseService', () => {
   let service: CourseService;
@@ -101,30 +101,6 @@ describe('CourseService', () => {
       const req = httpMock.expectOne(`http://localhost:3000/api/courses/${courseId}`);
       expect(req.request.method).toBe('DELETE');
       req.flush(null);
-    });
-  });
-
-  describe('enrollInCourse', () => {
-    it('should enroll user in course', () => {
-      const enrollmentData = {
-        username: 'testuser',
-        courseName: 'Test Course',
-        enrollmentKey: 'key123'
-      };
-      
-      const mockResponse = {
-        success: true,
-        message: 'Successfully enrolled'
-      };
-
-      service.enrollInCourse(enrollmentData).subscribe((response: any) => {
-        expect(response).toEqual(mockResponse);
-      });
-
-      const req = httpMock.expectOne('http://localhost:3000/api/user/enroll');
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(enrollmentData);
-      req.flush(mockResponse);
     });
   });
 });

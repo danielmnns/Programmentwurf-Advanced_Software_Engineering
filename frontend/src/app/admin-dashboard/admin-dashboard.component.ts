@@ -37,6 +37,8 @@ export class AdminDashboardComponent {
   showAddCourseModal: boolean = false;
   newCourseTitle: string = '';
   showSuccessPopup: boolean = false;
+  showErrorPopup: boolean = false; // New property for error popup
+  errorMessage: string = ''; // New property to store error message
   showDeleteConfirmation: boolean = false;
   courseToDelete: any = null;
   private destroy$: Subject<void> = new Subject<void>();
@@ -76,7 +78,11 @@ export class AdminDashboardComponent {
 
   addCourse(): void {
     if (!this.newCourseTitle.trim()) {
-      alert('Bitte geben Sie einen Kursnamen ein.');
+      this.errorMessage = 'Bitte geben Sie einen Kursnamen ein.';
+      this.showErrorPopup = true;
+      setTimeout(() => {
+        this.showErrorPopup = false;
+      }, 3000);
       return;
     }
 
@@ -88,7 +94,7 @@ export class AdminDashboardComponent {
         this.courses.push(response);
         this.closeAddCourseModal();
 
-        // Popup anzeigen
+        // Erfolgs-Popup anzeigen
         this.showSuccessPopup = true;
         setTimeout(() => {
           this.showSuccessPopup = false;
@@ -96,7 +102,11 @@ export class AdminDashboardComponent {
       },
       (error) => {
         console.error('Fehler beim Hinzufügen des Kurses:', error);
-        alert('Fehler beim Hinzufügen des Kurses.');
+        this.errorMessage = 'Fehler beim Hinzufügen des Kurses.';
+        this.showErrorPopup = true;
+        setTimeout(() => {
+          this.showErrorPopup = false;
+        }, 3000);
       }
     );
   }
