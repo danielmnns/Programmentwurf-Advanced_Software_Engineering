@@ -4,7 +4,7 @@
 Das Lernmanagementsystem (LMS) ermöglicht:
 - **Dozenten**, Kursmaterialien hochzuladen und Aufgaben zu erstellen.
 - **Studenten**, Inhalte und Aufgaben einzusehen sowie ihre Leistungen zu verwalten.
-- **Sekretärinnen und Kursleitern**, die Verwaltung von Studenten und Kursen durchzuführen.
+- **Kursleiter**, die Verwaltung von Studenten und Kursen durchzuführen.
 
 Das System unterstützt mehrere Benutzerrollen, Mehrsprachigkeit und Datenexport.
 
