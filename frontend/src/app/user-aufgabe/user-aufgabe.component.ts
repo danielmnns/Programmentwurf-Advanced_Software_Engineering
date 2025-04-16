@@ -161,8 +161,9 @@ export class UserAufgabeComponent implements OnInit {
     });
   }
 
-  closeNotification() {
+  closeNotification(): void {
     this.showNotification = false;
+    this.notificationMessage = '';
   }
 
   // Hilfsmethode zum Öffnen einer Datei in einem neuen Tab

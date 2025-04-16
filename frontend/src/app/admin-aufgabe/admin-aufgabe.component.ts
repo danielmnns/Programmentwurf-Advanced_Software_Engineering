@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -205,7 +205,7 @@ export class AdminAufgabeComponent implements OnInit {
     this.notificationMessage = '';
   }
 
-  // Navigiert zurück zur Kursverwaltungs-Seite (Pfad ggf. anpassen)
+  // Navigiert zurück zur Kursverwaltungs-Seite
   navigateBack(): void {
     this.router.navigate(['/user-kurs', this.courseName]);
   }

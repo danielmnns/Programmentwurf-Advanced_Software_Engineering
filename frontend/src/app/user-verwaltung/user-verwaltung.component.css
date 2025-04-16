@@ -152,6 +152,47 @@ h3 {
   color: #555;
 }
 
+/* Benutzer-Edit-Dialog */
+.edit-user-dialog {
+  padding: 0 16px;
+}
+
+.edit-user-dialog h2 {
+  color: #3f51b5;
+  margin-bottom: 16px;
+}
+
+.user-edit-form {
+  margin: 16px 0;
+}
+
+.full-width {
+  width: 100%;
+}
+
+/* Dialog Animationen */
+.mat-dialog-container {
+  border-radius: 8px;
+  box-shadow: 0 11px 15px -7px rgb(0 0 0 / 20%), 
+              0 24px 38px 3px rgb(0 0 0 / 14%),
+              0 9px 46px 8px rgb(0 0 0 / 12%);
+  padding: 0;
+  overflow: hidden;
+}
+
+.mat-dialog-content {
+  margin: 0;
+  padding: 16px 24px;
+  max-height: 60vh;
+}
+
+.mat-dialog-actions {
+  padding: 12px 24px;
+  margin-bottom: 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
   .participant-sections {
