@@ -10,7 +10,7 @@
       <span 
         class="course-title unenrolled" 
         *ngIf="!course.enrolled"
-        title="{{ 'courseEnrollmentRequired' | translate }}"
+        title="{{ 'notEnrolled' | translate }}"
       >
         {{ course.title }}
       </span>
@@ -22,15 +22,9 @@
       >
         {{ course.title }}
       </span>
-      <!-- Schloss-Icon für nicht eingeschriebene Kurse -->
+      <!-- Indikator für nicht eingeschriebene Kurse (statt Enrollment-Button) -->
       <div *ngIf="!course.enrolled" class="course-actions">
         <span class="lock-icon">🔒</span>
-        <button 
-          class="enroll-button" 
-          (click)="openEnrollmentDialog(course); $event.stopPropagation();"
-          title="{{ 'enrollInCourse' | translate }}">
-          {{ 'enroll' | translate }}
-        </button>
       </div>
     </div>
   </div>

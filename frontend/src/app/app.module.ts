@@ -37,7 +37,6 @@ import { HeadbarComponent } from './headbar/headbar.component';
 import { LoginComponent } from './login/login.component';
 import { NewTaskDialogComponent } from './new-task-dialog/new-task-dialog.component';
 import { UserAufgabeComponent } from './user-aufgabe/user-aufgabe.component';
-import { EnrollmentDialogComponent } from './user-dashboard/enrollment-dialog/enrollment-dialog.component';
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 import { KursComponent } from './user-kurs/user-kurs.component';
 import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.component';
@@ -89,7 +88,6 @@ import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.compo
     AccountComponent,
     AdminKursComponent,
     KursComponent,
-    EnrollmentDialogComponent,
     UserVerwaltungComponent,
     AdminAufgabeComponent,
     NewTaskDialogComponent,
