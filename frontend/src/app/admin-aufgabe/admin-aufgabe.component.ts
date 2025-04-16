@@ -118,23 +118,40 @@ export class AdminAufgabeComponent implements OnInit {
             url: this.sanitizer.bypassSecurityTrustResourceUrl(doc.url),
             date: doc.date ? new Date(doc.date) : new Date()
           }));
+        } else {
+          this.uploadedDocuments = [];
         }
 
         // Abgaben verarbeiten
-        if (data.submissions) {
-          this.submissions = data.submissions.map(sub => ({
-            userName: sub.userName,
-            fileName: sub.file?.name ?? 'Keine Datei',
-            fileUrl: sub.file ? this.sanitizer.bypassSecurityTrustResourceUrl(sub.file.url) : '',
-            date: sub.date ? new Date(sub.date) : new Date(),
-            feedback: sub.feedback ?? { text: '' },
-            // Füge das file-Feld für Kompatibilität mit dem Submission-Interface hinzu
-            file: sub.file
-          }));
+        if (data.submissions && data.submissions.length > 0) {
+          this.submissions = data.submissions.map(sub => {
+            const submission: Submission = {
+              userName: sub.userName,
+              feedbackText: sub.feedback?.text || '',
+              date: sub.date ? new Date(sub.date) : new Date()
+            };
+
+            if (sub.file) {
+              submission.fileName = sub.file.name;
+              submission.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(sub.file.url);
+              submission.file = sub.file;
+            }
+
+            return submission;
+          });
+        } else {
+          this.submissions = [];
         }
+
+        console.log("Geladene Aufgabendetails:", {
+          taskName: this.taskName,
+          documents: this.uploadedDocuments,
+          submissions: this.submissions
+        });
       },
       error: (error) => {
         console.error('Fehler beim Laden der Aufgabendetails:', error);
+        this.showNotificationPopup('Fehler beim Laden der Aufgabendetails');
       }
     });
   }
