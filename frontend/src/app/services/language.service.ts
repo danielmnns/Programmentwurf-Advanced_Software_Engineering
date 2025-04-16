@@ -58,6 +58,8 @@ export class LanguageService {
       'preview': 'Vorschau',
       'search': 'Suchen',
       'actions': 'Aktionen',
+      'selectFile': 'Datei auswählen',
+      'noFileSelected': 'Keine Datei ausgewählt',
       
       // Export functions
       'exportPDF': 'Als PDF exportieren',
@@ -125,6 +127,8 @@ export class LanguageService {
       'deleteConfirm': 'Sind Sie sicher, dass Sie dies löschen möchten?',
       'error': 'Fehler',
       'success': 'Erfolg',
+      'yes': 'Ja',
+      'no': 'Nein',
       
       // Status messages
       'addMaterialSuccess': 'Material wurde erfolgreich hinzugefügt',
@@ -136,6 +140,10 @@ export class LanguageService {
       'deleteTaskSuccess': 'Aufgabe wurde erfolgreich gelöscht',
       'deleteTaskError': 'Fehler beim Löschen der Aufgabe',
       'updateTextError': 'Fehler beim Aktualisieren des Textes',
+      'courseCreatedSuccess': 'Kurs erfolgreich erstellt',
+      'courseCreatedError': 'Fehler beim Erstellen des Kurses',
+      'confirmDeleteCourse': 'Sind Sie sicher, dass Sie diesen Kurs löschen möchten?',
+      'courseDeletedSuccess': 'Kurs erfolgreich gelöscht',
       
       // Language
       'language': 'Sprache',
@@ -165,6 +173,8 @@ export class LanguageService {
       'preview': 'Preview',
       'search': 'Search',
       'actions': 'Actions',
+      'selectFile': 'Select File',
+      'noFileSelected': 'No file selected',
       
       // Export functions
       'exportPDF': 'Export as PDF',

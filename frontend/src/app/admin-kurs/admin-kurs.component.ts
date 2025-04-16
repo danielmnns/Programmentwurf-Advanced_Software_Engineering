@@ -150,30 +150,46 @@ export class AdminKursComponent implements OnInit {
     const url = `${this.apiUrl}/user-kurs?courseName=${encodeURIComponent(this.courseName)}`;
     this.http.get(url).subscribe(
       (response: any) => {
-      this.textContent = response.textContent || '';
-      this.participants = response.participants || [];
-      if (response.documents) {
-        this.uploadedDocuments = response.documents.map((doc: any) => ({
-          name: doc.name,
-          url: doc.url
-        }));
+        console.log("Vollständige Backend-Antwort:", response);
+        console.log("Aufgaben in der Antwort:", response.tasks);
+        
+        this.textContent = response.textContent || '';
+        this.participants = response.participants || [];
+        if (response.documents) {
+          this.uploadedDocuments = response.documents.map((doc: any) => ({
+            name: doc.name,
+            url: doc.url
+          }));
+        }
+        
+        if (response.tasks && response.tasks.length > 0) {
+          console.log("Aufgaben vorhanden. Anzahl:", response.tasks.length);
+          
+          this.tasks = response.tasks.map((task: any) => {
+            console.log("Task verarbeiten:", task);
+            const mappedTask = {
+              taskId: task.taskId,
+              name: task.name,
+              description: task.description,
+              documents: task.documents ? task.documents.map((doc: any) => ({
+                name: doc.name,
+                url: this.fileUrlService.getFileUrl(doc.url)
+              })) : []
+            };
+            console.log("Gemappter Task:", mappedTask);
+            return mappedTask;
+          });
+          
+          console.log("Finale Tasks-Array:", this.tasks);
+        } else {
+          console.log("Keine Aufgaben in der Antwort gefunden oder leeres Array");
+          this.tasks = [];
+        }
+      },
+      (error) => {
+        console.error('Fehler beim Laden der Kursdaten:', error);
       }
-      if (response.tasks) {
-        this.tasks = response.tasks.map((task: any) => {
-          if (task.documents) {
-            task.documents = task.documents.map((doc: any) => ({
-              name: doc.name,
-              url: this.fileUrlService.getFileUrl(doc.url)
-            }));
-          }
-          return task as Task;
-        });
-      }
-    },
-    (error) => {
-      console.error('Fehler beim Laden der Kursdaten:', error);
-    }
-  );
+    );
   }
 
   // Show material creation confirmation popup
@@ -215,7 +231,12 @@ export class AdminKursComponent implements OnInit {
         (response: any) => {
           // Show confirmation popup with file name
           this.showMaterialCreationPopup(file.name);
-          this.loadCourseData();
+          
+          // Verzögertes Neuladen der Daten, um sicherzustellen, 
+          // dass die Änderungen auf dem Server verarbeitet wurden
+          setTimeout(() => {
+            this.loadCourseData();
+          }, 1000);
         },
         (error) => {
           console.error('Fehler beim Hinzufügen des Dokuments:', error);
@@ -330,12 +351,18 @@ deleteTask(task: Task): void {
             
             // Nach dem Hinzufügen die Aufgabe aktualisieren
             this.updateTask(task);
+            
+            // Verzögertes Neuladen aller Kursdaten für konsistente Anzeige
+            setTimeout(() => {
+              this.loadCourseData();
+            }, 1500);
           } else {
             console.error('Unerwartetes Antwortformat vom Server:', response);
           }
         },
         (error) => {
           console.error('Fehler beim Hinzufügen des Dokuments zur Aufgabe:', error);
+          this.statusService.showError('addTaskDocumentError');
         }
       );
     }
@@ -347,10 +374,14 @@ deleteTask(task: Task): void {
       width: '400px',
       data: { courseName: this.courseName }
     });
+    
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
-        // Neue Aufgabe wurde erstellt, Kursdaten neu laden
-        this.loadCourseData();
+        // Kurze Verzögerung vor dem Neuladen der Daten, um sicherzustellen, 
+        // dass die Serververarbeitung abgeschlossen ist
+        setTimeout(() => {
+          this.loadCourseData();
+        }, 1000);
       }
     });
   }
