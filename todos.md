@@ -9,8 +9,8 @@
 
 ## Frontend
 #### Kurs
-- Export-Buttons anpassen
-- PopUp Material entfertn
+- ~~Export-Buttons anpassen~~
+- PopUp Material entfernt
 - PopUp Möchten Sie die Aufgabe löschen
 - PopUp Aufgabe gelöscht
 - PopUp Aufgabe erstellt
