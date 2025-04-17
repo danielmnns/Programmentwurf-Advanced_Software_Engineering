@@ -11,9 +11,9 @@
 #### Kurs
 - ~~Export-Buttons anpassen~~
 - PopUp Material entfernt
-- PopUp Möchten Sie die Aufgabe löschen
-- PopUp Aufgabe gelöscht
-- PopUp Aufgabe erstellt
+- ~~PopUp Möchten Sie die Aufgabe löschen~~
+- ~~PopUp Aufgabe gelöscht~~
+- ~~PopUp Aufgabe erstellt~~
 - PopUp Abgabe löschen
 - Footer-Seiten erstellen
 - Responsives Design
