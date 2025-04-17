@@ -16,5 +16,5 @@
 - ~~PopUp Aufgabe erstellt~~
 - PopUp Abgabe löschen
 - Footer-Seiten erstellen
-- Responsives Design
+- ~~Responsives Design~~
 - Sprachumschaltung Rollen im User-Management   
