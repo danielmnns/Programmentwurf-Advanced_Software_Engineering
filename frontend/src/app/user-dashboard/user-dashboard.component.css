@@ -7,6 +7,13 @@
   padding: 10px;
 }
 
+/* Media Query für kleinere Bildschirme */
+@media (max-width: 800px) {
+  .course-container {
+    grid-template-columns: 1fr;
+  }
+}
+
 .course-box {
   display: flex;
   align-items: center;
