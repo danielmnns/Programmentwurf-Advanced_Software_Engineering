@@ -119,3 +119,13 @@ mat-card-content {
   top: 10px;
   right: 10px;
 }
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+  
+  .teilnehmer {
+    max-height: none;
+  }
+}

@@ -11,6 +11,13 @@
   padding-top: 10px;
 }
 
+/* Media Query für kleinere Bildschirme */
+@media (max-width: 800px) {
+  .course-list {
+    grid-template-columns: 1fr;
+  }
+}
+
 .course-content {
   display: flex;
   align-items: center;
