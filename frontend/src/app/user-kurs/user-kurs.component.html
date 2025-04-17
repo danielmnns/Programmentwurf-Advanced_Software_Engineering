@@ -72,12 +72,16 @@
 </div>
 
 <!-- Bestätigungsdialog -->
-<div *ngIf="showConfirmationDialog" class="confirmation-dialog">
-  <div class="dialog-content">
-    <p>{{ 'deleteConfirm' | translate }} "{{ fileToDelete?.name }}"?</p>
-    <div class="dialog-actions">
-      <button (click)="deleteFile()" class="confirm-btn">{{ 'confirm' | translate }}</button>
-      <button (click)="cancelDeletion()" class="cancel-btn">{{ 'cancel' | translate }}</button>
+<div *ngIf="showConfirmationDialog" class="popup-overlay">
+  <div class="app-popup popup-warning">
+    <div class="popup-content">
+      <div class="popup-icon">❓</div>
+      <h3>{{ 'deleteConfirmation' | translate }}</h3>
+      <p>{{ 'deleteConfirm' | translate }} "{{ fileToDelete?.name }}"?</p>
+      <div class="popup-actions">
+        <button (click)="deleteFile()" class="popup-btn popup-btn-primary">{{ 'confirm' | translate }}</button>
+        <button (click)="cancelDeletion()" class="popup-btn popup-btn-secondary">{{ 'cancel' | translate }}</button>
+      </div>
     </div>
   </div>
 </div>

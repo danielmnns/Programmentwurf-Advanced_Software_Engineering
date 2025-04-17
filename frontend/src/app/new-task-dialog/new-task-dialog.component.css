@@ -63,3 +63,71 @@ h2 {
   justify-content: space-between;
   margin-top: 20px;
 }
+
+/* Custom Dialog Styles */
+.custom-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  z-index: 1100;
+  min-width: 300px;
+  max-width: 450px;
+  animation: fadeIn 0.3s ease-out;
+  text-align: center;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -60%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.dialog-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dialog-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.success-dialog {
+  border-left: 5px solid #4CAF50;
+}
+
+.success-dialog .dialog-icon {
+  color: #4CAF50;
+}
+
+.error-dialog {
+  border-left: 5px solid #F44336;
+}
+
+.error-dialog .dialog-icon {
+  color: #F44336;
+}
+
+.custom-dialog h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.custom-dialog p {
+  margin: 0;
+  color: #666;
+  font-size: 1rem;
+}

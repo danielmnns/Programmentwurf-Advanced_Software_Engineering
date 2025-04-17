@@ -46,9 +46,7 @@
   </div>
 
   <!-- Benachrichtigungs-Popup (Toast-Style) -->
-  <div class="notification" *ngIf="showNotification">
-    <div class="notification-content">
-      <p>{{ notificationMessage }}</p>
-      <button (click)="closeNotification()">Schließen</button>
-    </div>
+  <div *ngIf="showNotification" class="app-notification">
+    <p>{{ notificationMessage }}</p>
+    <button (click)="closeNotification()">{{ 'close' | translate }}</button>
   </div>

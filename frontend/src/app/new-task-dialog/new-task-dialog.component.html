@@ -19,3 +19,32 @@
     <button mat-raised-button color="warn" (click)="cancel()">{{ 'cancel' | translate }}</button>
   </div>
 </div>
+
+<!-- Custom Task Creation Success Dialog -->
+<div *ngIf="showTaskCreationSuccess" class="popup-overlay">
+  <div class="app-popup popup-success">
+    <div class="popup-content">
+      <div class="popup-icon">✓</div>
+      <h3>Aufgabe erfolgreich erstellt!</h3>
+      <p>Die Aufgabe wurde erfolgreich zum Kurs hinzugefügt.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Validation Error Message -->
+<div id="validation-error" class="app-popup popup-error" style="display: none;">
+  <div class="popup-content">
+    <div class="popup-icon">⚠️</div>
+    <h3>Fehlerhafte Eingabe</h3>
+    <p>Bitte Aufgabenname und Aufgabentext eingeben!</p>
+  </div>
+</div>
+
+<!-- Creation Error Message -->
+<div id="creation-error" class="app-popup popup-error" style="display: none;">
+  <div class="popup-content">
+    <div class="popup-icon">❌</div>
+    <h3>Fehler</h3>
+    <p>Fehler beim Erstellen der Aufgabe</p>
+  </div>
+</div>
