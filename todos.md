@@ -1,4 +1,7 @@
 ## Backend
+### Nutzerverwaltung
+- Es muss immer einen Admin geben 
+
 ### Aufgabe
 - Student sieht Material in Aufgabe nicht
 - Student kann Abgabe nicht löschen
