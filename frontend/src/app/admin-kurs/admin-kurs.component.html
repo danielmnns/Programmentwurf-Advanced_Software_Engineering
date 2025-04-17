@@ -148,56 +148,96 @@
 </div>
 
 <!-- Bestätigungs-Popup für Material löschen -->
-<div *ngIf="showDeleteMaterialConfirmation" class="confirmation-dialog">
-  <div class="dialog-content">
-    <p>{{ 'deleteConfirm' | translate }} "{{ materialToDelete?.name }}"?</p>
-    <div class="dialog-actions">
-      <button (click)="confirmDeleteMaterial()" class="confirm-btn">{{ 'yes' | translate }}</button>
-      <button (click)="cancelDeleteMaterial()" class="cancel-btn">{{ 'no' | translate }}</button>
+<div *ngIf="showDeleteMaterialConfirmation" class="popup-overlay">
+  <div class="app-popup popup-warning">
+    <div class="popup-content">
+      <div class="popup-icon">❓</div>
+      <h3>{{ 'deleteConfirm' | translate }}</h3>
+      <p>{{ 'deleteConfirm' | translate }} "{{ materialToDelete?.name }}"?</p>
+      <div class="popup-actions">
+        <button (click)="confirmDeleteMaterial()" class="popup-btn popup-btn-primary">{{ 'yes' | translate }}</button>
+        <button (click)="cancelDeleteMaterial()" class="popup-btn popup-btn-secondary">{{ 'no' | translate }}</button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Bestätigungs-Popup für Material erstellen -->
-<div *ngIf="showMaterialCreationConfirmation" class="confirmation-dialog success-dialog">
-  <div class="dialog-content">
-    <h3>{{ 'materialCreatedSuccess' | translate }}</h3>
-    <p>"{{ createdMaterialName }}" {{ 'wasSuccessfullyAdded' | translate }}</p>
-    <div class="dialog-actions">
-      <button (click)="hideMaterialCreationPopup()" class="confirm-btn">{{ 'ok' | translate }}</button>
+<div *ngIf="showMaterialCreationConfirmation" class="popup-overlay">
+  <div class="app-popup popup-success">
+    <div class="popup-content">
+      <div class="popup-icon">✓</div>
+      <h3>{{ 'materialCreatedSuccess' | translate }}</h3>
+      <p>"{{ createdMaterialName }}" {{ 'wasSuccessfullyAdded' | translate }}</p>
+      <div class="popup-actions">
+        <button (click)="hideMaterialCreationPopup()" class="popup-btn popup-btn-primary">{{ 'ok' | translate }}</button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Bestätigungs-Popup für Aufgaben-Material erstellen -->
-<div *ngIf="showTaskMaterialConfirmation" class="confirmation-dialog success-dialog">
-  <div class="dialog-content">
-    <h3>{{ 'taskMaterialCreatedSuccess' | translate }}</h3>
-    <p>"{{ createdTaskMaterialName }}" {{ 'wasSuccessfullyAddedToTask' | translate }} "{{ currentTaskForMaterial?.name }}"</p>
-    <div class="dialog-actions">
-      <button (click)="hideTaskMaterialCreationPopup()" class="confirm-btn">{{ 'ok' | translate }}</button>
+<div *ngIf="showTaskMaterialConfirmation" class="popup-overlay">
+  <div class="app-popup popup-success">
+    <div class="popup-content">
+      <div class="popup-icon">✓</div>
+      <h3>{{ 'taskMaterialCreatedSuccess' | translate }}</h3>
+      <p>"{{ createdTaskMaterialName }}" {{ 'wasSuccessfullyAddedToTask' | translate }} "{{ currentTaskForMaterial?.name }}"</p>
+      <div class="popup-actions">
+        <button (click)="hideTaskMaterialCreationPopup()" class="popup-btn popup-btn-primary">{{ 'ok' | translate }}</button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Erfolgsmeldung für Material löschen -->
-<div *ngIf="showMaterialRemovalSuccess" class="confirmation-dialog warning-dialog">
-  <div class="dialog-content">
-    <h3>{{ 'materialRemovedSuccess' | translate }}</h3>
-    <p>"{{ removedMaterialName }}" {{ 'wasSuccessfullyRemoved' | translate }}</p>
-    <div class="dialog-actions">
-      <button (click)="hideMaterialRemovalSuccessPopup()" class="confirm-btn">{{ 'ok' | translate }}</button>
+<div *ngIf="showMaterialRemovalSuccess" class="popup-overlay">
+  <div class="app-popup popup-info">
+    <div class="popup-content">
+      <div class="popup-icon">🗑️</div>
+      <h3>{{ 'materialRemovedSuccess' | translate }}</h3>
+      <p>"{{ removedMaterialName }}" {{ 'wasSuccessfullyRemoved' | translate }}</p>
+      <div class="popup-actions">
+        <button (click)="hideMaterialRemovalSuccessPopup()" class="popup-btn popup-btn-primary">{{ 'ok' | translate }}</button>
+      </div>
     </div>
   </div>
 </div>
 
 <!-- Export-Erfolgsmeldung -->
-<div *ngIf="showExportSuccess" class="confirmation-dialog success-dialog">
-  <div class="dialog-content">
-    <h3>{{ 'exportSuccess' | translate }}</h3>
-    <p>{{ 'participantListExported' | translate }} {{ exportType }}</p>
-    <div class="dialog-actions">
-      <button (click)="hideExportSuccessPopup()" class="confirm-btn">{{ 'ok' | translate }}</button>
+<div *ngIf="showExportSuccess" class="popup-overlay">
+  <div class="app-popup popup-success">
+    <div class="popup-content">
+      <div class="popup-icon">📊</div>
+      <h3>{{ 'exportSuccess' | translate }}</h3>
+      <p>{{ 'participantListExported' | translate }} {{ exportType }}</p>
+      <div class="popup-actions">
+        <button (click)="hideExportSuccessPopup()" class="popup-btn popup-btn-primary">{{ 'ok' | translate }}</button>
+      </div>
     </div>
+  </div>
+</div>
+
+<!-- Task Deletion Confirmation Popup -->
+<div *ngIf="showTaskDeleteConfirmation" class="popup-overlay">
+  <div class="app-popup popup-confirm">
+    <div class="popup-content">
+      <div class="popup-icon">❓</div>
+      <h3>{{ 'deleteConfirm' | translate }}</h3>
+      <p>{{ 'deleteTaskQuestion' | translate }} "{{ taskToDelete?.name }}"?</p>
+      <div class="popup-actions">
+        <button (click)="confirmTaskDeletion()" class="popup-btn popup-btn-primary">{{ 'yes' | translate }}</button>
+        <button (click)="cancelTaskDeletion()" class="popup-btn popup-btn-secondary">{{ 'no' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Task Deletion Success Popup -->
+<div *ngIf="showTaskDeleteSuccess" class="app-popup popup-success">
+  <div class="popup-content">
+    <div class="popup-icon">✓</div>
+    <h3>{{ 'deleteTaskSuccess' | translate }}</h3>
+    <p>"{{ deletedTaskName }}" {{ 'wasSuccessfullyRemoved' | translate }}</p>
   </div>
 </div>

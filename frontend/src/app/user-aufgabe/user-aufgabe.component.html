@@ -41,27 +41,23 @@
     </div>
 
     <!-- Löschbestätigungspopup -->
-    <div class="modal" *ngIf="showDeletePopup">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h2>{{ 'deleteConfirm' | translate }}</h2>
-          <button class="close-btn" (click)="cancelDelete()">✖</button>
-        </div>
-        <div class="modal-body">
+    <div *ngIf="showDeletePopup" class="popup-overlay">
+      <div class="app-popup popup-warning">
+        <div class="popup-content">
+          <div class="popup-icon">❓</div>
+          <h3>{{ 'deleteConfirm' | translate }}</h3>
           <p>{{ 'deleteConfirm' | translate }}?</p>
-        </div>
-        <div class="modal-footer">
-          <button class="btn-confirm" (click)="confirmDelete()">{{ 'confirm' | translate }}</button>
-          <button class="btn-cancel" (click)="cancelDelete()">{{ 'cancel' | translate }}</button>
+          <div class="popup-actions">
+            <button (click)="confirmDelete()" class="popup-btn popup-btn-primary">{{ 'confirm' | translate }}</button>
+            <button (click)="cancelDelete()" class="popup-btn popup-btn-secondary">{{ 'cancel' | translate }}</button>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Benachrichtigungs-Popup -->
-    <div class="notification" *ngIf="showNotification">
-      <div class="notification-content">
-        <p>{{ notificationMessage }}</p>
-        <button (click)="closeNotification()">{{ 'close' | translate }}</button>
-      </div>
+    <div *ngIf="showNotification" class="app-notification">
+      <p>{{ notificationMessage }}</p>
+      <button (click)="closeNotification()">{{ 'close' | translate }}</button>
     </div>
   </div>

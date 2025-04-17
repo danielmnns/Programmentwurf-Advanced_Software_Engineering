@@ -28,6 +28,7 @@ export class NewTaskDialogComponent {
   taskName: string = '';
   taskText: string = '';
   selectedFile: File | null = null;
+  showTaskCreationSuccess: boolean = false; // For custom success popup
 
   private apiUrl = 'http://localhost:3000/api';
 
@@ -56,7 +57,7 @@ export class NewTaskDialogComponent {
 
   createTask(): void {
     if (!this.taskName || !this.taskText) {
-      alert('Bitte Aufgabenname und Aufgabentext eingeben!');
+      this.showValidationError();
       return;
     }
     
@@ -73,14 +74,41 @@ export class NewTaskDialogComponent {
     
     this.http.post(`${this.apiUrl}/tasks/admin/addTask`, formData).subscribe(
       (response: any) => {
-        alert('Aufgabe erfolgreich erstellt!');
-        this.dialogRef.close(true);
+        this.showTaskCreationSuccess = true;
+        setTimeout(() => {
+          this.showTaskCreationSuccess = false;
+          this.dialogRef.close(true);
+        }, 1500);
       },
       (error) => {
         console.error('Fehler beim Erstellen der Aufgabe', error);
-        alert('Fehler beim Erstellen der Aufgabe');
+        this.showTaskCreationError();
       }
     );
+  }
+
+  // New method to show validation error
+  showValidationError(): void {
+    // We'll add a custom error dialog in the template
+    const errorElement = document.getElementById('validation-error');
+    if (errorElement) {
+      errorElement.style.display = 'block';
+      setTimeout(() => {
+        errorElement.style.display = 'none';
+      }, 3000);
+    }
+  }
+
+  // New method to show task creation error
+  showTaskCreationError(): void {
+    // We'll add a custom error dialog in the template
+    const errorElement = document.getElementById('creation-error');
+    if (errorElement) {
+      errorElement.style.display = 'block';
+      setTimeout(() => {
+        errorElement.style.display = 'none';
+      }, 3000);
+    }
   }
 
   cancel(): void {

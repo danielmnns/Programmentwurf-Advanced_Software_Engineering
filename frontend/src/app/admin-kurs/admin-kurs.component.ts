@@ -67,6 +67,10 @@ export class AdminKursComponent implements OnInit {
   removedMaterialName: string = '';
   showExportSuccess: boolean = false; // Neue Variable für Export-Erfolgsmeldung
   exportType: string = ''; // Speichert den Typ des Exports (PDF/CSV)
+  showTaskDeleteConfirmation: boolean = false;
+  taskToDelete: Task | null = null;
+  showTaskDeleteSuccess: boolean = false;
+  deletedTaskName: string = '';
 
   private readonly apiUrl = 'http://localhost:3000/api/courses';
 
@@ -282,33 +286,54 @@ closePdfPreview():void {
   this.currentPdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
 }
 
-// Löscht eine Aufgabe
+// Löscht eine Aufgabe - changed to use custom dialog
 deleteTask(task: Task): void {
-  if (this.statusService.confirmAction('deleteConfirm', { name: task.name })) {
-    // Sofort visuell aus der Liste entfernen
-    this.tasks = this.tasks.filter(t => t.taskId !== task.taskId);
-    
-    const payload = { courseName: this.courseName, taskId: task.taskId };
-    
-    this.http.post('http://localhost:3000/api/tasks/admin/deleteTask', payload).subscribe({
-      next: (response: any) => {
-        console.log('Löschantwort vom Server:', response);
-        this.statusService.showSuccess('deleteTaskSuccess');
-        
-        // Komplette Liste nach kurzer Verzögerung neu laden
-        setTimeout(() => {
-          this.loadCourseData();
-        }, 500);
-      },
-      error: (error) => {
-        console.error('Fehler beim Löschen der Aufgabe:', error);
-        this.statusService.showError('deleteTaskError');
-        
-        // Bei Fehler die Aufgabe wieder zur Liste hinzufügen
+  this.taskToDelete = task;
+  this.showTaskDeleteConfirmation = true;
+}
+
+confirmTaskDeletion(): void {
+  if (!this.taskToDelete) return;
+  
+  const task = this.taskToDelete;
+  this.showTaskDeleteConfirmation = false;
+  
+  // Sofort visuell aus der Liste entfernen
+  this.tasks = this.tasks.filter(t => t.taskId !== task.taskId);
+  
+  const payload = { courseName: this.courseName, taskId: task.taskId };
+  
+  this.http.post('http://localhost:3000/api/tasks/admin/deleteTask', payload).subscribe({
+    next: (response: any) => {
+      console.log('Löschantwort vom Server:', response);
+      // Show custom success message
+      this.deletedTaskName = task.name;
+      this.showTaskDeleteSuccess = true;
+      
+      // Auto-hide the success message after 2 seconds
+      setTimeout(() => {
+        this.showTaskDeleteSuccess = false;
+        this.deletedTaskName = '';
+      }, 2000);
+      
+      // Komplette Liste nach kurzer Verzögerung neu laden
+      setTimeout(() => {
         this.loadCourseData();
-      }
-    });
-  }
+      }, 500);
+    },
+    error: (error) => {
+      console.error('Fehler beim Löschen der Aufgabe:', error);
+      this.statusService.showError('deleteTaskError');
+      
+      // Bei Fehler die Aufgabe wieder zur Liste hinzufügen
+      this.loadCourseData();
+    }
+  });
+}
+
+cancelTaskDeletion(): void {
+  this.showTaskDeleteConfirmation = false;
+  this.taskToDelete = null;
 }
 
   updateText(): void {
