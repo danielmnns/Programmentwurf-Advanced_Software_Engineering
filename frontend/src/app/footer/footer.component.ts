@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { TranslatePipe } from '../pipes/translate.pipe';
 import { LanguageService } from '../services/language.service';
 
@@ -10,7 +11,8 @@ import { LanguageService } from '../services/language.service';
   standalone: true,
   imports: [
     CommonModule,
-    TranslatePipe
+    TranslatePipe,
+    RouterModule
   ]
 })
 export class FooterComponent implements OnInit {
