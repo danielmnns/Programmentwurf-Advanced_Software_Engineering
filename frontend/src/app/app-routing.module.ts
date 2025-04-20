@@ -5,13 +5,15 @@ import { AdminAufgabeComponent } from './admin-aufgabe/admin-aufgabe.component';
 import { AdminDashboardComponent } from './admin-dashboard/admin-dashboard.component';
 import { AdminKursComponent } from './admin-kurs/admin-kurs.component';
 import { authGuard } from './auth/auth.guard';
+import { ContactComponent } from './contact/contact.component';
 import { LoginComponent } from './login/login.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
+import { PrivacyPolicyComponent } from './privacy-policy/privacy-policy.component';
+import { TermsOfServiceComponent } from './terms-of-service/terms-of-service.component';
 import { UserAufgabeComponent } from './user-aufgabe/user-aufgabe.component';
 import { UserDashboardComponent } from './user-dashboard/user-dashboard.component';
 import { KursComponent } from './user-kurs/user-kurs.component';
 import { UserVerwaltungComponent } from './user-verwaltung/user-verwaltung.component';
-
 
 const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -69,6 +71,9 @@ const routes: Routes = [
     canActivate: [authGuard],
     data: { allowedRoles: ['admin'] }
   },
+  { path: 'privacy-policy', component: PrivacyPolicyComponent },
+  { path: 'terms-of-service', component: TermsOfServiceComponent },
+  { path: 'contact', component: ContactComponent },
   { path: '**', component: PageNotFoundComponent },
 
 ];

@@ -1,0 +1,5 @@
+@import '../shared/css/footer-pages.css';
+.content-card ol {
+  padding-left: 25px;
+  margin-bottom: 15px;
+}

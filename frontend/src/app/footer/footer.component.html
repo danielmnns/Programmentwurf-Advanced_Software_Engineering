@@ -4,9 +4,9 @@
       &copy; {{ currentYear }} Lernmanagementsystem
     </div>
     <div class="links">
-      <a href="#">{{ 'privacyPolicy' | translate }}</a>
-      <a href="#">{{ 'termsOfService' | translate }}</a>
-      <a href="#">{{ 'contact' | translate }}</a>
+      <a [routerLink]="['/privacy-policy']" routerLinkActive="active">{{ 'privacyPolicy' | translate }}</a>
+      <a [routerLink]="['/terms-of-service']" routerLinkActive="active">{{ 'termsOfService' | translate }}</a>
+      <a [routerLink]="['/contact']" routerLinkActive="active">{{ 'contact' | translate }}</a>
     </div>
   </div>
 </footer>

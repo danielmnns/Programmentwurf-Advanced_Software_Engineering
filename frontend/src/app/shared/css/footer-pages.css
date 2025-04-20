@@ -1,0 +1,129 @@
+/* Footer Pages Shared Styles */
+.page-container {
+  width: 90%;
+  max-width: 1024px;
+  margin: 40px auto;
+  min-height: calc(100vh - 300px); /* Adjusts for header and footer */
+}
+
+.content-card {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+}
+
+/* Headings */
+.content-card h1 {
+  color: #3f51b5;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 15px;
+}
+
+.content-card h2 {
+  color: #303f9f;
+  font-size: 1.5rem;
+  margin: 25px 0 15px 0;
+  font-weight: 500;
+}
+
+.content-card h3 {
+  color: #444;
+  font-size: 1.2rem;
+  margin: 18px 0 12px 0;
+  font-weight: 500;
+}
+
+/* Text elements */
+.content-card p, 
+.content-card li, 
+.content-card address {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+
+/* Sections */
+section {
+  margin-bottom: 30px;
+}
+
+/* Lists */
+.content-card ul,
+.content-card ol {
+  padding-left: 25px;
+  margin-bottom: 15px;
+}
+
+.content-card li {
+  margin-bottom: 8px;
+}
+
+/* Contact page specific styles */
+.contact-group {
+  margin-bottom: 25px;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 5px;
+  border-left: 4px solid #3f51b5;
+}
+
+.contact-group h3 {
+  margin-top: 0;
+  color: #3f51b5;
+}
+
+.contact-group p {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.contact-group i {
+  margin-right: 10px;
+  color: #666;
+}
+
+.contact-group a {
+  color: #1976d2;
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.contact-group a:hover {
+  color: #0d47a1;
+  text-decoration: underline;
+}
+
+.privacy-consent {
+  display: flex;
+  align-items: flex-start;
+}
+
+.privacy-consent input {
+  margin-top: 5px;
+  margin-right: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .page-container {
+    width: 95%;
+    margin: 20px auto;
+  }
+  
+  .content-card {
+    padding: 20px 15px;
+  }
+  
+  .content-card h1 {
+    font-size: 1.8rem;
+  }
+  
+  .content-card h2 {
+    font-size: 1.3rem;
+  }
+}
