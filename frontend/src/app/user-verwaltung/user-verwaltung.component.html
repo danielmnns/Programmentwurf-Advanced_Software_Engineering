@@ -181,4 +181,19 @@
       </mat-dialog-actions>
     </div>
   </ng-template>
+
+  <!-- Benutzer löschen - Bestätigungsdialog -->
+  <div *ngIf="showDeleteUserConfirmation" class="popup-overlay">
+    <div class="app-popup popup-confirm">
+      <div class="popup-content">
+        <div class="popup-icon">❓</div>
+        <h3>{{ 'deleteConfirmation' | translate }}</h3>
+        <p>{{ 'deleteConfirm' | translate }} "{{ userToDelete?.username }}"?</p>
+        <div class="popup-actions">
+          <button (click)="confirmDeleteUser()" class="popup-btn popup-btn-primary">{{ 'confirm' | translate }}</button>
+          <button (click)="cancelDeleteUser()" class="popup-btn popup-btn-secondary">{{ 'cancel' | translate }}</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

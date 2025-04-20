@@ -61,6 +61,10 @@ interface UserType {
 })
 export class UserVerwaltungComponent implements OnInit, OnDestroy {
   users: User[] = [];
+  
+  // Popup-related properties for user deletion
+  showDeleteUserConfirmation: boolean = false;
+  userToDelete: User | null = null;
 
   // Korrigierte Benutzertypen als Objekte mit value/label
   userTypes: UserType[] = [
@@ -297,26 +301,46 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
     );
   }
 
-  // Benutzer löschen (über ID)
-  deleteUser(user: User): void {
-    if (confirm(`Wirklich den Benutzer ${user.username} löschen?`)) {
-      const payload = {
-        userId: user._id,
-        operation: 'deleteUserById'
-      };
+  // Show delete user confirmation popup
+  showDeleteUserConfirmationPopup(user: User): void {
+    this.userToDelete = user;
+    this.showDeleteUserConfirmation = true;
+  }
 
-      this.http.post(this.apiUrl, payload).subscribe(
-        (response: any) => {
-          if (response.success) {
-            this.loadUsers();
-            this.showSuccess('Benutzer erfolgreich gelöscht!');
-          } else {
-            this.showError(response.message || 'Fehler beim Löschen des Benutzers.');
-          }
-        },
-        (error) => this.showError('Fehler beim Löschen des Benutzers: ' + (error.error?.message || error.message || ''))
-      );
-    }
+  // Confirm user deletion
+  confirmDeleteUser(): void {
+    if (!this.userToDelete) return;
+    
+    const user = this.userToDelete;
+    this.showDeleteUserConfirmation = false;
+    
+    const payload = {
+      userId: user._id,
+      operation: 'deleteUserById'
+    };
+
+    this.http.post(this.apiUrl, payload).subscribe(
+      (response: any) => {
+        if (response.success) {
+          this.loadUsers();
+          this.showSuccess('Benutzer erfolgreich gelöscht!');
+        } else {
+          this.showError(response.message || 'Fehler beim Löschen des Benutzers.');
+        }
+      },
+      (error) => this.showError('Fehler beim Löschen des Benutzers: ' + (error.error?.message || error.message || ''))
+    );
+  }
+
+  // Cancel user deletion
+  cancelDeleteUser(): void {
+    this.showDeleteUserConfirmation = false;
+    this.userToDelete = null;
+  }
+
+  // Benutzer löschen (über ID) - replaced with custom popup
+  deleteUser(user: User): void {
+    this.showDeleteUserConfirmationPopup(user);
   }
 
   // Benutzer-Typ aktualisieren - aktualisierte Version
