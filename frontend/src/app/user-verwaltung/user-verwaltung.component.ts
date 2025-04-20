@@ -399,4 +399,9 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
   private showError(message: string): void {
     this.snackBar.open(message, 'Schließen', { duration: 3000, panelClass: ['error-snack'] });
   }
+
+  // Diese Methode gibt den übersetzten Benutzertyp zurück
+  showTranslatedUserType(userType: string): string {
+    return this.languageService.translate(userType);
+  }
 }
