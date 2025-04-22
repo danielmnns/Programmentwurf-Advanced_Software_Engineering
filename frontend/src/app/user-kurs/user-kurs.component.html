@@ -46,10 +46,27 @@
 
       <!-- Aufgabenbereich-->
       <li *ngFor="let task of tasks">
-        <mat-card class="task-card" (click)="openTask(task)" style="cursor: pointer;">
-          <mat-card-title>
+        <mat-card class="task-card">
+          <mat-card-title (click)="openTask(task)" style="cursor: pointer;">
             {{ task.name }}
           </mat-card-title>
+          <mat-card-content *ngIf="task.description">
+            <p>{{ task.description }}</p>
+          </mat-card-content>
+          
+          <!-- Zeige Aufgaben-Materialien an -->
+          <mat-card-content *ngIf="task.documents && task.documents.length > 0">
+            <h4>{{ 'taskMaterials' | translate }}</h4>
+            <ul class="task-document-list">
+              <li *ngFor="let doc of task.documents" class="task-document-item">
+                <span>{{ doc.name }}</span>
+                <div class="document-actions">
+                  <a [href]="doc.url" target="_blank" class="download-link">{{ 'download' | translate }}</a>
+                  <button (click)="openPdfPreview(doc.originalUrl || doc.url)" class="preview-button">{{ 'preview' | translate }}</button>
+                </div>
+              </li>
+            </ul>
+          </mat-card-content>
         </mat-card>
       </li>
     </ul>
