@@ -56,8 +56,16 @@
     </div>
 
     <!-- Benachrichtigungs-Popup -->
-    <div *ngIf="showNotification" class="app-notification">
-      <p>{{ notificationMessage }}</p>
-      <button (click)="closeNotification()">{{ 'close' | translate }}</button>
+    <div *ngIf="showNotification" class="popup-overlay">
+      <div class="app-popup popup-info">
+        <div class="popup-content">
+          <div class="popup-icon">ℹ️</div>
+          <h3>{{ 'info' | translate }}</h3>
+          <p>{{ notificationMessage }}</p>
+          <div class="popup-actions">
+            <button (click)="closeNotification()" class="popup-btn popup-btn-primary">{{ 'close' | translate }}</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
