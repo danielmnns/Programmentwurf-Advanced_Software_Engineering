@@ -13,7 +13,7 @@
 
 #### Kurs
 - ~~Export-Buttons anpassen~~
-- PopUp Material entfernt
+- ~~PopUp Material entfernt~~
 - ~~PopUp Möchten Sie die Aufgabe löschen~~
 - ~~PopUp Aufgabe gelöscht~~
 - ~~PopUp Aufgabe erstellt~~

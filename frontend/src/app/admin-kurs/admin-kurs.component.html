@@ -204,6 +204,20 @@
   </div>
 </div>
 
+<!-- Popup for removeMaterialSuccess -->
+<div *ngIf="showRemoveMaterialSuccess" class="popup-overlay">
+  <div class="app-popup popup-success">
+    <div class="popup-content">
+      <div class="popup-icon">🗑️</div>
+      <h3>{{ 'removeMaterialSuccess' | translate }}</h3>
+      <p>{{ 'materialHasBeenRemoved' | translate }}</p>
+      <div class="popup-actions">
+        <button (click)="hideRemoveMaterialSuccessPopup()" class="popup-btn popup-btn-primary">{{ 'ok' | translate }}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Export-Erfolgsmeldung -->
 <div *ngIf="showExportSuccess" class="popup-overlay">
   <div class="app-popup popup-success">

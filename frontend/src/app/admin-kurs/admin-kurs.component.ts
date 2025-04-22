@@ -71,6 +71,8 @@ export class AdminKursComponent implements OnInit {
   taskToDelete: Task | null = null;
   showTaskDeleteSuccess: boolean = false;
   deletedTaskName: string = '';
+  // New property for the removeMaterialSuccess popup
+  showRemoveMaterialSuccess: boolean = false;
 
   private readonly apiUrl = 'http://localhost:3000/api/courses';
 
@@ -128,6 +130,11 @@ export class AdminKursComponent implements OnInit {
     this.showMaterialRemovalSuccess = false;
     this.removedMaterialName = '';
   }
+  
+  // Hide the removeMaterialSuccess popup
+  hideRemoveMaterialSuccessPopup(): void {
+    this.showRemoveMaterialSuccess = false;
+  }
 
   // remove documents
   removeDocument(doc: DocumentFile): void {
@@ -140,8 +147,7 @@ export class AdminKursComponent implements OnInit {
       next: (response: any) => {
         this.uploadedDocuments = this.uploadedDocuments.filter(d => d.name !== doc.name);
         // Show the removal success popup
-        this.showMaterialRemovalSuccessPopup(doc.name);
-        this.statusService.showSuccess('removeMaterialSuccess', { name: doc.name });
+        this.showMaterialRemovalSuccessPopup(doc.name)
       },
       error: (error) => {
         console.error('Fehler beim Löschen des Dokuments:', error);
