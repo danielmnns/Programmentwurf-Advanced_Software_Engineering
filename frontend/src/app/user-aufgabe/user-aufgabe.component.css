@@ -250,3 +250,47 @@
   .notification-content button:hover {
     background: rgba(255, 255, 255, 0.2);
   }
+
+  /* Document List Styles */
+  .document-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+  
+  .document-list li {
+    margin: 0;
+    transition: all 0.2s ease;
+  }
+  
+  .document-list li:not(:last-child) {
+    border-bottom: 1px solid #eaeaea;
+  }
+  
+  .document-list li:hover {
+    background-color: #f0f7ff;
+  }
+  
+  .document-link {
+    color: #2c3e50;
+    text-decoration: none;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+  }
+  
+  .document-link:hover {
+    color: #3498db;
+    text-decoration: underline;
+  }
+  
+  .document-icon {
+    font-size: 1.2em;
+    margin-right: 8px;
+    opacity: 0.8;
+  }
