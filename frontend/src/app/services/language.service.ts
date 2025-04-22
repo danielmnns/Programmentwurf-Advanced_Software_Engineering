@@ -62,6 +62,7 @@ export class LanguageService {
       'actions': 'Aktionen',
       'selectFile': 'Datei auswählen',
       'noFileSelected': 'Keine Datei ausgewählt',
+      'download': 'Herunterladen',
 
       // Footer links
       'privacyPolicy': 'Datenschutzerklärung',
@@ -106,6 +107,7 @@ export class LanguageService {
       'courseCreatedSuccess': 'Kurs wurde erfolgreich erstellt!',
       'courseCreationError': 'Fehler beim Erstellen des Kurses.',
       'enterCourseName': 'Bitte geben Sie einen Kursnamen ein.',
+      'taskMaterials': 'Aufgabenmaterialien',
 
       // Task related
       'taskName': 'Aufgabenname',
@@ -183,6 +185,7 @@ export class LanguageService {
       'actions': 'Actions',
       'selectFile': 'Select File',
       'noFileSelected': 'No file selected',
+      'download': 'Download',
 
       // Footer links
       'privacyPolicy': 'Privacy Policy',
@@ -229,6 +232,7 @@ export class LanguageService {
       'courseCreatedSuccess': 'Course was successfully created!',
       'courseCreationError': 'Error creating the course.',
       'enterCourseName': 'Please enter a course name.',
+      'taskMaterials': 'Task Materials',
 
       // Task related
       'taskName': 'Task Name',
