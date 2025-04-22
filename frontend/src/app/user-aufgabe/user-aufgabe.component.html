@@ -22,7 +22,25 @@
 
     <div class="upload-section">
       <h3>{{ 'submitWork' | translate }}</h3>
-      <input type="file" accept="application/pdf" (change)="handleFileUpload($event)" />
+      <div class="file-input-container">
+        <input type="file" accept="application/pdf" id="file-upload" (change)="handleFileUpload($event)" [disabled]="isUploading" />
+        <label for="file-upload" class="file-input-label">{{ 'selectFile' | translate }}</label>
+      </div>
+      
+      <!-- Anzeige der ausgewählten Datei vor dem Upload -->
+      <div *ngIf="selectedFile" class="selected-file-preview">
+        <div class="file-info">
+          <span class="file-icon">📄</span>
+          <div class="file-details">
+            <span class="file-name">{{ selectedFile.name }}</span>
+            <span class="file-size">{{ selectedFile.size }}</span>
+          </div>
+        </div>
+        <div *ngIf="isUploading" class="upload-progress">
+          <div class="upload-spinner"></div>
+          <span>{{ 'uploading' | translate }}...</span>
+        </div>
+      </div>
     </div>
 
     <div class="submission-file" *ngIf="submissionFile">

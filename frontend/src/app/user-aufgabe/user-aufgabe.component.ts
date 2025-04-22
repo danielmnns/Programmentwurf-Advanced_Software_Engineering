@@ -37,6 +37,10 @@ export class UserAufgabeComponent implements OnInit {
   showNotification: boolean = false;
   notificationMessage: string = '';
   taskDocuments: DocumentFile[] = []; // Array für die Aufgabendateien
+  
+  // Neues Feld für die ausgewählte Datei vor dem Upload
+  selectedFile: { name: string, size: string } | null = null;
+  isUploading: boolean = false;
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -96,6 +100,13 @@ export class UserAufgabeComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
+      
+      // Anzeigen der ausgewählten Datei vor dem Upload
+      this.selectedFile = {
+        name: file.name,
+        size: this.formatFileSize(file.size)
+      };
+      
       const formData = new FormData();
       formData.append('file', file);
       formData.append('courseName', this.courseName);
@@ -104,8 +115,12 @@ export class UserAufgabeComponent implements OnInit {
       const userName = this.authService.getUserName();
       formData.append('userName', userName || '');
 
+      // Uploadstatus aktualisieren
+      this.isUploading = true;
+
       this.http.post('http://localhost:3000/api/tasks/submit', formData).subscribe({
         next: (response: any) => {
+          this.isUploading = false;
           if (response.submission?.file) {
             this.submissionFile = {
               name: response.submission.file.name,
@@ -113,15 +128,27 @@ export class UserAufgabeComponent implements OnInit {
             };
             this.showNotification = true;
             this.notificationMessage = 'Datei erfolgreich hochgeladen';
+            // Ausgewählte Datei zurücksetzen nach erfolgreichem Upload
+            this.selectedFile = null;
           }
         },
         error: (error) => {
+          this.isUploading = false;
           console.error('Fehler beim Hochladen der Abgabe:', error);
           this.showNotification = true;
           this.notificationMessage = 'Fehler beim Hochladen der Datei';
         }
       });
     }
+  }
+
+  // Hilfsfunktion zur Formatierung der Dateigröße
+  formatFileSize(bytes: number): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
   navigateBack() {

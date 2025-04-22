@@ -59,10 +59,101 @@
   .upload-section h3 {
     margin-top: 0;
     color: #444;
+    margin-bottom: 15px;
   }
-  
-  .upload-section input[type="file"] {
-    margin-top: 0.5rem;
+
+  /* Neuer Dateieingabe-Stil */
+  .file-input-container {
+    margin: 15px 0;
+    position: relative;
+    display: inline-block;
+  }
+
+  .file-input-container input[type="file"] {
+    position: absolute;
+    left: -9999px;
+    opacity: 0;
+    width: 0.1px;
+    height: 0.1px;
+  }
+
+  .file-input-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #1976d2;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.3s;
+  }
+
+  .file-input-label:hover {
+    background-color: #1565c0;
+  }
+
+  /* Dateivorschau-Stil */
+  .selected-file-preview {
+    margin-top: 15px;
+    padding: 12px;
+    background-color: #f5f5f5;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    text-align: left;
+    animation: fadeIn 0.3s;
+  }
+
+  .file-info {
+    display: flex;
+    align-items: center;
+  }
+
+  .file-icon {
+    font-size: 24px;
+    margin-right: 12px;
+    color: #444;
+  }
+
+  .file-details {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .file-name {
+    font-weight: 500;
+    color: #333;
+    word-break: break-all;
+  }
+
+  .file-size {
+    font-size: 12px;
+    color: #757575;
+    margin-top: 2px;
+  }
+
+  /* Upload-Status Spinner */
+  .upload-progress {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .upload-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-top-color: #1976d2;
+    border-radius: 50%;
+    margin-right: 10px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
   
   /* Abgabe und Feedback */
@@ -293,4 +384,79 @@
     font-size: 1.2em;
     margin-right: 8px;
     opacity: 0.8;
+  }
+
+  /* Popup-Overlay */
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s;
+  }
+
+  .app-popup {
+    max-width: 400px;
+    width: 90%;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+  }
+
+  .popup-content {
+    padding: 20px;
+    text-align: center;
+  }
+
+  .popup-warning .popup-icon {
+    color: #f44336;
+    font-size: 40px;
+    margin-bottom: 15px;
+  }
+
+  .popup-info .popup-icon {
+    color: #2196f3;
+    font-size: 40px;
+    margin-bottom: 15px;
+  }
+
+  .popup-actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+  }
+
+  .popup-btn {
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    border: none;
+  }
+
+  .popup-btn-primary {
+    background-color: #1976d2;
+    color: white;
+  }
+
+  .popup-btn-primary:hover {
+    background-color: #1565c0;
+  }
+
+  .popup-btn-secondary {
+    background-color: #757575;
+    color: white;
+  }
+
+  .popup-btn-secondary:hover {
+    background-color: #616161;
   }

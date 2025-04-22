@@ -5,6 +5,7 @@
 
 ### Aufgabe
 - ~~Student sieht Material in Aufgabe nicht~~
+- Student sieht seine Abgaben nicht
 - Student kann Abgabe nicht löschen
 - Admin sieht Abgaben nicht
 
