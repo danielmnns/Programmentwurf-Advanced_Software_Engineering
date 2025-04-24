@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { TranslatePipe } from '../pipes/translate.pipe';
+import { FileUrlService } from '../services/file-url.service';
 import { LanguageService } from '../services/language.service';
 
 interface DocumentFile {
@@ -92,6 +93,7 @@ export class AdminAufgabeComponent implements OnInit {
     private readonly router: Router,
     private readonly http: HttpClient,
     private readonly sanitizer: DomSanitizer,
+    private readonly fileUrlService: FileUrlService,
     public readonly languageService: LanguageService
   ) { }
 
@@ -138,7 +140,7 @@ export class AdminAufgabeComponent implements OnInit {
 
             if (sub.file) {
               submission.fileName = sub.file.name;
-              submission.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(sub.file.url);
+              submission.fileUrl = this.fileUrlService.getFileUrl(sub.file.url);
               submission.file = sub.file;
             }
 
