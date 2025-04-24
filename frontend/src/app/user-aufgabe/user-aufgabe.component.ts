@@ -43,6 +43,8 @@ export class UserAufgabeComponent implements OnInit {
   uploadedFile: File | null = null; // Speichert die tatsächliche Datei
   submissionComment: string = ''; // Kommentar zur Abgabe
   isUploading: boolean = false;
+  // Sprachmanagement
+  currentLang: 'de' | 'en' = 'de';
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -59,6 +61,11 @@ export class UserAufgabeComponent implements OnInit {
       this.courseName = params['courseName'];
       this.taskName = params['taskName'];
       this.loadTaskDetails();
+    });
+
+    // Sprachänderungen abonnieren
+    this.languageService.currentLanguage$.subscribe(lang => {
+      this.currentLang = lang;
     });
   }
 

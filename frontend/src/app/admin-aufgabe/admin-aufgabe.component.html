@@ -11,7 +11,7 @@
 
     <!-- Aufgabendateien anzeigen -->
     <div class="task-documents" *ngIf="uploadedDocuments && uploadedDocuments.length > 0">
-      <h3>Aufgabendokumente</h3>
+      <h3>{{ 'taskMaterials' | translate }}</h3>
       <ul class="document-list">
         <li *ngFor="let document of uploadedDocuments">
           <a [href]="document.url" target="_blank" class="document-link">
@@ -25,25 +25,25 @@
     <div class="submissions-list">
       <h3>{{ 'userFees' | translate}}</h3>
       <div *ngIf="submissions.length === 0" class="no-submissions">
-        <p>Bisher wurden keine Abgaben eingereicht.</p>
+        <p>{{ 'noSubmissionsYet' | translate }}</p>
       </div>
       <div class="submission-item" *ngFor="let submission of submissions">
-        <p><strong>Benutzer:</strong> {{ submission.userName }}</p>
+        <p><strong>{{ 'username' | translate }}:</strong> {{ submission.userName }}</p>
         <div *ngIf="submission.file">
           <p>
             <a [href]="submission.fileUrl" target="_blank">{{ submission.fileName }}</a>
           </p>
         </div>
         <div *ngIf="!submission.file" class="no-file">
-          <p>Keine Datei abgegeben</p>
+          <p>{{ 'noFileSubmitted' | translate }}</p>
         </div>
         <!-- Student comment section -->
         <div *ngIf="submission.comment" class="student-comment">
-          <p><strong>{{ 'studentComment' | translate }}:</strong> {{ submission.comment }}</p>
+          <p><strong>{{ 'submissionComment' | translate }}:</strong> {{ submission.comment }}</p>
         </div>
         <div class="feedback-input">
-          <textarea [(ngModel)]="submission.feedbackText" placeholder="Feedback eingeben..."></textarea>
-          <button class="btn-save" (click)="saveFeedback(submission)">Speichern</button>
+          <textarea [(ngModel)]="submission.feedbackText" placeholder="{{ 'enterFeedback' | translate }}"></textarea>
+          <button class="btn-save" (click)="saveFeedback(submission)">{{ 'save' | translate }}</button>
         </div>
       </div>
     </div>

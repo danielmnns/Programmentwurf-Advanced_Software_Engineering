@@ -82,6 +82,8 @@ export class AdminAufgabeComponent implements OnInit {
   adminUsername: string = 'admin';
   showNotification: boolean = false;
   notificationMessage: string = '';
+  // Sprachmanagement
+  currentLang: 'de' | 'en' = 'de';
 
   private readonly apiUrl = 'http://localhost:3000/api';
 
@@ -103,6 +105,11 @@ export class AdminAufgabeComponent implements OnInit {
           this.loadTaskDetails();
         }
       }
+    });
+    
+    // Sprachänderungen abonnieren
+    this.languageService.currentLanguage$.subscribe(lang => {
+      this.currentLang = lang;
     });
   }
 
