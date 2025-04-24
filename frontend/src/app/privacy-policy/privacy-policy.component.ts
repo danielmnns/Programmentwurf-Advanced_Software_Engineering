@@ -6,7 +6,7 @@ import { LanguageService } from '../services/language.service';
 @Component({
   selector: 'app-privacy-policy',
   standalone: true,
-  imports: [CommonModule, TranslatePipe],
+  imports: [CommonModule],
   templateUrl: './privacy-policy.component.html',
   styleUrl: './privacy-policy.component.css'
 })
