@@ -91,4 +91,9 @@ export class UsersService {
       throw new NotFoundException(`Benutzer mit ID "${id}" nicht gefunden`);
     }
   }
+
+  // Neue Methode: Prüft, ob es mehr als einen Administrator gibt
+  async countAdmins(): Promise<number> {
+    return this.userModel.countDocuments({ userType: 'admin' }).exec();
+  }
 }

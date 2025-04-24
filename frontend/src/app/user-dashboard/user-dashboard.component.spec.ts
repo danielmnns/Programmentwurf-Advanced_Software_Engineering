@@ -25,11 +25,14 @@ describe('UserDashboardComponent', () => {
     const authSpy = jasmine.createSpyObj('AuthService', ['getUserName']);
     const courseSpy = jasmine.createSpyObj('CourseService', ['getAllCourses']);
     const dialogSpyObj = jasmine.createSpyObj('MatDialog', ['open']);
-    const languageSpy = jasmine.createSpyObj('LanguageService', ['']);
+    const languageSpy = jasmine.createSpyObj('LanguageService',
+      ['setLanguage', 'getCurrentLanguage', 'translate'],
+      { currentLanguage$: of('de') }
+    );
     const routerSpyObj = jasmine.createSpyObj('Router', ['navigate']);
 
     // Mock LanguageService with translations
-    languageSpy.dashboard = { 
+    languageSpy.dashboard = {
       studentTitle: 'Student Dashboard',
       adminTitle: 'Admin Dashboard',
       availableCourses: 'Available Courses',
@@ -38,7 +41,7 @@ describe('UserDashboardComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      declarations: [UserDashboardComponent],
+      imports: [UserDashboardComponent],
       providers: [
         { provide: AuthService, useValue: authSpy },
         { provide: CourseService, useValue: courseSpy },
@@ -50,12 +53,12 @@ describe('UserDashboardComponent', () => {
 
     fixture = TestBed.createComponent(UserDashboardComponent);
     component = fixture.componentInstance;
-    
+
     authServiceSpy = TestBed.inject(AuthService) as jasmine.SpyObj<AuthService>;
     courseServiceSpy = TestBed.inject(CourseService) as jasmine.SpyObj<CourseService>;
     dialogSpy = TestBed.inject(MatDialog) as jasmine.SpyObj<MatDialog>;
     languageServiceSpy = TestBed.inject(LanguageService) as jasmine.SpyObj<LanguageService>;
-    routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>();
+    routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
 
     // Set up mock responses
     authServiceSpy.getUserName.and.returnValue('testuser');
@@ -74,9 +77,18 @@ describe('UserDashboardComponent', () => {
   });
 
   it('should check if user is enrolled in course', () => {
+    // Anpassen der Testdaten an die tatsächliche Implementierung
+    const coursesWithEnrolledProperty = [
+      { _id: '1', title: 'Course 1', enrolled: true },
+      { _id: '2', title: 'Course 2', enrolled: false }
+    ];
+
+    // Test-Eigenschaft überschreiben
+    component.courses = coursesWithEnrolledProperty;
+
     fixture.detectChanges();
-    expect(component.isUserEnrolled(mockCourses[0])).toBeTrue();
-    expect(component.isUserEnrolled(mockCourses[1])).toBeFalse();
+    expect(component.isUserEnrolled(coursesWithEnrolledProperty[0])).toBeTrue();
+    expect(component.isUserEnrolled(coursesWithEnrolledProperty[1])).toBeFalse();
   });
 
   it('should navigate to course details when navigateToCourse is called', () => {

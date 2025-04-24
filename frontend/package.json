@@ -39,6 +39,8 @@
     "karma-edge-launcher": "^0.4.2",
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
+    "karma-puppeteer-launcher": "^1.0.4",
+    "puppeteer": "^24.7.1",
     "typescript": "5.5.4"
   }
 }

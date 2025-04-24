@@ -11,8 +11,8 @@ module.exports = function (config) {
       require('karma-edge-launcher'),
       require('karma-jasmine-html-reporter'),
       require('karma-coverage'),
-      require('@angular-devkit/build-angular/plugins/karma'),
-      require('karma-puppeteer-launcher')  // Puppeteer hinzufügen
+      require('@angular-devkit/build-angular/plugins/karma')
+      // Puppeteer-Plugin entfernt
     ],
     client: {
       jasmine: {
@@ -39,17 +39,10 @@ module.exports = function (config) {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    
-    // Puppeteer als Browser verwenden
-    browsers: ['Puppeteer'],
-    customLaunchers: {
-      Puppeteer: {
-        base: 'Puppeteer',
-        flags: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-web-security'],
-        debug: true
-      }
-    },
-    
+
+    // Chrome als Browser verwenden
+    browsers: ['Chrome'],
+
     singleRun: false,
     restartOnFileChange: true,
     hostname: 'localhost',
