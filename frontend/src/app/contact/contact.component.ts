@@ -7,7 +7,7 @@ import { LanguageService } from '../services/language.service';
 @Component({
   selector: 'app-contact',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslatePipe],
+  imports: [CommonModule, RouterModule],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.css'
 })

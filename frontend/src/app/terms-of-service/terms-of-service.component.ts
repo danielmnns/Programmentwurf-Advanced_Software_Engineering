@@ -7,7 +7,7 @@ import { LanguageService } from '../services/language.service';
 @Component({
   selector: 'app-terms-of-service',
   standalone: true,
-  imports: [CommonModule, RouterModule, TranslatePipe],
+  imports: [CommonModule, RouterModule],
   templateUrl: './terms-of-service.component.html',
   styleUrl: './terms-of-service.component.css'
 })
