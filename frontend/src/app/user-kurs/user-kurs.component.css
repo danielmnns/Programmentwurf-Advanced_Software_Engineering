@@ -1,34 +1,41 @@
-/* Container für die gesamte Seite */
+/* Main container */
 .container {
   width: 90%;
-  margin: 20px auto;
+  max-width: 1200px;
+  margin: 30px auto;
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 25px;
 }
 
-/* Linker Bereich (Hauptinhalt) */
+/* Left section (Main content) */
 .users {
   flex: 2;
-  padding: 20px;
-  background-color: #f5f5f5;
-  border-radius: 8px;
+  min-width: 300px;
+  background-color: var(--background-light);
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: var(--box-shadow);
 }
 
-/* Rechter Bereich (Teilnehmerliste) */
+/* Right section (Participants) */
 .teilnehmer {
   flex: 1;
-  padding: 20px;
-  background-color: #e3f2fd;
-  border-radius: 8px;
+  min-width: 250px;
+  background-color: var(--background-light-blue);
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: var(--box-shadow);
   max-height: 600px;
   overflow-y: auto;
 }
 
-/* Listen-Stil */
+/* Lists */
 .users ul,
 .teilnehmer ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .users li,
@@ -36,44 +43,72 @@
   margin-bottom: 20px;
 }
 
+/* Mat card styling */
 mat-card {
+  border-radius: 8px !important;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08) !important;
   margin-bottom: 20px;
-  padding: 10px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  overflow: hidden;
+}
+
+mat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12) !important;
+}
+
+mat-card-title {
+  font-size: 1.1rem !important;
+  font-weight: 600 !important;
+  color: var(--primary-color) !important;
+  padding: 16px 16px 0 !important;
 }
 
 mat-card-content {
-  padding-top: 10px;
+  padding: 16px !important;
 }
 
-/* Neue Styles für den Aufgabenbereich */
+/* Task card styling */
 .task-card {
-  border: 1px solid #ffa500;
-  border-radius: 4px;
-  padding: 10px;
-  background-color: #fff8e1;
+  border: none !important;
+  border-left: 4px solid var(--secondary-color) !important;
+  background-color: var(--background-light) !important;
+  position: relative;
 }
 
+.task-card:hover {
+  background-color: rgba(255, 152, 0, 0.03) !important;
+}
+
+/* Feedback section */
 .submission-feedback {
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  padding: 10px;
-  margin-top: 10px;
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 15px;
+  margin-top: 15px;
+  background-color: rgba(33, 150, 243, 0.05);
 }
 
-/* Task Document Styles */
+/* Task documents */
 .task-document-list {
   list-style: none;
   padding: 0;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
 .task-document-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px;
-  border-bottom: 1px solid #eee;
+  padding: 10px;
+  border-radius: 6px;
   margin-bottom: 10px;
+  background-color: var(--background-gray);
+  transition: background-color 0.2s;
+}
+
+.task-document-item:hover {
+  background-color: rgba(0, 0, 0, 0.03);
 }
 
 .document-actions {
@@ -82,55 +117,65 @@ mat-card-content {
 }
 
 .download-link {
-  padding: 5px 10px;
-  background-color: #4CAF50;
+  padding: 7px 12px;
+  background-color: var(--success-color);
   color: white;
   text-decoration: none;
   border-radius: 4px;
   font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 
 .download-link:hover {
   background-color: #388E3C;
+  text-decoration: none;
+  transform: translateY(-2px);
 }
 
-/* Buttons */
+/* Edit icon */
 .edit-icon {
   cursor: pointer;
   margin-left: 10px;
   font-size: 20px;
-  color: #007bff;
+  color: var(--info-color);
+  transition: all 0.2s;
 }
 
 .edit-icon:hover {
   color: #0056b3;
+  transform: scale(1.2);
 }
 
-/* Stil für den "Aufgabe öffnen"-Button */
+/* Task open button */
 .open-task-button {
-  background-color: #FF9800;
+  background-color: var(--secondary-color);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   padding: 8px 16px;
-  font-size: 16px;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.3s;
-  margin-top: 10px;
+  transition: all 0.3s;
+  margin-top: 15px;
   width: 100%;
 }
 
 .open-task-button:hover {
-  background-color: #F57C00;
+  background-color: var(--secondary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .button-icon {
   margin-left: 8px;
 }
 
+/* File actions */
 .file-actions {
   display: flex;
   justify-content: flex-start;
@@ -139,30 +184,42 @@ mat-card-content {
 
 .preview-button {
   margin-left: 10px;
-  background-color: #2196F3;
+  background-color: var(--info-color);
   color: white;
   border: none;
   border-radius: 4px;
   padding: 5px 10px;
   cursor: pointer;
   font-size: 14px;
+  transition: all 0.2s;
 }
 
 .preview-button:hover {
   background-color: #0b7dda;
+  transform: translateY(-2px);
 }
 
 .delete-button {
-  color: red;
+  color: var(--error-color);
   border: none;
   background: none;
   cursor: pointer;
+  transition: all 0.2s;
 }
 
+.delete-button:hover {
+  color: #d32f2f;
+  transform: scale(1.2);
+}
+
+/* Modal and popup styles */
 .modal-content {
   position: relative;
   background-color: white;
-  padding: 20px;
+  padding: 25px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
 }
 
 .confirmation-dialog {
@@ -171,23 +228,78 @@ mat-card-content {
   left: 50%;
   transform: translate(-50%, -50%);
   background: white;
-  border: 1px solid #ccc;
-  padding: 20px;
+  border-radius: 10px;
+  padding: 25px;
   z-index: 1000;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 450px;
+  animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translate(-50%, -55%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
 }
 
 .dialog-content {
   text-align: center;
 }
 
+.dialog-content h3 {
+  margin-top: 0;
+  color: var(--text-primary);
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 20px;
+}
+
 .dialog-actions button {
-  margin: 10px;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dialog-actions button:first-child {
+  background-color: var(--error-color);
+  color: white;
+}
+
+.dialog-actions button:first-child:hover {
+  background-color: #d32f2f;
+}
+
+.dialog-actions button:last-child {
+  background-color: var(--background-gray);
+  color: var(--text-primary);
+}
+
+.dialog-actions button:last-child:hover {
+  background-color: #e0e0e0;
 }
 
 .close-btn {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #999;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.close-btn:hover {
+  color: #333;
 }
 
 /* PDF Viewer */
@@ -197,39 +309,69 @@ mat-card-content {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.85);
   z-index: 1000;
   display: flex;
   justify-content: center;
   align-items: center;
+  animation: fadeIn 0.3s;
 }
 
 .pdf-container {
   width: 90%;
   height: 90%;
   background-color: white;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 20px;
   position: relative;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
 }
 
 .close-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  background-color: #f44336;
+  top: 15px;
+  right: 15px;
+  background-color: var(--error-color);
   color: white;
   border: none;
   border-radius: 50%;
-  width: 30px;
-  height: 30px;
+  width: 35px;
+  height: 35px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 1010;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s;
 }
 
+.close-button:hover {
+  background-color: #d32f2f;
+  transform: scale(1.1);
+}
+
+/* Back button */
+.back-button {
+  float: right;
+  margin-left: 15px;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background-color: #5a6268;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Adjustments */
 @media (max-width: 768px) {
   .container {
     flex-direction: column;
@@ -239,14 +381,8 @@ mat-card-content {
     max-height: none;
   }
   
-  .task-document-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .document-actions {
-    margin-top: 8px;
-    width: 100%;
-    justify-content: space-between;
+  .modal-content,
+  .confirmation-dialog {
+    width: 95%;
   }
 }

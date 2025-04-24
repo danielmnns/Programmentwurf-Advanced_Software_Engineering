@@ -1,33 +1,50 @@
 .course-container {
   width: 90%;
-  margin: 0 auto;
+  max-width: 1200px;
+  margin: 30px auto;
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  padding: 10px;
+  grid-template-columns: repeat(2, minmax(300px, 1fr));
+  gap: 25px;
+  padding: 20px;
 }
 
-/* Media Query für kleinere Bildschirme */
-@media (max-width: 800px) {
+/* Media Query for mobile devices */
+@media (max-width: 768px) {
   .course-container {
     grid-template-columns: 1fr;
+    width: 95%;
+    padding: 10px;
+  }
+  
+  .course-box {
+    height: 80px;
   }
 }
 
 .course-box {
   display: flex;
   align-items: center;
-  padding: 12px 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease-in-out;
+  padding: 16px 20px;
+  border-radius: 10px;
+  background-color: var(--background-light);
+  box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+  height: 100px;
+  border-left: 5px solid transparent;
+}
+
+.enrolled-course {
+  border-left-color: var(--primary-color);
 }
 
 .enrolled-course:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.unenrolled-course {
+  border-left-color: var(--error-color);
+  opacity: 0.85;
 }
 
 .course-content {
@@ -38,17 +55,35 @@
 }
 
 .course-title {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
+  font-weight: 500;
   text-decoration: none;
-}
-
-.course-title.unenrolled {
-  color: #8b0000; /* Weinrot */
-  cursor: default;
+  transition: color 0.3s;
 }
 
 .course-title.enrolled {
-  color: #000;
+  color: var(--primary-color);
+  position: relative;
+  padding-right: 25px;
+}
+
+.course-title.enrolled::after {
+  content: "→";
+  position: absolute;
+  right: 0;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
+}
+
+.enrolled-course:hover .course-title.enrolled::after {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.course-title.unenrolled {
+  color: var(--error-color);
+  cursor: default;
 }
 
 .lock-icon {
