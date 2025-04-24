@@ -62,15 +62,31 @@
     margin-top: 0.5rem;
   }
   
+  /* Enhanced Feedback Textarea Styling */
   .feedback-input textarea {
-    width: 100%;
-    min-height: 80px;
-    padding: 0.5rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    width: 95%;
+    min-height: 100px;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
     resize: vertical;
     font-family: 'Roboto', sans-serif;
     font-size: 1rem;
+    line-height: 1.5;
+    transition: all 0.3s ease;
+    background-color: #f9f9f9;
+  }
+  
+  .feedback-input textarea:focus {
+    border-color: #1e88e5;
+    background-color: #fff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+  }
+  
+  .feedback-input textarea::placeholder {
+    color: #aaa;
+    font-style: italic;
   }
   
   .btn-save {
