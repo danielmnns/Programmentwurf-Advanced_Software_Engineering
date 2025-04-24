@@ -106,6 +106,31 @@ mat-card-content {
   color: #0056b3;
 }
 
+/* Stil für den "Aufgabe öffnen"-Button */
+.open-task-button {
+  background-color: #FF9800;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.open-task-button:hover {
+  background-color: #F57C00;
+}
+
+.button-icon {
+  margin-left: 8px;
+}
+
 .file-actions {
   display: flex;
   justify-content: flex-start;

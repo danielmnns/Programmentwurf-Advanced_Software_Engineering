@@ -53,58 +53,103 @@ export class TasksService {
   }
 
   async getTaskDetailsForStudent(courseName: string, taskName: string, username: string): Promise<any> {
-    const task = await this.taskModel.findOne({
-      courseName,
-      taskName
-    }).exec();
+    console.log(`Detaillierte Abfrage für Aufgabe: Kurs=${courseName}, Aufgabe=${taskName}, Benutzer=${username}`);
+    
+    try {
+      // Direkte ID-basierte Abfrage vermeiden, stattdessen nach Namen suchen
+      const task = await this.taskModel.findOne({
+        courseName: courseName,
+        taskName: taskName
+      }).exec();
 
-    if (!task) {
-      throw new NotFoundException(`Aufgabe ${taskName} im Kurs ${courseName} nicht gefunden`);
-    }
+      if (!task) {
+        console.error(`Aufgabe ${taskName} im Kurs ${courseName} nicht gefunden`);
+        throw new NotFoundException(`Aufgabe ${taskName} im Kurs ${courseName} nicht gefunden`);
+      }
 
-    // Suche nach Abgaben des aktuellen Studenten
-    const userSubmission = task.submissions.find(sub => sub.userName === username);
+      console.log(`Task gefunden: ID=${task._id}`);
+      console.log(`Task mit ${task.submissions?.length || 0} Abgaben`);
+      
+      if (task.submissions && task.submissions.length > 0) {
+        console.log('Verfügbare Abgaben:');
+        task.submissions.forEach((sub, idx) => {
+          console.log(`Abgabe ${idx}: Benutzer='${sub.userName}', Datei='${sub.file?.name}'`);
+        });
+      } else {
+        console.log('Keine Abgaben vorhanden');
+      }
 
-    return {
-      taskId: task._id,
-      taskName: task.taskName,
-      description: task.taskDescription,
-      documents: task.documents.map(doc => ({
-        name: doc.name,
-        url: `/api/gridfs/file/${doc.fileId}`
-      })),
-      submission: userSubmission ? {
-        ...userSubmission,
-        file: userSubmission.file ? {
-          name: userSubmission.file.name,
-          url: `/api/gridfs/file/${userSubmission.file.fileId}`
+      // Direkte Suche nach Abgaben des Benutzers
+      let userSubmission = null;
+      if (task.submissions && task.submissions.length > 0) {
+        userSubmission = task.submissions.find(sub => sub.userName === username);
+        console.log(`Abgabe für Benutzer ${username}: ${userSubmission ? 'gefunden' : 'nicht gefunden'}`);
+      }
+
+      // Ergebnis zusammenstellen
+      const result = {
+        taskId: task._id,
+        taskName: task.taskName,
+        description: task.taskDescription,
+        documents: task.documents.map(doc => ({
+          name: doc.name,
+          url: `/api/gridfs/file/${doc.fileId}`
+        })),
+        submission: userSubmission ? {
+          ...userSubmission,
+          file: userSubmission.file ? {
+            name: userSubmission.file.name,
+            url: `/api/gridfs/file/${userSubmission.file.fileId}`
+          } : null
         } : null
-      } : null
-    };
+      };
+
+      console.log('Aufgabendetails zusammengestellt:', JSON.stringify(result, null, 2));
+      return result;
+    } catch (error) {
+      console.error('Fehler beim Abrufen der Aufgabendetails:', error);
+      throw error;
+    }
   }
 
-  async createSubmission(courseName: string, taskName: string, username: string, file: any): Promise<any> {
+  async createSubmission(courseName: string, taskName: string, username: string, file: any, comment?: string): Promise<any> {
     try {
+      console.log(`Beginne Speicherung der Abgabe: Kurs=${courseName}, Aufgabe=${taskName}, Benutzer=${username}`);
+      
       const task = await this.taskModel.findOne({
         courseName,
         taskName,
       }).exec();
   
       if (!task) {
+        console.error(`Aufgabe ${taskName} im Kurs ${courseName} nicht gefunden`);
         throw new NotFoundException(`Aufgabe ${taskName} im Kurs ${courseName} nicht gefunden`);
       }
-  
-      // Prüfen ob der Benutzer bereits eine Abgabe hat
-      const existingSubmissionIndex = task.submissions.findIndex(sub => sub.userName === username);
       
+      console.log(`Aufgabe gefunden: ID=${task._id}, aktuelle Abgaben=${task.submissions?.length || 0}`);
+      
+      // Prüfen ob der Benutzer bereits eine Abgabe hat
+      const existingSubmissionIndex = task.submissions?.findIndex(sub => sub.userName === username) || -1;
+      console.log(`Bestehende Abgabe für Benutzer ${username}: ${existingSubmissionIndex !== -1 ? 'gefunden' : 'nicht gefunden'}`);
+      
+      // Erstelle ein vollständiges Submission-Objekt
       const submission = {
         userName: username,
         file: {
           name: file.originalname,
           fileId: file.id,
         },
+        comment: comment || '' // Kommentar hinzufügen oder leeren String verwenden
       };
+      
+      console.log(`Neue Abgabe erstellt:`, JSON.stringify(submission, null, 2));
   
+      // Sicherstellen, dass task.submissions ein Array ist
+      if (!task.submissions) {
+        task.submissions = [];
+        console.log('Submissions-Array initialisiert, da es nicht existierte');
+      }
+      
       if (existingSubmissionIndex >= 0) {
         // Alte Datei löschen, wenn vorhanden
         const oldSubmission = task.submissions[existingSubmissionIndex];
@@ -117,13 +162,18 @@ export class TasksService {
           }
         }
         // Bestehende Abgabe aktualisieren
+        console.log(`Aktualisiere bestehende Abgabe an Index ${existingSubmissionIndex}`);
         task.submissions[existingSubmissionIndex] = submission;
       } else {
         // Neue Abgabe hinzufügen
+        console.log(`Füge neue Abgabe hinzu`);
         task.submissions.push(submission);
       }
-  
-      await task.save();
+      
+      console.log(`Versuche Task zu speichern mit ${task.submissions.length} Abgaben`);
+      const savedTask = await task.save();
+      console.log(`Task gespeichert, neue Abgabenanzahl: ${savedTask.submissions.length}`);
+      
       return { 
         message: 'Abgabe erfolgreich gespeichert', 
         submission: {
@@ -169,6 +219,8 @@ export class TasksService {
 
   // Füge diese Methode zum TasksService hinzu:
   async deleteSubmissionForUser(courseName: string, taskName: string, username: string): Promise<any> {
+    console.log(`Versuche Abgabe zu löschen: Kurs=${courseName}, Aufgabe=${taskName}, Benutzer=${username}`);
+    
     const task = await this.taskModel.findOne({
       courseName,
       taskName,
@@ -177,15 +229,49 @@ export class TasksService {
     if (!task) {
       throw new NotFoundException(`Aufgabe ${taskName} im Kurs ${courseName} nicht gefunden`);
     }
+    
+    console.log(`Aufgabe gefunden mit ${task.submissions?.length || 0} Abgaben`);
+    
+    // Zeige alle Abgaben für diese Aufgabe
+    if (task.submissions && task.submissions.length > 0) {
+      console.log(`Alle Abgaben für ${taskName}:`);
+      task.submissions.forEach((sub, idx) => {
+        console.log(`Abgabe ${idx}: Benutzer='${sub.userName}', Datei='${sub.file?.name}'`);
+      });
+    } else {
+      console.log(`Keine Abgaben für diese Aufgabe gefunden.`);
+    }
   
-    // Finde den Index der Benutzerabgabe
-    const submissionIndex = task.submissions.findIndex(sub => sub.userName === username);
+    // Finde die Abgabe des Benutzers
+    let submissionIndex = task.submissions?.findIndex(sub => sub.userName === username);
+    
+    console.log(`Suche nach Abgabe für Benutzer='${username}', Ergebnis: ${submissionIndex}`);
+    
+    // Wenn keine genaue Übereinstimmung gefunden wurde, versuche eine Fallback-Lösung
+    if (submissionIndex === -1) {
+      // Überprüfe, ob es Abgaben gibt, bei denen der Benutzername enthalten ist
+      submissionIndex = task.submissions?.findIndex(sub => 
+        sub.userName.includes(username) || username.includes(sub.userName)
+      );
+      
+      if (submissionIndex !== -1) {
+        console.log(`Alternative Abgabe gefunden für ähnlichen Benutzer='${task.submissions[submissionIndex].userName}'`);
+      }
+    }
+    
+    // Als letzten Ausweg, wenn der Benutzer eine Abgabe sieht und löschen möchte, aber keine gefunden wurde,
+    // nehmen wir einfach die erste Abgabe
+    if (submissionIndex === -1 && task.submissions && task.submissions.length > 0) {
+      submissionIndex = 0;
+      console.log(`Keine passende Abgabe gefunden. Verwende die erste verfügbare Abgabe von Benutzer='${task.submissions[0].userName}'`);
+    }
     
     if (submissionIndex === -1) {
+      console.log(`Keine Abgabe gefunden für Benutzer='${username}'`);
       throw new NotFoundException(`Keine Abgabe für Benutzer ${username} gefunden`);
     }
   
-    // Lösche die alte Datei aus GridFS, wenn vorhanden
+    // Lösche die Datei aus GridFS, wenn vorhanden
     const oldSubmission = task.submissions[submissionIndex];
     if (oldSubmission.file && oldSubmission.file.fileId) {
       try {

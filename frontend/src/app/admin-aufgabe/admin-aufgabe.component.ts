@@ -1,4 +1,4 @@
-import { CommonModule, Location } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
@@ -8,8 +8,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { LanguageService } from '../services/language.service';
 import { TranslatePipe } from '../pipes/translate.pipe';
+import { LanguageService } from '../services/language.service';
 
 interface DocumentFile {
   name: string;
@@ -106,27 +106,21 @@ export class AdminAufgabeComponent implements OnInit {
   }
 
   loadTaskDetails(): void {
-    const url = `${this.apiUrl}/tasks/admin/getTaskDetails?courseName=${encodeURIComponent(this.courseName)}&taskName=${encodeURIComponent(this.taskName)}`;
+    // URL für Admin-Ansicht korrigiert, um den richtigen Endpunkt zu verwenden
+    const payload = {
+      courseName: this.courseName,
+      taskName: this.taskName
+    };
 
-    this.http.get<AdminTaskDetails>(url).subscribe({
-      next: (data) => {
-        this.taskName = data.name;
-        this.taskDescription = data.description ?? '';
-
-        // Aufgabendokumente verarbeiten
-        if (data.documents) {
-          this.uploadedDocuments = data.documents.map(doc => ({
-            name: doc.name,
-            url: this.sanitizer.bypassSecurityTrustResourceUrl(doc.url),
-            date: doc.date ? new Date(doc.date) : new Date()
-          }));
-        } else {
-          this.uploadedDocuments = [];
-        }
+    // Nutze den korrekten Endpunkt für die Abfrage der Aufgabendetails mit den Abgaben
+    this.http.post(`${this.apiUrl}/tasks/admin/submissions`, payload).subscribe({
+      next: (data: any) => {
+        this.taskName = data.taskName;
+        this.taskDescription = data.taskDescription ?? '';
 
         // Abgaben verarbeiten
         if (data.submissions && data.submissions.length > 0) {
-          this.submissions = data.submissions.map(sub => {
+          this.submissions = data.submissions.map((sub: any) => {
             const submission: Submission = {
               userName: sub.userName,
               feedbackText: sub.feedback?.text || '',
@@ -145,15 +139,42 @@ export class AdminAufgabeComponent implements OnInit {
           this.submissions = [];
         }
 
+        // Aufgabendokumente laden
+        this.loadTaskDocuments();
+
         console.log("Geladene Aufgabendetails:", {
           taskName: this.taskName,
-          documents: this.uploadedDocuments,
+          taskDescription: this.taskDescription,
           submissions: this.submissions
         });
       },
       error: (error) => {
         console.error('Fehler beim Laden der Aufgabendetails:', error);
         this.showNotificationPopup('Fehler beim Laden der Aufgabendetails');
+      }
+    });
+  }
+
+  // Separate Methode zum Laden der Aufgabendokumente
+  loadTaskDocuments(): void {
+    const userName = 'admin'; // Verwende einen Admin-Benutzer für die Abfrage
+    const apiUrl = `${this.apiUrl}/tasks/user-task`;
+
+    this.http.get(`${apiUrl}?courseName=${encodeURIComponent(this.courseName)}&taskName=${encodeURIComponent(this.taskName)}&userName=${userName}`).subscribe({
+      next: (response: any) => {
+        // Aufgabendokumente verarbeiten
+        if (response.documents && response.documents.length > 0) {
+          this.uploadedDocuments = response.documents.map((doc: any) => ({
+            name: doc.name,
+            url: this.sanitizer.bypassSecurityTrustResourceUrl(doc.url),
+            date: doc.date ? new Date(doc.date) : new Date()
+          }));
+        } else {
+          this.uploadedDocuments = [];
+        }
+      },
+      error: (error) => {
+        console.error('Fehler beim Laden der Aufgabendokumente:', error);
       }
     });
   }

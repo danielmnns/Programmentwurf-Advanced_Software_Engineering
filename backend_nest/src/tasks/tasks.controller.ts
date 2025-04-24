@@ -53,35 +53,52 @@ export class TasksController {
   }))
   async uploadSubmission(
     @UploadedFile() file,
-    @Body() body: { courseName: string; taskName: string },
+    @Body() body: { courseName: string; taskName: string; comment?: string },
     @Req() req
   ) {
     if (!file) {
       throw new BadRequestException('Keine Datei gefunden');
     }
 
-    // Speichere die Datei in GridFS
-    const fileData = await this.gridFsService.storeFile(
-      file.buffer,
-      file.originalname,
-      file.mimetype,
-      {
-        type: 'submission',
-        courseName: body.courseName,
-        taskName: body.taskName,
-        userName: req.user.username
-      }
-    );
+    console.log('Abgabe wird hochgeladen:');
+    console.log('- Kurs:', body.courseName);
+    console.log('- Aufgabe:', body.taskName);
+    console.log('- Benutzer:', req.user?.username);
+    console.log('- Datei:', file.originalname);
+    console.log('- Kommentar:', body.comment || 'keiner');
 
-    return this.tasksService.createSubmission(
-      body.courseName, 
-      body.taskName, 
-      req.user.username, 
-      {
-        originalname: file.originalname,
-        id: fileData.id,
-      }
-    );
+    try {
+      // Speichere die Datei in GridFS
+      const fileData = await this.gridFsService.storeFile(
+        file.buffer,
+        file.originalname,
+        file.mimetype,
+        {
+          type: 'submission',
+          courseName: body.courseName,
+          taskName: body.taskName,
+          userName: req.user.username
+        }
+      );
+
+      // Zusätzlich den Kommentar an den Service übergeben
+      const result = await this.tasksService.createSubmission(
+        body.courseName, 
+        body.taskName, 
+        req.user.username, 
+        {
+          originalname: file.originalname,
+          id: fileData.id,
+        },
+        body.comment // Kommentar als zusätzlicher Parameter
+      );
+
+      console.log('Abgabe erfolgreich gespeichert:', result.submission);
+      return result;
+    } catch (error) {
+      console.error('Fehler beim Speichern der Abgabe:', error);
+      throw error;
+    }
   }
 
   // Admin-Route: Abgaben anzeigen
@@ -235,7 +252,17 @@ export class TasksController {
   // Abgabe löschen
   @Post('delete')
   @UseGuards(JwtAuthGuard)
-  async deleteSubmission(@Body() payload: { courseName: string; taskName: string }, @Req() req) {
-    return this.tasksService.deleteSubmissionForUser(payload.courseName, payload.taskName, req.user.username);
+  async deleteSubmission(@Body() payload: { courseName: string; taskName: string; userName?: string }, @Req() req) {
+    console.log('Delete submission payload:', payload);
+    console.log('JWT username:', req.user?.username);
+    
+    // Sicherstellen, dass userName ein gültiger String ist
+    const username = payload.userName && payload.userName.length > 1 
+      ? payload.userName 
+      : (req.user?.username || 'unknown');
+      
+    console.log('Using username for deletion:', username);
+    
+    return this.tasksService.deleteSubmissionForUser(payload.courseName, payload.taskName, username);
   }
 }
