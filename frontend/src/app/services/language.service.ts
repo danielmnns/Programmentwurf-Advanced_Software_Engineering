@@ -108,6 +108,7 @@ export class LanguageService {
       'courseCreationError': 'Fehler beim Erstellen des Kurses.',
       'enterCourseName': 'Bitte geben Sie einen Kursnamen ein.',
       'taskMaterials': 'Aufgabenmaterialien',
+      'openTask': 'Aufgabe öffnen',
 
       // Task related
       'taskName': 'Aufgabenname',
@@ -121,6 +122,8 @@ export class LanguageService {
       'grade': 'Note',
       'submitWork': 'Arbeit einreichen',
       'userFees': 'Benutzerabgaben',
+      'submissionComment': 'Kommentar zur Abgabe',
+      'enterComment': 'Geben Sie Ihren Kommentar ein',
       
       // User management
       'userManagement': 'Benutzerverwaltung',
@@ -233,6 +236,7 @@ export class LanguageService {
       'courseCreationError': 'Error creating the course.',
       'enterCourseName': 'Please enter a course name.',
       'taskMaterials': 'Task Materials',
+      'openTask': 'Open Task',
 
       // Task related
       'taskName': 'Task Name',
@@ -246,6 +250,8 @@ export class LanguageService {
       'grade': 'Grade',
       'submitWork': 'Submit Work',
       'userFees': 'User Submissions',
+      'submissionComment': 'Submission Comment',
+      'enterComment': 'Enter your comment',
 
       // User management
       'userManagement': 'User Management',
