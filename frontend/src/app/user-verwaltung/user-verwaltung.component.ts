@@ -206,21 +206,33 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
     if (!this.selectedCourse) return;
 
     const usernames = selectedOptions.map(option => option.value);
-    const updatedParticipants = [...this.selectedCourse.participants, ...usernames];
-
-    const payload = {
-      courseName: this.selectedCourse.courseName,
-      participants: updatedParticipants
-    };
-
-    this.http.post<any>(this.courseApiUrl, payload).subscribe(
-      () => {
-        this.selectedCourse!.participants = updatedParticipants;
+    
+    // Einzelne Anfragen für jeden Benutzer senden, da das Backend
+    // nur einen Benutzer pro Anfrage unterstützt
+    const requests = usernames.map(username => {
+      const payload = {
+        courseId: this.selectedCourse!.courseName,
+        username: username,
+        action: 'add'
+      };
+      
+      return this.http.post<any>(this.courseApiUrl, payload);
+    });
+    
+    // Alle Anfragen ausführen
+    Promise.all(requests.map(request => request.toPromise()))
+      .then(() => {
+        // Lokale Daten aktualisieren
+        this.selectedCourse!.participants = [
+          ...this.selectedCourse!.participants,
+          ...usernames
+        ];
         this.loadCourses();
         this.showSuccess(`${usernames.length} Teilnehmer erfolgreich hinzugefügt!`);
-      },
-      () => this.showError('Fehler beim Hinzufügen der Teilnehmer.')
-    );
+      })
+      .catch(() => {
+        this.showError('Fehler beim Hinzufügen der Teilnehmer.');
+      });
   }
 
   // Entfernt ausgewählte Teilnehmer aus dem Kurs
@@ -228,23 +240,32 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
     if (!this.selectedCourse) return;
 
     const usernamesToRemove = selectedOptions.map(option => option.value);
-    const updatedParticipants = this.selectedCourse.participants.filter(
-      p => !usernamesToRemove.includes(p)
-    );
-
-    const payload = {
-      courseName: this.selectedCourse.courseName,
-      participants: updatedParticipants
-    };
-
-    this.http.post<any>(this.courseApiUrl, payload).subscribe(
-      () => {
-        this.selectedCourse!.participants = updatedParticipants;
+    
+    // Einzelne Anfragen für jeden Benutzer senden, da das Backend
+    // nur einen Benutzer pro Anfrage unterstützt
+    const requests = usernamesToRemove.map(username => {
+      const payload = {
+        courseId: this.selectedCourse!.courseName,
+        username: username,
+        action: 'remove'
+      };
+      
+      return this.http.post<any>(this.courseApiUrl, payload);
+    });
+    
+    // Alle Anfragen ausführen
+    Promise.all(requests.map(request => request.toPromise()))
+      .then(() => {
+        // Lokale Daten aktualisieren
+        this.selectedCourse!.participants = this.selectedCourse!.participants.filter(
+          p => !usernamesToRemove.includes(p)
+        );
         this.loadCourses();
         this.showSuccess(`${usernamesToRemove.length} Teilnehmer erfolgreich entfernt!`);
-      },
-      () => this.showError('Fehler beim Entfernen der Teilnehmer.')
-    );
+      })
+      .catch(() => {
+        this.showError('Fehler beim Entfernen der Teilnehmer.');
+      });
   }
 
   // Benutzer laden

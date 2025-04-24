@@ -40,6 +40,8 @@ export class UserAufgabeComponent implements OnInit {
   
   // Neues Feld für die ausgewählte Datei vor dem Upload
   selectedFile: { name: string, size: string } | null = null;
+  uploadedFile: File | null = null; // Speichert die tatsächliche Datei
+  submissionComment: string = ''; // Kommentar zur Abgabe
   isUploading: boolean = false;
 
   constructor(
@@ -101,45 +103,62 @@ export class UserAufgabeComponent implements OnInit {
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       
+      // Datei für späteres Hochladen speichern
+      this.uploadedFile = file;
+      
       // Anzeigen der ausgewählten Datei vor dem Upload
       this.selectedFile = {
         name: file.name,
         size: this.formatFileSize(file.size)
       };
-      
-      const formData = new FormData();
-      formData.append('file', file);
-      formData.append('courseName', this.courseName);
-      formData.append('taskName', this.taskName);
-
-      const userName = this.authService.getUserName();
-      formData.append('userName', userName || '');
-
-      // Uploadstatus aktualisieren
-      this.isUploading = true;
-
-      this.http.post('http://localhost:3000/api/tasks/submit', formData).subscribe({
-        next: (response: any) => {
-          this.isUploading = false;
-          if (response.submission?.file) {
-            this.submissionFile = {
-              name: response.submission.file.name,
-              url: this.fileUrlService.getFileUrl(response.submission.file.url)
-            };
-            this.showNotification = true;
-            this.notificationMessage = 'Datei erfolgreich hochgeladen';
-            // Ausgewählte Datei zurücksetzen nach erfolgreichem Upload
-            this.selectedFile = null;
-          }
-        },
-        error: (error) => {
-          this.isUploading = false;
-          console.error('Fehler beim Hochladen der Abgabe:', error);
-          this.showNotification = true;
-          this.notificationMessage = 'Fehler beim Hochladen der Datei';
-        }
-      });
     }
+  }
+  
+  // Neue Methode zum Abgeben der Aufgabe mit Datei und Kommentar
+  submitAssignment() {
+    if (!this.uploadedFile) {
+      this.showNotification = true;
+      this.notificationMessage = 'Bitte wählen Sie eine Datei aus';
+      return;
+    }
+    
+    const formData = new FormData();
+    formData.append('file', this.uploadedFile);
+    formData.append('courseName', this.courseName);
+    formData.append('taskName', this.taskName);
+    
+    // Füge den Kommentar hinzu, wenn vorhanden
+    if (this.submissionComment) {
+      formData.append('comment', this.submissionComment);
+    }
+    
+    // Uploadstatus aktualisieren
+    this.isUploading = true;
+    
+    this.http.post('http://localhost:3000/api/tasks/submit', formData).subscribe({
+      next: (response: any) => {
+        this.isUploading = false;
+        if (response.submission?.file) {
+          this.submissionFile = {
+            name: response.submission.file.name,
+            url: this.fileUrlService.getFileUrl(response.submission.file.url)
+          };
+          this.showNotification = true;
+          this.notificationMessage = 'Abgabe erfolgreich hochgeladen';
+          
+          // Ausgewählte Datei und Kommentar zurücksetzen nach erfolgreichem Upload
+          this.selectedFile = null;
+          this.uploadedFile = null;
+          this.submissionComment = '';
+        }
+      },
+      error: (error) => {
+        this.isUploading = false;
+        console.error('Fehler beim Hochladen der Abgabe:', error);
+        this.showNotification = true;
+        this.notificationMessage = 'Fehler beim Hochladen der Abgabe';
+      }
+    });
   }
 
   // Hilfsfunktion zur Formatierung der Dateigröße
@@ -165,14 +184,14 @@ export class UserAufgabeComponent implements OnInit {
   }
 
   confirmDelete() {
-    const apiUrl = `http://localhost:3000/api/tasks/delete-submission`;
+    const apiUrl = `http://localhost:3000/api/tasks/delete`;
     const payload = {
       courseName: this.courseName,
       taskName: this.taskName,
-      userName: this.authService.getUserName() || '' // Fix auch hier für den Benutzernamen
+      userName: this.authService.getUserName() || ''
     };
 
-    this.http.request('delete', apiUrl, { body: payload }).subscribe({
+    this.http.post(apiUrl, payload).subscribe({
       next: (response) => {
         this.submissionFile = null;
         this.feedback = null;

@@ -33,6 +33,9 @@ export class Submission {
   @Prop({ type: Object }) // Explizit den Typ als Object angeben
   feedback: FeedbackData;
 
+  @Prop({ default: '' })
+  comment: string;
+
   @Prop({ default: false })
   isGraded: boolean;
 

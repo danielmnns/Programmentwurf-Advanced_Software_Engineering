@@ -67,6 +67,14 @@
               </li>
             </ul>
           </mat-card-content>
+          
+          <!-- Neuer Button zum Öffnen der Aufgabe -->
+          <mat-card-actions>
+            <button (click)="openTask(task)" class="open-task-button">
+              {{ 'openTask' | translate }}
+              <span class="button-icon">➡️</span>
+            </button>
+          </mat-card-actions>
         </mat-card>
       </li>
     </ul>

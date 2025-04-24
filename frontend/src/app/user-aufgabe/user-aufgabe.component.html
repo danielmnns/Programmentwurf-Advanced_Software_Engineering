@@ -22,6 +22,19 @@
 
     <div class="upload-section">
       <h3>{{ 'submitWork' | translate }}</h3>
+      
+      <!-- Kommentarfeld für die Abgabe -->
+      <div class="comment-input-container">
+        <label for="submission-comment">{{ 'submissionComment' | translate }}</label>
+        <textarea 
+          id="submission-comment" 
+          [(ngModel)]="submissionComment" 
+          placeholder="{{ 'enterComment' | translate }}"
+          rows="3"
+          [disabled]="isUploading"
+        ></textarea>
+      </div>
+      
       <div class="file-input-container">
         <input type="file" accept="application/pdf" id="file-upload" (change)="handleFileUpload($event)" [disabled]="isUploading" />
         <label for="file-upload" class="file-input-label">{{ 'selectFile' | translate }}</label>
@@ -41,6 +54,15 @@
           <span>{{ 'uploading' | translate }}...</span>
         </div>
       </div>
+      
+      <!-- Submit-Button für die Abgabe -->
+      <button 
+        class="btn-submit" 
+        [disabled]="!selectedFile || isUploading" 
+        (click)="submitAssignment()"
+      >
+        {{ 'submit' | translate }}
+      </button>
     </div>
 
     <div class="submission-file" *ngIf="submissionFile">
