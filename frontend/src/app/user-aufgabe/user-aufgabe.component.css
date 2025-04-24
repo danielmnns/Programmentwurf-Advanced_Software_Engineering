@@ -180,6 +180,38 @@
     color: #333;
   }
   
+  .submission-file a {
+    display: inline-flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 10px 14px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    color: #1976d2;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+  }
+
+  .submission-file a::before {
+    content: "📄";
+    font-size: 1.3rem;
+    margin-right: 10px;
+  }
+
+  .submission-file a:hover {
+    background-color: #f0f7ff;
+    border-color: #1976d2;
+    box-shadow: 0 3px 8px rgba(25, 118, 210, 0.15);
+    transform: translateY(-2px);
+    text-decoration: none;
+  }
+
+  .submission-file a:active {
+    transform: translateY(0);
+  }
+  
   /* Enhanced feedback styling */
   .submission-feedback {
     margin-top: 2rem;
