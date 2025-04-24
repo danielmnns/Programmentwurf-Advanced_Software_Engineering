@@ -37,6 +37,10 @@
         <div *ngIf="!submission.file" class="no-file">
           <p>Keine Datei abgegeben</p>
         </div>
+        <!-- Student comment section -->
+        <div *ngIf="submission.comment" class="student-comment">
+          <p><strong>{{ 'studentComment' | translate }}:</strong> {{ submission.comment }}</p>
+        </div>
         <div class="feedback-input">
           <textarea [(ngModel)]="submission.feedbackText" placeholder="Feedback eingeben..."></textarea>
           <button class="btn-save" (click)="saveFeedback(submission)">Speichern</button>

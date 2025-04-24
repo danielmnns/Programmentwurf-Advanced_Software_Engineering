@@ -70,14 +70,26 @@
       <p>
         <a [href]="submissionFile.url" target="_blank">{{ submissionFile.name }}</a>
       </p>
+      
+      <!-- Display student's submitted comment -->
+      <div class="submission-comment" *ngIf="submissionComment">
+        <h4>{{ 'yourComment' | translate }}</h4>
+        <p>{{ submissionComment }}</p>
+      </div>
+      
       <!-- Button, der das Lösch-Popup öffnet -->
       <button class="btn-delete" (click)="openDeletePopup()">{{ 'delete' | translate }} </button>
     </div>
 
+    <!-- Enhanced feedback display section -->
     <div class="submission-feedback" *ngIf="feedback">
       <h3>{{ 'feedback' | translate }}</h3>
-      <p>{{ 'feedback' | translate }} {{ 'from' | translate }}: <strong>{{ feedback.feedbackFrom }}</strong></p>
-      <p>{{ feedback.text }}</p>
+      <div class="feedback-content">
+        <p class="feedback-from">{{ 'feedbackFrom' | translate }}: <strong>{{ feedback.feedbackFrom }}</strong></p>
+        <div class="feedback-text">
+          <p>{{ feedback.text }}</p>
+        </div>
+      </div>
     </div>
 
     <!-- Löschbestätigungspopup -->
