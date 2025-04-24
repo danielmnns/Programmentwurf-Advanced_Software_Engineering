@@ -1,89 +1,155 @@
 <div class="page-container">
   <div class="content-card">
-    <h1>Nutzungsbedingungen</h1>
+    <!-- German version -->
+    <div *ngIf="currentLang === 'de'">
+      <h1>Nutzungsbedingungen</h1>
+      
+      <section>
+        <h2>1. Allgemeines</h2>
+        <p>Willkommen bei unserem Lernmanagementsystem. Mit der Nutzung dieses Systems erkennen Sie die folgenden Bedingungen an und stimmen ihnen zu.</p>
+        <p>Diese Nutzungsbedingungen regeln das Verhältnis zwischen Ihnen als Nutzer und uns als Betreiber des Lernmanagementsystems.</p>
+      </section>
+      
+      <section>
+        <h2>2. Geltungsbereich</h2>
+        <p>Diese Nutzungsbedingungen gelten für alle Bereiche, Funktionen und Dienste unseres Lernmanagementsystems, die über die Website oder mobile Anwendungen zugänglich sind.</p>
+      </section>
+      
+      <section>
+        <h2>3. Nutzungszweck</h2>
+        <p>Das Lernmanagementsystem dient ausschließlich dem Studium und der Lehre. Es ermöglicht:</p>
+        <ul>
+          <li>Den Zugriff auf Lernmaterialien</li>
+          <li>Die Abgabe und Bewertung von Aufgaben</li>
+        </ul>
+      </section>
+      
+      <section>
+        <h2>4. Nutzungsregeln</h2>
+        <p>Bei der Nutzung des Lernmanagementsystems sind folgende Regeln zu beachten:</p>
+        <ol>
+          <li>Die Inhalte dürfen ausschließlich für Studium und Lehre verwendet werden.</li>
+          <li>Die Verbreitung, Vervielfältigung oder öffentliche Zugänglichmachung der bereitgestellten Inhalte ist ohne ausdrückliche Genehmigung untersagt.</li>
+          <li>Es ist verboten, das System in einer Weise zu nutzen, die die Funktionalität oder Verfügbarkeit beeinträchtigt.</li>
+          <li>Das Hochladen von rechtswidrigen, beleidigenden oder anderweitig anstößigen Inhalten ist untersagt.</li>
+          <li>Die Rechte Dritter, insbesondere Urheber- und Persönlichkeitsrechte, sind zu respektieren.</li>
+        </ol>
+      </section>
+      
+      <section>
+        <h2>5. Urheberrecht und Nutzungsrechte</h2>
+        <p>Die im System bereitgestellten Materialien sind urheberrechtlich geschützt:</p>
+        <ul>
+          <li>Die Rechte an den Inhalten liegen bei den jeweiligen Urhebern oder dem Betreiber des Systems.</li>
+          <li>Sie erhalten ein einfaches, nicht übertragbares Recht zur Nutzung der Inhalte für Studienzwecke.</li>
+          <li>Für von Ihnen hochgeladene Inhalte räumen Sie uns die notwendigen Rechte ein, um diese im Rahmen des Systems zu verarbeiten und zugänglich zu machen.</li>
+        </ul>
+      </section>
+      
+      <section>
+        <h2>6. Datenschutz</h2>
+        <p>Die Erhebung und Verwendung personenbezogener Daten erfolgt gemäß unserer <a [routerLink]="['/privacy-policy']">Datenschutzerklärung</a>.</p>
+      </section>
+      
+      <section>
+        <h2>7. Haftung</h2>
+        <p>Wir bemühen uns, das System störungsfrei und sicher zu betreiben, können jedoch keine Garantie für die ständige Verfügbarkeit übernehmen.</p>
+        <p>Für Schäden, die durch die Nutzung des Systems entstehen, haften wir nur bei Vorsatz oder grober Fahrlässigkeit.</p>
+      </section>
+      
+      <section>
+        <h2>8. Änderungen der Nutzungsbedingungen</h2>
+        <p>Wir behalten uns vor, diese Nutzungsbedingungen zu ändern. Änderungen werden innerhalb des Systems bekannt gegeben.</p>
+      </section>
+      
+      <section>
+        <h2>9. Laufzeit und Beendigung</h2>
+        <p>Die Nutzungsberechtigung besteht für die Dauer Ihrer Zugehörigkeit zur Bildungseinrichtung.</p>
+        <p>Bei Verstößen gegen diese Nutzungsbedingungen behalten wir uns vor, den Zugang zum System zu sperren.</p>
+      </section>
+      
+      <section>
+        <h2>10. Schlussbestimmungen</h2>
+        <p>Es gilt das Recht der Bundesrepublik Deutschland.</p>
+        <p>Sollten einzelne Bestimmungen dieser Nutzungsbedingungen unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen davon unberührt.</p>
+        <p>Stand: April 2025</p>
+      </section>
+    </div>
     
-    <section>
-      <h2>1. Allgemeines</h2>
-      <p>Willkommen bei unserem Lernmanagementsystem. Mit der Nutzung dieses Systems erkennen Sie die folgenden Bedingungen an und stimmen ihnen zu.</p>
-      <p>Diese Nutzungsbedingungen regeln das Verhältnis zwischen Ihnen als Nutzer und uns als Betreiber des Lernmanagementsystems.</p>
-    </section>
-    
-    <section>
-      <h2>2. Geltungsbereich</h2>
-      <p>Diese Nutzungsbedingungen gelten für alle Bereiche, Funktionen und Dienste unseres Lernmanagementsystems, die über die Website oder mobile Anwendungen zugänglich sind.</p>
-    </section>
-    
-    <section>
-      <h2>3. Nutzungszweck</h2>
-      <p>Das Lernmanagementsystem dient ausschließlich dem Studium und der Lehre. Es ermöglicht:</p>
-      <ul>
-        <li>Die Teilnahme an digitalen Lehrveranstaltungen</li>
-        <li>Den Zugriff auf Lernmaterialien</li>
-        <li>Die Abgabe und Bewertung von Aufgaben</li>
-        <li>Die Kommunikation zwischen Lehrenden und Studierenden</li>
-      </ul>
-    </section>
-    
-    <section>
-      <h2>4. Registrierung und Zugangsdaten</h2>
-      <p>Für die Nutzung des Systems ist eine Registrierung erforderlich. Dabei gelten folgende Regeln:</p>
-      <ol>
-        <li>Sie sind verpflichtet, wahrheitsgemäße Angaben zu machen.</li>
-        <li>Ihre Zugangsdaten (Benutzername und Passwort) sind vertraulich zu behandeln.</li>
-        <li>Die Weitergabe von Zugangsdaten an Dritte ist untersagt.</li>
-        <li>Sie sind für alle Aktivitäten verantwortlich, die unter Ihrem Account stattfinden.</li>
-      </ol>
-    </section>
-    
-    <section>
-      <h2>5. Nutzungsregeln</h2>
-      <p>Bei der Nutzung des Lernmanagementsystems sind folgende Regeln zu beachten:</p>
-      <ol>
-        <li>Die Inhalte dürfen ausschließlich für Studium und Lehre verwendet werden.</li>
-        <li>Die Verbreitung, Vervielfältigung oder öffentliche Zugänglichmachung der bereitgestellten Inhalte ist ohne ausdrückliche Genehmigung untersagt.</li>
-        <li>Es ist verboten, das System in einer Weise zu nutzen, die die Funktionalität oder Verfügbarkeit beeinträchtigt.</li>
-        <li>Das Hochladen von rechtswidrigen, beleidigenden oder anderweitig anstößigen Inhalten ist untersagt.</li>
-        <li>Die Rechte Dritter, insbesondere Urheber- und Persönlichkeitsrechte, sind zu respektieren.</li>
-      </ol>
-    </section>
-    
-    <section>
-      <h2>6. Urheberrecht und Nutzungsrechte</h2>
-      <p>Die im System bereitgestellten Materialien sind urheberrechtlich geschützt:</p>
-      <ul>
-        <li>Die Rechte an den Inhalten liegen bei den jeweiligen Urhebern oder dem Betreiber des Systems.</li>
-        <li>Sie erhalten ein einfaches, nicht übertragbares Recht zur Nutzung der Inhalte für Studienzwecke.</li>
-        <li>Für von Ihnen hochgeladene Inhalte räumen Sie uns die notwendigen Rechte ein, um diese im Rahmen des Systems zu verarbeiten und zugänglich zu machen.</li>
-      </ul>
-    </section>
-    
-    <section>
-      <h2>7. Datenschutz</h2>
-      <p>Die Erhebung und Verwendung personenbezogener Daten erfolgt gemäß unserer <a [routerLink]="['/privacy-policy']">Datenschutzerklärung</a>.</p>
-    </section>
-    
-    <section>
-      <h2>8. Haftung</h2>
-      <p>Wir bemühen uns, das System störungsfrei und sicher zu betreiben, können jedoch keine Garantie für die ständige Verfügbarkeit übernehmen.</p>
-      <p>Für Schäden, die durch die Nutzung des Systems entstehen, haften wir nur bei Vorsatz oder grober Fahrlässigkeit.</p>
-    </section>
-    
-    <section>
-      <h2>9. Änderungen der Nutzungsbedingungen</h2>
-      <p>Wir behalten uns vor, diese Nutzungsbedingungen zu ändern. Änderungen werden innerhalb des Systems bekannt gegeben.</p>
-    </section>
-    
-    <section>
-      <h2>10. Laufzeit und Beendigung</h2>
-      <p>Die Nutzungsberechtigung besteht für die Dauer Ihrer Zugehörigkeit zur Bildungseinrichtung.</p>
-      <p>Bei Verstößen gegen diese Nutzungsbedingungen behalten wir uns vor, den Zugang zum System zu sperren.</p>
-    </section>
-    
-    <section>
-      <h2>11. Schlussbestimmungen</h2>
-      <p>Es gilt das Recht der Bundesrepublik Deutschland.</p>
-      <p>Sollten einzelne Bestimmungen dieser Nutzungsbedingungen unwirksam sein, bleibt die Wirksamkeit der übrigen Bestimmungen davon unberührt.</p>
-      <p>Stand: April 2025</p>
-    </section>
+    <!-- English version -->
+    <div *ngIf="currentLang === 'en'">
+      <h1>Terms of Service</h1>
+      
+      <section>
+        <h2>1. General</h2>
+        <p>Welcome to our Learning Management System. By using this system, you acknowledge and agree to the following terms.</p>
+        <p>These Terms of Service govern the relationship between you as a user and us as the operator of the Learning Management System.</p>
+      </section>
+      
+      <section>
+        <h2>2. Scope</h2>
+        <p>These Terms of Service apply to all areas, functions, and services of our Learning Management System that are accessible via the website or mobile applications.</p>
+      </section>
+      
+      <section>
+        <h2>3. Purpose of Use</h2>
+        <p>The Learning Management System is exclusively for study and teaching purposes. It enables:</p>
+        <ul>
+          <li>Access to learning materials</li>
+          <li>Submission and evaluation of assignments</li>
+        </ul>
+      </section>
+      
+      <section>
+        <h2>4. Usage Rules</h2>
+        <p>When using the Learning Management System, the following rules must be observed:</p>
+        <ol>
+          <li>The content may only be used for study and teaching purposes.</li>
+          <li>Distribution, reproduction, or public accessibility of the provided content without explicit permission is prohibited.</li>
+          <li>It is forbidden to use the system in a way that impairs its functionality or availability.</li>
+          <li>Uploading illegal, offensive, or otherwise objectionable content is prohibited.</li>
+          <li>The rights of third parties, especially copyright and personal rights, must be respected.</li>
+        </ol>
+      </section>
+      
+      <section>
+        <h2>5. Copyright and Usage Rights</h2>
+        <p>The materials provided in the system are protected by copyright:</p>
+        <ul>
+          <li>The rights to the content belong to the respective authors or the operator of the system.</li>
+          <li>You receive a simple, non-transferable right to use the content for study purposes.</li>
+          <li>For content you upload, you grant us the necessary rights to process and make it accessible within the system.</li>
+        </ul>
+      </section>
+      
+      <section>
+        <h2>6. Data Protection</h2>
+        <p>The collection and use of personal data is carried out in accordance with our <a [routerLink]="['/privacy-policy']">Privacy Policy</a>.</p>
+      </section>
+      
+      <section>
+        <h2>7. Liability</h2>
+        <p>We strive to operate the system without disruption and securely, but cannot guarantee constant availability.</p>
+        <p>We are only liable for damages resulting from the use of the system in case of intent or gross negligence.</p>
+      </section>
+      
+      <section>
+        <h2>8. Changes to the Terms of Service</h2>
+        <p>We reserve the right to change these Terms of Service. Changes will be announced within the system.</p>
+      </section>
+      
+      <section>
+        <h2>9. Duration and Termination</h2>
+        <p>The authorization to use the system exists for the duration of your affiliation with the educational institution.</p>
+        <p>In case of violations of these Terms of Service, we reserve the right to block access to the system.</p>
+      </section>
+      
+      <section>
+        <h2>10. Final Provisions</h2>
+        <p>The law of the Federal Republic of Germany applies.</p>
+        <p>Should individual provisions of these Terms of Service be invalid, the validity of the remaining provisions remains unaffected.</p>
+        <p>Last updated: April 2025</p>
+      </section>
+    </div>
   </div>
 </div>

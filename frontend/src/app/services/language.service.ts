@@ -301,16 +301,21 @@ export class LanguageService {
     return this.currentLanguageSubject.value;
   }
 
-  public translate(key: string): string {
+  public translate(key: string, replacements?: { [key: string]: string }): string {
     const lang = this.getCurrentLanguage();
-    const translation = this.translations[lang][key];
-
-    // Fallback auf Originaltext, wenn keine Übersetzung gefunden
-    if (!translation) {
-      console.warn(`Keine Übersetzung gefunden für "${key}" in Sprache "${lang}"`);
-      return key;
+    const translations = this.translations[lang];
+    
+    // Get the translation or use the key as fallback
+    let translation = translations[key] || key;
+    
+    // Handle replacements if provided
+    if (replacements) {
+      Object.keys(replacements).forEach(replaceKey => {
+        const placeholder = `{{${replaceKey}}}`;
+        translation = translation.replace(placeholder, replacements[replaceKey]);
+      });
     }
-
+    
     return translation;
   }
 }
