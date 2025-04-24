@@ -49,7 +49,7 @@
         <a [href]="submissionFile.url" target="_blank">{{ submissionFile.name }}</a>
       </p>
       <!-- Button, der das Lösch-Popup öffnet -->
-      <button class="btn-delete" (click)="openDeletePopup()">{{ 'delete' | translate }} {{ 'submission' | translate }}</button>
+      <button class="btn-delete" (click)="openDeletePopup()">{{ 'delete' | translate }} </button>
     </div>
 
     <div class="submission-feedback" *ngIf="feedback">

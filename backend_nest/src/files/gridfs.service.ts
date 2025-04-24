@@ -1,103 +1,97 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
-import { randomUUID } from 'crypto';
 import { Response } from 'express';
-import * as fs from 'fs';
+import * as mongoose from 'mongoose';
 import { Connection, Types } from 'mongoose';
-import * as path from 'path';
-import { promisify } from 'util';
-
-const writeFileAsync = promisify(fs.writeFile);
-const unlinkAsync = promisify(fs.unlink);
-const existsAsync = promisify(fs.exists);
-const mkdirAsync = promisify(fs.mkdir);
+import { Stream } from 'stream';
 
 @Injectable()
 export class GridFSService {
   private readonly logger = new Logger(GridFSService.name);
-  private readonly uploadsDir: string;
-  private readonly metadataDir: string;
+  private bucket: mongoose.mongo.GridFSBucket;
 
   constructor(@InjectConnection() private readonly connection: Connection) {
-    // Erstelle Upload-Verzeichnisse
-    this.uploadsDir = path.join(process.cwd(), 'uploads');
-    this.metadataDir = path.join(this.uploadsDir, 'metadata');
+    // Initialisiere GridFS Bucket mit MongoDB
+    this.bucket = new mongoose.mongo.GridFSBucket(this.connection.db, {
+      bucketName: 'uploads'
+    });
     
-    // Stelle sicher, dass Verzeichnisse existieren
-    this.ensureDirectoriesExist();
-    
-    this.logger.log('File service initialized successfully');
+    this.logger.log('GridFS service initialized successfully');
   }
 
-  private async ensureDirectoriesExist() {
-    for (const dir of [this.uploadsDir, this.metadataDir]) {
-      if (!await existsAsync(dir)) {
-        await mkdirAsync(dir, { recursive: true });
-        this.logger.log(`Created directory: ${dir}`);
-      }
-    }
-  }
-
-  // Speichert einen Buffer im Dateisystem und gibt die ID und den Dateinamen zurück
+  // Speichert einen Buffer in MongoDB GridFS und gibt die ID und den Dateinamen zurück
   async storeFile(buffer: Buffer, filename: string, contentType: string, metadata: any = {}): Promise<{ id: string, filename: string }> {
     try {
-      const fileId = randomUUID();
-      const safeFilename = this.getSafeFilename(filename);
-      const storedFilename = `${fileId}-${safeFilename}`;
-      const filePath = path.join(this.uploadsDir, storedFilename);
-      const metadataFilePath = path.join(this.metadataDir, `${fileId}.json`);
-
-      // Speichere Datei
-      await writeFileAsync(filePath, buffer);
+      // Erstelle einen Readstream aus dem Buffer
+      const readStream = new Stream.Readable();
+      readStream.push(buffer);
+      readStream.push(null); // Signalisiert das Ende des Streams
       
-      // Speichere Metadaten
-      const fileMetadata = {
-        id: fileId,
-        originalFilename: filename,
-        storedFilename,
-        contentType,
-        uploadDate: new Date(),
-        metadata,
-        size: buffer.length
-      };
-      await writeFileAsync(metadataFilePath, JSON.stringify(fileMetadata, null, 2));
+      // Erstelle eine eindeutige ID für die Datei
+      const fileId = new Types.ObjectId();
       
-      this.logger.log(`File stored successfully: ${filePath}`);
-      return {
-        id: fileId,
-        filename: safeFilename
-      };
+      // Speichere die Datei in GridFS
+      const uploadStream = this.bucket.openUploadStreamWithId(
+        fileId,
+        filename,
+        {
+          contentType,
+          metadata
+        }
+      );
+      
+      // Promise für das Upload erstellen
+      return new Promise((resolve, reject) => {
+        readStream
+          .pipe(uploadStream)
+          .on('error', (error) => {
+            this.logger.error(`Error storing file in GridFS: ${error.message}`);
+            reject(new Error(`Fehler beim Speichern der Datei: ${error.message}`));
+          })
+          .on('finish', () => {
+            this.logger.log(`File stored successfully in GridFS with ID: ${fileId}`);
+            resolve({
+              id: fileId.toString(),
+              filename
+            });
+          });
+      });
     } catch (error) {
       this.logger.error(`Error storing file: ${error.message}`);
       throw new Error(`Fehler beim Speichern der Datei: ${error.message}`);
     }
   }
 
-  // Liest eine Datei und sendet sie als Response
+  // Liest eine Datei aus GridFS und sendet sie als Response
   async readFile(fileId: string, res: Response): Promise<void> {
     try {
-      const metadataFilePath = path.join(this.metadataDir, `${fileId}.json`);
+      // Konvertiere die ID-Zeichenkette zu ObjectId
+      const objectId = new Types.ObjectId(fileId);
       
-      if (!await existsAsync(metadataFilePath)) {
-        this.logger.warn(`File metadata with id ${fileId} not found`);
+      // Finde die Dateimetadaten
+      const files = await this.connection.db.collection('uploads.files').findOne({ _id: objectId });
+      
+      if (!files) {
+        this.logger.warn(`File with id ${fileId} not found in GridFS`);
         res.status(404).json({ message: 'File not found' });
         return;
       }
       
-      const fileMetadata = JSON.parse(await fs.promises.readFile(metadataFilePath, 'utf8'));
-      const filePath = path.join(this.uploadsDir, fileMetadata.storedFilename);
+      // Setze Response-Header
+      res.set('Content-Type', files.contentType);
+      res.set('Content-Disposition', `inline; filename="${files.filename}"`);
       
-      if (!await existsAsync(filePath)) {
-        this.logger.warn(`File with id ${fileId} not found on disk`);
-        res.status(404).json({ message: 'File not found on disk' });
-        return;
-      }
+      // Streame die Datei zum Client
+      const downloadStream = this.bucket.openDownloadStream(objectId);
       
-      res.set('Content-Type', fileMetadata.contentType);
-      res.set('Content-Disposition', `inline; filename="${fileMetadata.originalFilename}"`);
+      downloadStream.on('error', (error) => {
+        this.logger.error(`Error streaming file ${fileId}: ${error.message}`);
+        if (!res.headersSent) {
+          res.status(500).json({ message: 'Error reading file', error: error.message });
+        }
+      });
       
-      const fileStream = fs.createReadStream(filePath);
-      fileStream.pipe(res);
+      downloadStream.pipe(res);
     } catch (error) {
       this.logger.error(`Error reading file: ${error.message}`);
       if (!res.headersSent) {
@@ -109,20 +103,22 @@ export class GridFSService {
   // Findet eine Datei nach ID
   async findFileById(id: Types.ObjectId | string): Promise<any> {
     try {
-      const fileId = typeof id === 'string' ? id : id.toString();
-      const metadataFilePath = path.join(this.metadataDir, `${fileId}.json`);
+      const objectId = typeof id === 'string' ? new Types.ObjectId(id) : id;
       
-      if (!await existsAsync(metadataFilePath)) {
+      // Suche nach dem Dateieintrag in der files Collection
+      const fileInfo = await this.connection.db.collection('uploads.files').findOne({ _id: objectId });
+      
+      if (!fileInfo) {
         return null;
       }
       
-      const fileMetadata = JSON.parse(await fs.promises.readFile(metadataFilePath, 'utf8'));
       return {
-        _id: fileId,
-        filename: fileMetadata.originalFilename,
-        contentType: fileMetadata.contentType,
-        metadata: fileMetadata.metadata,
-        uploadDate: fileMetadata.uploadDate
+        _id: fileInfo._id.toString(),
+        filename: fileInfo.filename,
+        contentType: fileInfo.contentType,
+        metadata: fileInfo.metadata,
+        uploadDate: fileInfo.uploadDate,
+        length: fileInfo.length
       };
     } catch (error) {
       this.logger.error(`Error finding file: ${error.message}`);
@@ -130,25 +126,22 @@ export class GridFSService {
     }
   }
 
-  // Löscht eine Datei
+  // Löscht eine Datei aus GridFS
   async deleteFile(fileId: string): Promise<boolean> {
     try {
-      const metadataFilePath = path.join(this.metadataDir, `${fileId}.json`);
+      const objectId = new Types.ObjectId(fileId);
       
-      if (!await existsAsync(metadataFilePath)) {
-        this.logger.warn(`File metadata with id ${fileId} not found`);
+      // Prüfe, ob die Datei existiert
+      const file = await this.connection.db.collection('uploads.files').findOne({ _id: objectId });
+      if (!file) {
+        this.logger.warn(`File with id ${fileId} not found in GridFS`);
         return false;
       }
       
-      const fileMetadata = JSON.parse(await fs.promises.readFile(metadataFilePath, 'utf8'));
-      const filePath = path.join(this.uploadsDir, fileMetadata.storedFilename);
+      // Lösche die Datei
+      await this.bucket.delete(objectId);
       
-      if (await existsAsync(filePath)) {
-        await unlinkAsync(filePath);
-      }
-      
-      await unlinkAsync(metadataFilePath);
-      this.logger.log(`File ${fileId} deleted successfully`);
+      this.logger.log(`File ${fileId} deleted successfully from GridFS`);
       return true;
     } catch (error) {
       this.logger.error(`Error deleting file: ${error.message}`);
@@ -159,58 +152,32 @@ export class GridFSService {
   // Sucht Dateien nach Metadaten
   async findFilesByMetadata(metadataQuery: any): Promise<any[]> {
     try {
-      const files = [];
-      const metadataFiles = await fs.promises.readdir(this.metadataDir);
+      // Erstelle eine MongoDB-Abfrage für Metadaten
+      const query = {};
       
-      for (const file of metadataFiles) {
-        if (file.endsWith('.json')) {
-          try {
-            const filePath = path.join(this.metadataDir, file);
-            const fileMetadata = JSON.parse(await fs.promises.readFile(filePath, 'utf8'));
-            let match = true;
-            
-            // Prüfe, ob die Metadaten den Suchkriterien entsprechen
-            for (const [key, value] of Object.entries(metadataQuery)) {
-              if (!fileMetadata.metadata || fileMetadata.metadata[key] !== value) {
-                match = false;
-                break;
-              }
-            }
-            
-            if (match) {
-              files.push({
-                _id: fileMetadata.id,
-                filename: fileMetadata.originalFilename,
-                contentType: fileMetadata.contentType,
-                metadata: fileMetadata.metadata,
-                uploadDate: fileMetadata.uploadDate
-              });
-            }
-          } catch (err) {
-            this.logger.warn(`Error reading metadata file ${file}: ${err.message}`);
-          }
-        }
+      // Transformiere die einfachen Schlüssel-Wert-Paare zu MongoDB-Metadatenpfaden
+      for (const [key, value] of Object.entries(metadataQuery)) {
+        query[`metadata.${key}`] = value;
       }
       
-      return files;
+      // Führe die Abfrage aus
+      const files = await this.connection.db
+        .collection('uploads.files')
+        .find(query)
+        .toArray();
+      
+      // Transformiere die Ergebnisse zum erwarteten Format
+      return files.map(file => ({
+        _id: file._id.toString(),
+        filename: file.filename,
+        contentType: file.contentType,
+        metadata: file.metadata,
+        uploadDate: file.uploadDate,
+        length: file.length
+      }));
     } catch (error) {
       this.logger.error(`Error searching files: ${error.message}`);
       throw new Error(`Fehler bei der Dateisuche: ${error.message}`);
     }
-  }
-
-  // Hilfsmethode für sichere Dateinamen
-  private getSafeFilename(filename: string): string {
-    return filename.replace(/[^a-zA-Z0-9_.-]/g, '_');
-  }
-
-  // Methode zum Abrufen des Dateipfads für das FileSystem-basierte UploadsController
-  getFilePath(directory: string, filename: string): string {
-    return path.join(process.cwd(), 'uploads', directory, filename);
-  }
-
-  // Prüft, ob eine Datei existiert
-  fileExists(filePath: string): boolean {
-    return fs.existsSync(filePath);
   }
 }

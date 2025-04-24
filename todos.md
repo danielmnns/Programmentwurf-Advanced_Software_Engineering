@@ -5,7 +5,7 @@
 
 ### Aufgabe
 - ~~Student sieht Material in Aufgabe nicht~~
-- Student sieht seine Abgaben nicht (schreibe den code so um, dass der user auch nach verlassen der webseite und beim erneuten einloggen seine abgaben in den aufgaben sieht)
+- Student sieht seine Abgaben nicht
 - Student kann Abgabe nicht löschen
 - Admin sieht Abgaben nicht
 
