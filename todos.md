@@ -5,9 +5,9 @@
 
 ### Aufgabe
 - ~~Student sieht Material in Aufgabe nicht~~
-- Student sieht seine Abgaben nicht
-- Student kann Abgabe nicht löschen
-- Admin sieht Abgaben nicht
+- ~~Student sieht seine Abgaben nicht~~
+- ~~Student kann Abgabe nicht löschen~~
+- ~~Admin sieht Abgaben nicht~~
 
 ## Frontend
 - Tests
@@ -22,3 +22,4 @@
 - ~~Footer-Seiten erstellen~~
 - ~~Responsives Design~~
 - ~~Sprachumschaltung Rollen im User-Management~~
+- User sieht Feedback zu Aufgaben nicht
