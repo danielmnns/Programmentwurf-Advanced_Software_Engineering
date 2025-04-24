@@ -43,6 +43,8 @@ export class UserAufgabeComponent implements OnInit {
   uploadedFile: File | null = null; // Speichert die tatsächliche Datei
   submissionComment: string = ''; // Kommentar zur Abgabe
   isUploading: boolean = false;
+  // Sprachmanagement
+  currentLang: 'de' | 'en' = 'de';
 
   constructor(
     private readonly route: ActivatedRoute,
@@ -60,6 +62,11 @@ export class UserAufgabeComponent implements OnInit {
       this.taskName = params['taskName'];
       this.loadTaskDetails();
     });
+
+    // Sprachänderungen abonnieren
+    this.languageService.currentLanguage$.subscribe(lang => {
+      this.currentLang = lang;
+    });
   }
 
   loadTaskDetails() {
@@ -68,6 +75,7 @@ export class UserAufgabeComponent implements OnInit {
 
     this.http.get(`${apiUrl}?courseName=${this.courseName}&taskName=${this.taskName}&userName=${userName}`).subscribe({
       next: (response: any) => {
+        console.log('Task details response:', response); // Log the response for debugging
         this.taskDescription = response.description || '';
 
         // Laden der Aufgabendateien
@@ -86,9 +94,18 @@ export class UserAufgabeComponent implements OnInit {
             url: this.fileUrlService.getFileUrl(response.submission.file.url)
           };
 
+          // Speichere den Kommentar zur Anzeige
+          this.submissionComment = response.submission.comment || '';
+
           // Prüfen, ob Feedback vorhanden ist
           if (response.submission.feedback) {
-            this.feedback = response.submission.feedback;
+            this.feedback = {
+              text: response.submission.feedback.text || '',
+              feedbackFrom: response.submission.feedback.feedbackFrom || 'Dozent'
+            };
+            console.log('Feedback loaded:', this.feedback); // Log the feedback
+          } else {
+            this.feedback = null; // Reset feedback if none exists
           }
         }
       },

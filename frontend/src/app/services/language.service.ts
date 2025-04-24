@@ -63,6 +63,13 @@ export class LanguageService {
       'selectFile': 'Datei auswählen',
       'noFileSelected': 'Keine Datei ausgewählt',
       'download': 'Herunterladen',
+      'info': 'Information',
+      'uploading': 'Hochladen',
+      'yourComment': 'Ihr Kommentar',
+      'feedbackFrom': 'Feedback von',
+      'noSubmissionsYet': 'Noch keine Abgaben vorhanden',
+      'noFileSubmitted': 'Keine Datei eingereicht',
+      'enterFeedback': 'Feedback eingeben',
 
       // Footer links
       'privacyPolicy': 'Datenschutzerklärung',
@@ -189,6 +196,13 @@ export class LanguageService {
       'selectFile': 'Select File',
       'noFileSelected': 'No file selected',
       'download': 'Download',
+      'info': 'Information',
+      'uploading': 'Uploading',
+      'yourComment': 'Your Comment',
+      'feedbackFrom': 'Feedback from',
+      'noSubmissionsYet': 'No submissions yet',
+      'noFileSubmitted': 'No file submitted',
+      'enterFeedback': 'Enter feedback',
 
       // Footer links
       'privacyPolicy': 'Privacy Policy',

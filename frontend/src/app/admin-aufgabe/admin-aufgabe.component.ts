@@ -25,6 +25,7 @@ interface Submission {
   date?: Date;
   fileName?: string;
   fileUrl?: SafeResourceUrl;
+  comment?: string; // Added student comment field
 }
 
 interface AdminTaskDetails {
@@ -81,6 +82,8 @@ export class AdminAufgabeComponent implements OnInit {
   adminUsername: string = 'admin';
   showNotification: boolean = false;
   notificationMessage: string = '';
+  // Sprachmanagement
+  currentLang: 'de' | 'en' = 'de';
 
   private readonly apiUrl = 'http://localhost:3000/api';
 
@@ -103,6 +106,11 @@ export class AdminAufgabeComponent implements OnInit {
         }
       }
     });
+    
+    // Sprachänderungen abonnieren
+    this.languageService.currentLanguage$.subscribe(lang => {
+      this.currentLang = lang;
+    });
   }
 
   loadTaskDetails(): void {
@@ -124,7 +132,8 @@ export class AdminAufgabeComponent implements OnInit {
             const submission: Submission = {
               userName: sub.userName,
               feedbackText: sub.feedback?.text || '',
-              date: sub.date ? new Date(sub.date) : new Date()
+              date: sub.date ? new Date(sub.date) : new Date(),
+              comment: sub.comment || '' // Added to capture student comment
             };
 
             if (sub.file) {

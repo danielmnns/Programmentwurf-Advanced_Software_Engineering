@@ -74,6 +74,13 @@ export class TasksService {
         console.log('Verfügbare Abgaben:');
         task.submissions.forEach((sub, idx) => {
           console.log(`Abgabe ${idx}: Benutzer='${sub.userName}', Datei='${sub.file?.name}'`);
+          // Log feedback for debugging
+          if (sub.feedback) {
+            console.log(`  Feedback: ${sub.feedback.text} von ${sub.feedback.feedbackFrom}`);
+          }
+          if (sub.comment) {
+            console.log(`  Kommentar: ${sub.comment}`);
+          }
         });
       } else {
         console.log('Keine Abgaben vorhanden');
@@ -100,7 +107,9 @@ export class TasksService {
           file: userSubmission.file ? {
             name: userSubmission.file.name,
             url: `/api/gridfs/file/${userSubmission.file.fileId}`
-          } : null
+          } : null,
+          comment: userSubmission.comment || '', // Ensure comment is included
+          feedback: userSubmission.feedback || null // Ensure feedback is included
         } : null
       };
 
@@ -207,7 +216,8 @@ export class TasksService {
         name: sub.file.name,
         url: `/api/gridfs/file/${sub.file.fileId}`
       } : undefined,
-      feedback: sub.feedback
+      feedback: sub.feedback,
+      comment: sub.comment // Include student comment in response
     }));
 
     return {

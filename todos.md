@@ -18,8 +18,8 @@
 - ~~PopUp Möchten Sie die Aufgabe löschen~~
 - ~~PopUp Aufgabe gelöscht~~
 - ~~PopUp Aufgabe erstellt~~
-- PopUp Abgabe löschen
+- ~~PopUp Abgabe löschen~~
 - ~~Footer-Seiten erstellen~~
 - ~~Responsives Design~~
 - ~~Sprachumschaltung Rollen im User-Management~~
-- User sieht Feedback zu Aufgaben nicht
+- ~~User sieht Feedback zu Aufgaben nicht~~
