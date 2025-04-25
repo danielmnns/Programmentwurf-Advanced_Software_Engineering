@@ -1,9 +1,9 @@
 .footer {
-  background: linear-gradient(to right, #f8f9fa, #e9ecef);
+  background: linear-gradient(to right, var(--background-light), var(--background-gray));
   padding: 16px 24px;
-  color: #555;
+  color: var(--text-secondary);
   font-size: 14px;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid var(--border-color);
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.03);
   margin-top: auto;
 }
@@ -26,14 +26,38 @@
 }
 
 .links a {
-  color: #1976d2;
+  color: var(--primary-color);
   text-decoration: none;
-  transition: color 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  position: relative;
 }
 
 .links a:hover {
-  color: #0056b3;
-  text-decoration: underline;
+  color: var(--primary-dark);
+}
+
+.links a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: var(--primary-color);
+  transition: width 0.3s;
+}
+
+.links a:hover::after {
+  width: 100%;
+}
+
+.links a.active {
+  font-weight: 600;
+  color: var(--primary-dark);
+}
+
+.links a.active::after {
+  width: 100%;
 }
 
 @media (max-width: 768px) {
@@ -45,6 +69,6 @@
   
   .links {
     flex-direction: column;
-    gap: 8px;
+    gap: 15px;
   }
 }

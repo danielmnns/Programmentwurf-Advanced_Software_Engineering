@@ -1,14 +1,17 @@
 /* Grundlegendes Layout für Kurse */
 .courses {
   width: 90%;
-  margin: 0 auto;
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 20px;
 }
 
 .course-list {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(2, minmax(320px, 1fr));
+  gap: 20px;
   padding-top: 10px;
+  animation: fadeIn 0.5s ease-out;
 }
 
 /* Media Query für kleinere Bildschirme */
@@ -22,29 +25,59 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  background-color: var(--background-light);
+  box-shadow: var(--box-shadow);
+  transition: all 0.3s ease;
+  border-left: 5px solid var(--primary-color);
 }
 
-.course-title {
-  font-size: 1.2rem;
-  cursor: pointer;
-  text-decoration: none;
+.course-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.course-content h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  color: var(--text-primary);
+  font-weight: 500;
 }
 
 .icons-container {
   display: flex;
-  margin-left: auto;
+  gap: 15px;
 }
 
 .edit-icon,
 .delete-icon {
-  margin-left: 10px;
-  cursor: pointer;
   font-size: 20px;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: all 0.2s ease;
+  background-color: rgba(0, 0, 0, 0.05);
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.edit-icon {
+  color: var(--info-color);
+}
+
+.delete-icon {
+  color: var(--error-color);
+}
+
+.edit-icon:hover,
+.delete-icon:hover {
+  opacity: 1;
+  transform: scale(1.1);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 /* Layout für die Buttons */
@@ -52,31 +85,37 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 20px;
+  margin-bottom: 30px;
+  gap: 20px;
 }
 
 /* Einheitliche Button-Klasse */
 .button-standard {
-  background-color: #007bff;
+  background-color: var(--primary-color);
   color: white;
   font-size: 16px;
-  padding: 10px 20px;
+  font-weight: 500;
+  padding: 12px 20px;
   border: none;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1);
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
   text-align: center;
 }
 
 .button-standard:hover {
-  transform: scale(1.05);
-  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+  background-color: var(--primary-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
 }
 
 .button-standard:active {
   transform: scale(0.98);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.1);
 }
 
 /* Modal für Kurs hinzufügen */
@@ -91,56 +130,80 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
+  animation: fadeIn 0.3s;
 }
 
 .modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 8px;
+  background-color: var(--background-light);
+  padding: 30px;
+  border-radius: 12px;
   width: 400px;
   max-width: 90%;
   text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  animation: scaleIn 0.3s ease-out;
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal-content h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+  font-weight: 600;
 }
 
 .course-input {
   width: 100%;
-  padding: 10px;
+  padding: 12px 15px;
   margin: 15px auto;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
   font-size: 16px;
   display: block;
+  transition: all 0.3s;
   box-sizing: border-box;
+}
+
+.course-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
 }
 
 .modal-buttons {
   display: flex;
-  justify-content: space-between;
-  gap: 10px;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
 }
 
 .modal-buttons button {
-  background-color: #007bff;
+  background-color: var(--primary-color);
   color: white;
-  padding: 10px 20px;
+  padding: 10px 24px;
   border: none;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
 }
 
 .modal-buttons button:hover {
-  background-color: #0056b3;
+  background-color: var(--primary-dark);
 }
 
 .modal-buttons button.cancel-button {
-  background-color: #f44336;
+  background-color: #f5f5f5;
+  color: #666;
 }
 
 .modal-buttons button.cancel-button:hover {
-  background-color: #d32f2f;
+  background-color: #e0e0e0;
 }
 
 /* Erfolgs-Popup */
@@ -148,14 +211,17 @@
   position: fixed;
   bottom: 30px;
   right: 30px;
-  background-color: #4caf50;
+  background-color: var(--success-color);
   color: white;
   padding: 15px 25px;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  font-size: 16px;
-  z-index: 2000;
-  animation: fadeInOut 3s ease-in-out forwards;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  z-index: 1100;
+  animation: slideIn 0.5s ease, fadeOut 0.5s ease 2.5s forwards;
 }
 
 /* Error-Popup */
@@ -163,14 +229,27 @@
   position: fixed;
   bottom: 30px;
   right: 30px;
-  background-color: #f44336;
+  background-color: var(--error-color);
   color: white;
   padding: 15px 25px;
   border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  font-size: 16px;
-  z-index: 2000;
-  animation: fadeInOut 3s ease-in-out forwards;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  z-index: 1100;
+  animation: slideIn 0.5s ease, fadeOut 0.5s ease 2.5s forwards;
+}
+
+@keyframes slideIn {
+  from { transform: translateX(100px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1; }
+  to { opacity: 0; }
 }
 
 @keyframes fadeInOut {
@@ -187,36 +266,74 @@
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  z-index: 1000;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+  width: 400px;
+  max-width: 90%;
+  z-index: 1100;
   text-align: center;
+  animation: fadeScale 0.3s;
+}
+
+@keyframes fadeScale {
+  from { transform: translate(-50%, -50%) scale(0.9); opacity: 0; }
+  to { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+.confirmation-popup p {
+  margin: 0 0 20px;
+  font-size: 16px;
+  color: #333;
 }
 
 .confirmation-buttons {
   display: flex;
-  justify-content: space-around;
-  margin-top: 15px;
+  justify-content: center;
+  gap: 15px;
 }
 
 .confirmation-buttons button {
-  padding: 10px 20px;
+  padding: 10px 24px;
+  font-size: 15px;
+  font-weight: 500;
   border: none;
-  border-radius: 5px;
-  font-size: 16px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s;
 }
 
-.confirmation-buttons button:hover {
-  background-color: #0056b3;
+.confirmation-buttons button:first-child {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.confirmation-buttons button:first-child:hover {
+  background-color: #388e3c;
 }
 
 .confirmation-buttons button.cancel-button {
-  background-color: #f44336;
+  background-color: var(--error-color);
+  color: white;
 }
 
 .confirmation-buttons button.cancel-button:hover {
   background-color: #d32f2f;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .user-management-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .button-standard {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .course-list {
+    grid-template-columns: 1fr;
+  }
 }
