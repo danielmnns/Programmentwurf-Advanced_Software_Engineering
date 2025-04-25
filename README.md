@@ -142,25 +142,6 @@ Im Frontend-Verzeichnis (frontend):
    - Als Dozent/Kursleiter: Erstellen und verwalten Sie Kurse und Materialien
    - Als Student: Greifen Sie auf Kurse zu und reichen Sie Aufgaben ein
 
-## Produktionsbereitstellung
-
-### Backend-Build
-
-```sh
-cd backend_nest
-npm run build
-npm run start:prod
-```
-
-### Frontend-Build
-
-```sh
-cd frontend
-ng build --configuration=production
-```
-
-Die erstellten Dateien befinden sich im dist/-Verzeichnis und können auf einem Webserver bereitgestellt werden.
-
 ## Fehlerbehebung
 
 - *MongoDB-Verbindungsfehler*: Stellen Sie sicher, dass MongoDB läuft und unter der angegebenen URL erreichbar ist.
