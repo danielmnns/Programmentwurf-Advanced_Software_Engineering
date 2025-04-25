@@ -42,19 +42,6 @@
         </button>
       </form>
 
-      <!-- Language Selector -->
-      <div class="language-selector">
-        <button 
-          class="language-btn" 
-          [class.active]="languageService.getCurrentLanguage() === 'de'"
-          (click)="languageService.setLanguage('de')"
-        > Deutsch </button>
-        <button 
-          class="language-btn" 
-          [class.active]="languageService.getCurrentLanguage() === 'en'"
-          (click)="languageService.setLanguage('en')"
-        > English </button>
-      </div>
     </mat-card-content>
   </mat-card>
 </div>

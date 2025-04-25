@@ -102,50 +102,6 @@ mat-card-content {
   box-shadow: none;
 }
 
-.language-switch {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 20px;
-}
-
-.language-select {
-  width: 150px;
-}
-
-.language-selector {
-  margin-top: 20px;
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-}
-
-.language-btn {
-  background: none;
-  border: 1px solid var(--border-color);
-  padding: 8px 12px;
-  border-radius: var(--border-radius-md);
-  cursor: pointer;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.language-btn:hover {
-  background-color: rgba(0, 0, 0, 0.05);
-}
-
-.language-btn.active {
-  background-color: var(--primary-color);
-  color: white;
-  border-color: var(--primary-color);
-}
-
-.flag-icon {
-  font-size: 1.2rem;
-}
-
 /* Message boxes */
 .error-message-box,
 .info-message-box {
