@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -43,6 +43,12 @@ describe('LoginComponent', () => {
       return key; // Simply return the key as the translation
     });
 
+    // Erstellen eines vollständigen ActivatedRoute-Mocks
+    const activatedRouteMock = {
+      queryParams: of({}),
+      paramMap: of(convertToParamMap({}))
+    };
+
     await TestBed.configureTestingModule({
       imports: [
         LoginComponent,
@@ -60,18 +66,7 @@ describe('LoginComponent', () => {
         { provide: AuthService, useValue: authSpy },
         { provide: LanguageService, useValue: languageSpy },
         { provide: Router, useValue: routerSpyObj },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            paramMap: of(new Map()),
-            queryParams: of({}), // Add this to mock queryParams
-            snapshot: {
-              paramMap: {
-                get: () => null
-              }
-            }
-          }
-        }
+        { provide: ActivatedRoute, useValue: activatedRouteMock }
       ]
     }).compileComponents();
 

@@ -1,11 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { getModelToken } from '@nestjs/mongoose';
+import { Test, TestingModule } from '@nestjs/testing';
+import { Model } from 'mongoose';
+import { GridFSService } from '../files/gridfs.service';
 import { CoursesService } from './courses.service';
 import { Course, CourseDocument } from './schemas/course.schema';
-import * as fs from 'fs';
-import { join } from 'path';
 
 jest.mock('fs', () => ({
   promises: {
@@ -14,29 +13,48 @@ jest.mock('fs', () => ({
   existsSync: jest.fn().mockReturnValue(true),
 }));
 
-const mockCourseModel = {
-  find: jest.fn(),
-  findById: jest.fn(),
-  findOne: jest.fn(),
-  findByIdAndUpdate: jest.fn(),
-  deleteOne: jest.fn(),
-  new: jest.fn().mockResolvedValue({}),
-  constructor: jest.fn().mockResolvedValue({}),
-  save: jest.fn(),
-  exec: jest.fn(),
-};
-
 describe('CoursesService', () => {
   let service: CoursesService;
   let model: Model<CourseDocument>;
 
+  // Mock GridFS Service
+  const mockGridFSService = {
+    storeFile: jest.fn().mockResolvedValue({ id: 'fileId123' }),
+    getFile: jest.fn().mockResolvedValue({ filename: 'test.pdf' }),
+    deleteFile: jest.fn().mockResolvedValue(true),
+  };
+
   beforeEach(async () => {
+    // Einfachen aber korrekten Mock für das CourseModel erstellen
+    const mockCourseModelType = {
+      find: jest.fn().mockReturnValue({
+        exec: jest.fn()
+      }),
+      findById: jest.fn().mockReturnValue({
+        exec: jest.fn()
+      }),
+      findOne: jest.fn().mockReturnValue({
+        lean: jest.fn().mockReturnThis(),
+        exec: jest.fn()
+      }),
+      findByIdAndUpdate: jest.fn().mockReturnValue({
+        exec: jest.fn()
+      }),
+      deleteOne: jest.fn().mockReturnValue({
+        exec: jest.fn()
+      })
+    } as unknown as Model<CourseDocument>;
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CoursesService,
         {
           provide: getModelToken(Course.name),
-          useValue: mockCourseModel,
+          useValue: mockCourseModelType,
+        },
+        {
+          provide: GridFSService,
+          useValue: mockGridFSService,
         },
       ],
     }).compile();
@@ -55,7 +73,7 @@ describe('CoursesService', () => {
   describe('create', () => {
     it('should create a new course', async () => {
       const createCourseDto = { title: 'Test Course' };
-      const course = {
+      const mockCourse = {
         title: 'Test Course',
         textContent: '',
         participants: [],
@@ -70,15 +88,26 @@ describe('CoursesService', () => {
         }),
       };
 
-      mockCourseModel.findOne.mockReturnValue({
-        exec: jest.fn().mockResolvedValue(null),
-      });
-      mockCourseModel.constructor.mockImplementation(() => course);
+      // Mock the findOne method to return null (course doesn't exist)
+      jest.spyOn(model, 'findOne').mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null)
+      } as any);
+      
+      // Create a constructor function for the model
+      const ModelConstructor = function() {
+        return mockCourse;
+      };
+      
+      // Replace the service's courseModel with our mock constructor
+      const originalCourseModel = service['courseModel'];
+      service['courseModel'] = ModelConstructor as any;
 
       const result = await service.create(createCourseDto);
+      
+      // Restore the original model
+      service['courseModel'] = originalCourseModel;
 
-      expect(mockCourseModel.findOne).toHaveBeenCalledWith({ title: 'Test Course' });
-      expect(course.save).toHaveBeenCalled();
+      expect(mockCourse.save).toHaveBeenCalled();
       expect(result).toEqual({
         title: 'Test Course',
         textContent: '',
@@ -90,9 +119,11 @@ describe('CoursesService', () => {
 
     it('should throw BadRequestException if course with title already exists', async () => {
       const createCourseDto = { title: 'Existing Course' };
-      mockCourseModel.findOne.mockReturnValue({
-        exec: jest.fn().mockResolvedValue({ title: 'Existing Course' }),
-      });
+      
+      // Mock findOne to return an existing course
+      jest.spyOn(model, 'findOne').mockReturnValue({
+        exec: jest.fn().mockResolvedValue({ title: 'Existing Course' })
+      } as any);
 
       await expect(service.create(createCourseDto)).rejects.toThrow(BadRequestException);
     });
@@ -101,13 +132,13 @@ describe('CoursesService', () => {
   describe('findAll', () => {
     it('should return an array of courses', async () => {
       const courses = [{ title: 'Course 1' }, { title: 'Course 2' }];
-      mockCourseModel.find.mockReturnValue({
-        exec: jest.fn().mockResolvedValue(courses),
-      });
+      // Direkt den exec-Mock verwenden, statt model.find zu mocken
+      jest.spyOn(model, 'find').mockReturnValue({
+        exec: jest.fn().mockResolvedValue(courses)
+      } as any);
 
       const result = await service.findAll();
 
-      expect(mockCourseModel.find).toHaveBeenCalled();
       expect(result).toEqual(courses);
     });
   });
@@ -115,20 +146,20 @@ describe('CoursesService', () => {
   describe('findOne', () => {
     it('should return a course by id', async () => {
       const course = { title: 'Course 1' };
-      mockCourseModel.findById.mockReturnValue({
-        exec: jest.fn().mockResolvedValue(course),
-      });
+      jest.spyOn(model, 'findById').mockReturnValue({
+        exec: jest.fn().mockResolvedValue(course)
+      } as any);
 
       const result = await service.findOne('courseId');
 
-      expect(mockCourseModel.findById).toHaveBeenCalledWith('courseId');
+      expect(model.findById).toHaveBeenCalledWith('courseId');
       expect(result).toEqual(course);
     });
 
     it('should throw NotFoundException if course not found', async () => {
-      mockCourseModel.findById.mockReturnValue({
-        exec: jest.fn().mockResolvedValue(null),
-      });
+      jest.spyOn(model, 'findById').mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null)
+      } as any);
 
       await expect(service.findOne('nonExistingId')).rejects.toThrow(NotFoundException);
     });
@@ -137,26 +168,36 @@ describe('CoursesService', () => {
   describe('findCourseDetails', () => {
     it('should return course details by name', async () => {
       const course = {
+        _id: 'courseId',
         title: 'Test Course',
         textContent: 'Content',
         participants: ['user1', 'user2'],
-        documents: [{ name: 'doc1', url: '/path/to/doc' }],
-        tasks: [{ taskId: '1', name: 'Task 1' }],
+        documents: [{ name: 'doc1', fileId: 'doc-file-id' }],
+        tasks: [{ taskId: '1', name: 'Task 1', description: 'Task description', documents: [] }],
       };
-      mockCourseModel.findOne.mockReturnValue({
+      
+      jest.spyOn(model, 'findOne').mockReturnValue({
+        lean: jest.fn().mockReturnThis(),
         exec: jest.fn().mockResolvedValue(course),
-      });
+      } as any);
 
       const result = await service.findCourseDetails('Test Course');
 
-      expect(mockCourseModel.findOne).toHaveBeenCalledWith({ title: 'Test Course' });
-      expect(result).toEqual(course);
+      expect(model.findOne).toHaveBeenCalledWith({ title: 'Test Course' });
+      expect(result).toEqual({
+        title: 'Test Course',
+        textContent: 'Content',
+        participants: ['user1', 'user2'],
+        documents: [{ name: 'doc1', url: '/api/gridfs/file/doc-file-id' }],
+        tasks: [{ taskId: '1', name: 'Task 1', description: 'Task description', documents: [] }],
+      });
     });
 
     it('should throw NotFoundException if course not found', async () => {
-      mockCourseModel.findOne.mockReturnValue({
+      jest.spyOn(model, 'findOne').mockReturnValue({
+        lean: jest.fn().mockReturnThis(),
         exec: jest.fn().mockResolvedValue(null),
-      });
+      } as any);
 
       await expect(service.findCourseDetails('Non Existing Course')).rejects.toThrow(NotFoundException);
     });
@@ -167,20 +208,20 @@ describe('CoursesService', () => {
       const updateCourseDto = { title: 'Updated Course' };
       const updatedCourse = { id: 'courseId', ...updateCourseDto };
 
-      mockCourseModel.findByIdAndUpdate.mockReturnValue({
+      jest.spyOn(model, 'findByIdAndUpdate').mockReturnValue({
         exec: jest.fn().mockResolvedValue(updatedCourse),
-      });
+      } as any);
 
       const result = await service.update('courseId', updateCourseDto);
 
-      expect(mockCourseModel.findByIdAndUpdate).toHaveBeenCalledWith('courseId', updateCourseDto, { new: true });
+      expect(model.findByIdAndUpdate).toHaveBeenCalledWith('courseId', updateCourseDto, { new: true });
       expect(result).toEqual(updatedCourse);
     });
 
     it('should throw NotFoundException if course not found', async () => {
-      mockCourseModel.findByIdAndUpdate.mockReturnValue({
+      jest.spyOn(model, 'findByIdAndUpdate').mockReturnValue({
         exec: jest.fn().mockResolvedValue(null),
-      });
+      } as any);
 
       await expect(service.update('nonExistingId', {})).rejects.toThrow(NotFoundException);
     });
@@ -188,19 +229,27 @@ describe('CoursesService', () => {
 
   describe('remove', () => {
     it('should remove a course successfully', async () => {
-      mockCourseModel.deleteOne.mockReturnValue({
+      const mockCourse = {
+        _id: 'courseId',
+        documents: [],
+      };
+      jest.spyOn(model, 'findById').mockReturnValue({
+        exec: jest.fn().mockResolvedValue(mockCourse),
+      } as any);
+      jest.spyOn(model, 'deleteOne').mockReturnValue({
         exec: jest.fn().mockResolvedValue({ deletedCount: 1 }),
-      });
+      } as any);
 
       await service.remove('courseId');
 
-      expect(mockCourseModel.deleteOne).toHaveBeenCalledWith({ _id: 'courseId' });
+      expect(model.findById).toHaveBeenCalledWith('courseId');
+      expect(model.deleteOne).toHaveBeenCalledWith({ _id: 'courseId' });
     });
 
     it('should throw NotFoundException if course not found', async () => {
-      mockCourseModel.deleteOne.mockReturnValue({
-        exec: jest.fn().mockResolvedValue({ deletedCount: 0 }),
-      });
+      jest.spyOn(model, 'findById').mockReturnValue({
+        exec: jest.fn().mockResolvedValue(null),
+      } as any);
 
       await expect(service.remove('nonExistingId')).rejects.toThrow(NotFoundException);
     });
@@ -224,13 +273,13 @@ describe('CoursesService', () => {
         }),
       };
 
-      mockCourseModel.findOne.mockReturnValue({
+      jest.spyOn(model, 'findOne').mockReturnValue({
         exec: jest.fn().mockResolvedValue(course),
-      });
+      } as any);
 
       const result = await service.addTaskToCourse(courseName, task);
 
-      expect(mockCourseModel.findOne).toHaveBeenCalledWith({ title: courseName });
+      expect(model.findOne).toHaveBeenCalledWith({ title: courseName });
       expect(course.save).toHaveBeenCalled();
       expect(result.tasks[0]).toEqual(
         expect.objectContaining({
@@ -242,9 +291,9 @@ describe('CoursesService', () => {
     });
 
     it('should throw NotFoundException if course not found', async () => {
-      mockCourseModel.findOne.mockReturnValue({
+      jest.spyOn(model, 'findOne').mockReturnValue({
         exec: jest.fn().mockResolvedValue(null),
-      });
+      } as any);
 
       await expect(service.addTaskToCourse('Non Existing Course', { _id: 'taskId' })).rejects.toThrow(NotFoundException);
     });

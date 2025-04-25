@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CoursesController } from './courses.controller';
-import { CoursesService } from './courses.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { GridFSService } from '../files/gridfs.service';
+import { CoursesController } from './courses.controller';
+import { CoursesService } from './courses.service';
 
 describe('CoursesController', () => {
   let controller: CoursesController;
@@ -20,6 +21,12 @@ describe('CoursesController', () => {
     updateCourseParticipants: jest.fn(),
   };
 
+  const mockGridFSService = {
+    storeFile: jest.fn().mockResolvedValue({ id: 'fileId123' }),
+    getFile: jest.fn(),
+    deleteFile: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [CoursesController],
@@ -27,6 +34,10 @@ describe('CoursesController', () => {
         {
           provide: CoursesService,
           useValue: mockCoursesService,
+        },
+        {
+          provide: GridFSService,
+          useValue: mockGridFSService,
         },
       ],
     })
@@ -101,7 +112,7 @@ describe('CoursesController', () => {
 
   describe('addCourseDocument', () => {
     it('should add document to course', async () => {
-      const file = { originalname: 'test.pdf' };
+      const file = { originalname: 'test.pdf', id: 'fileId123' };
       const body = { courseName: 'Test Course' };
       const result = { 
         message: 'Dokument erfolgreich zum Kurs hinzugefügt',
@@ -112,7 +123,10 @@ describe('CoursesController', () => {
       expect(await controller.addCourseDocument(file, body)).toBe(result);
       expect(mockCoursesService.addDocumentToCourse).toHaveBeenCalledWith(
         body.courseName,
-        file
+        {
+          originalname: file.originalname,
+          id: file.id
+        }
       );
     });
   });
