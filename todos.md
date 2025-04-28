@@ -1,6 +1,6 @@
 ## Backend
 - Tests
-- e2e Tests
+- ~~e2e Tests~~
 
 ### Nutzerverwaltung
 - Es muss immer einen Admin geben 
