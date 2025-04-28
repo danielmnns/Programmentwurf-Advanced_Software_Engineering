@@ -1,5 +1,7 @@
 # Lernmanagementsystem (LMS) für Bildungseinrichtungen
 
+Philipp Rogler, Max Knoblauch, Marcel Rupprich & Daniel Mannes
+---
 Dieses Lernmanagementsystem (LMS) bietet eine umfassende Plattform zur Unterstützung von Bildungseinrichtungen. Es ermöglicht Dozenten, Kursmaterialien hochzuladen und Aufgaben zu erstellen, während Studenten auf Inhalte zugreifen und ihre Leistungen verwalten können. Kursleiter haben Zugriff auf Verwaltungsfunktionen für Studenten und Kurse.
 
 ## Voraussetzungen
