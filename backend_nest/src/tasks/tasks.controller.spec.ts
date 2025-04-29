@@ -1,10 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { BadRequestException } from '@nestjs/common';
-import { TasksController } from './tasks.controller';
-import { TasksService } from './tasks.service';
-import { CoursesService } from '../courses/courses.service';
+import { Test, TestingModule } from '@nestjs/testing';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
+import { CoursesService } from '../courses/courses.service';
+import { GridFSService } from '../files/gridfs.service';
+import { TasksController } from './tasks.controller';
+import { TasksService } from './tasks.service';
 
 describe('TasksController', () => {
   let controller: TasksController;
@@ -26,6 +27,12 @@ describe('TasksController', () => {
   const mockCoursesService = {
     addTaskToCourse: jest.fn(),
   };
+  
+  const mockGridFSService = {
+    storeFile: jest.fn().mockResolvedValue({ id: 'fileId123' }),
+    getFile: jest.fn(),
+    deleteFile: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -38,6 +45,10 @@ describe('TasksController', () => {
         {
           provide: CoursesService,
           useValue: mockCoursesService,
+        },
+        {
+          provide: GridFSService,
+          useValue: mockGridFSService,
         },
       ],
     })
@@ -110,7 +121,7 @@ describe('TasksController', () => {
     it('should upload a submission', async () => {
       const file = {
         originalname: 'submission.pdf',
-        filename: '1234567890.pdf',
+        id: 'fileId123',
       };
       const body = { courseName: 'Test Course', taskName: 'Test Task' };
       const req = { user: { username: 'student1' } };
@@ -120,7 +131,7 @@ describe('TasksController', () => {
           userName: 'student1',
           file: {
             name: file.originalname,
-            url: `/uploads/submissions/${file.filename}`,
+            url: `/uploads/submissions/${file.id}`,
           },
         },
       };
@@ -132,7 +143,11 @@ describe('TasksController', () => {
         body.courseName,
         body.taskName,
         req.user.username,
-        file
+        {
+          originalname: file.originalname,
+          id: file.id
+        },
+        undefined
       );
     });
 
@@ -235,14 +250,14 @@ describe('TasksController', () => {
     it('should add a document to a task', async () => {
       const file = {
         originalname: 'document.pdf',
-        filename: '1234567890.pdf',
+        id: 'fileId123',
       };
       const body = { courseName: 'Test Course', taskId: 'taskId' };
       const result = {
         message: 'Dokument erfolgreich zur Aufgabe hinzugefügt',
         document: {
           name: file.originalname,
-          url: `/uploads/taskDocuments/${file.filename}`,
+          url: `/api/gridfs/file/${file.id}`,
         },
       };
 
@@ -252,7 +267,10 @@ describe('TasksController', () => {
       expect(mockTasksService.addDocumentToTask).toHaveBeenCalledWith(
         body.courseName,
         body.taskId,
-        file
+        {
+          originalname: file.originalname,
+          id: file.id
+        }
       );
     });
   });
@@ -261,7 +279,7 @@ describe('TasksController', () => {
     it('should add a new task', async () => {
       const file = {
         originalname: 'task.pdf',
-        filename: '1234567890.pdf',
+        id: 'fileId123',
       };
       const taskData = {
         courseName: 'Test Course',
@@ -274,7 +292,7 @@ describe('TasksController', () => {
         documents: [
           {
             name: file.originalname,
-            url: `/uploads/tasks/${file.filename}`,
+            fileId: file.id,
           },
         ],
       };
@@ -288,7 +306,10 @@ describe('TasksController', () => {
         taskData.courseName,
         taskData.taskName,
         taskData.taskDescription,
-        file
+        {
+          originalname: file.originalname,
+          id: file.id
+        }
       );
       expect(mockCoursesService.addTaskToCourse).toHaveBeenCalledWith(
         taskData.courseName,

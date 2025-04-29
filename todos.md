@@ -1,5 +1,7 @@
 ## Backend
 - Tests
+- ~~e2e Tests~~
+
 ### Nutzerverwaltung
 - Es muss immer einen Admin geben 
 
@@ -10,7 +12,8 @@
 - ~~Admin sieht Abgaben nicht~~
 
 ## Frontend
-- Tests
+- ~~Tests~~
+- e2e Tests
 
 #### Kurs
 - ~~Export-Buttons anpassen~~

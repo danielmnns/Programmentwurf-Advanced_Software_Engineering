@@ -1,148 +1,164 @@
-import { TestBed } from '@angular/core/testing';
+import { HttpClient } from '@angular/common/http';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { Router } from '@angular/router';
-import { AuthService } from './auth.service';
-import { UserDataService } from '../services/userdata.service';
-import { LoginResponse } from '../models/login-response.model';
+import { TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
+import { UserDataService } from '../services/userdata.service';
+import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
-  let routerSpy: jasmine.SpyObj<Router>;
   let userDataServiceSpy: jasmine.SpyObj<UserDataService>;
 
   beforeEach(() => {
-    const routerSpyObj = jasmine.createSpyObj('Router', ['navigate']);
-    const userDataServiceSpyObj = jasmine.createSpyObj('UserDataService', ['fetchUserData', 'clearUserData']);
-    
-    // Mock fetchUserData to return an observable
-    userDataServiceSpyObj.fetchUserData.and.returnValue(of({}));
+    // Spy für UserDataService erstellen
+    userDataServiceSpy = jasmine.createSpyObj('UserDataService', ['fetchUserData', 'clearUserData']);
+    userDataServiceSpy.fetchUserData.and.returnValue(of({ success: true }));
+
+    // Storage-Methoden mocken
+    spyOn(localStorage, 'getItem').and.callFake((key) => {
+      return null; // Standardmäßig null zurückgeben
+    });
+    spyOn(localStorage, 'setItem');
+    spyOn(localStorage, 'removeItem');
 
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         AuthService,
-        { provide: Router, useValue: routerSpyObj },
-        { provide: UserDataService, useValue: userDataServiceSpyObj }
+        { provide: UserDataService, useValue: userDataServiceSpy }
       ]
     });
 
     service = TestBed.inject(AuthService);
     httpMock = TestBed.inject(HttpTestingController);
-    routerSpy = TestBed.inject(Router) as jasmine.SpyObj<Router>;
-    userDataServiceSpy = TestBed.inject(UserDataService) as jasmine.SpyObj<UserDataService>;
   });
 
   afterEach(() => {
-    httpMock.verify();
-    localStorage.removeItem('token');
-    localStorage.removeItem('userType');
-    localStorage.removeItem('userName');
+    httpMock.verify(); // Stellen Sie sicher, dass keine ausstehenden Anfragen bestehen
   });
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('login', () => {
-    it('should login and store user data in localStorage', () => {
-      const mockResponse: LoginResponse = {
-        success: true,
-        user: {
-          username: 'testuser',
-          userType: 'student',
-          token: 'test-token'
-        },
-        token: 'test-token'
-      };
+  it('should set logged in state after successful login', () => {
+    // Mock-Daten für die Antwort
+    const mockResponse = {
+      success: true,
+      token: 'test-token',
+      user: {
+        username: 'testuser',
+        userType: 'admin',
+        token: 'test-token' // Token-Feld hinzugefügt
+      }
+    };
 
-      service.login('testuser', 'password').subscribe((res: LoginResponse) => {
-        expect(res).toEqual(mockResponse);
-        expect(localStorage.getItem('token')).toBe('test-token');
-        expect(localStorage.getItem('userType')).toBe('student');
-        expect(localStorage.getItem('userName')).toBe('testuser');
-      });
-
-      const req = httpMock.expectOne('http://localhost:3000/api/auth/login');
-      expect(req.request.method).toBe('POST');
-      req.flush(mockResponse);
-    });
-
-    it('should handle login error', () => {
-      service.login('testuser', 'wrongpassword').subscribe(
-        () => fail('should have failed with 401 error'),
-        (error) => {
-          expect(error.status).toBe(401);
-        }
-      );
-
-      const req = httpMock.expectOne('http://localhost:3000/api/auth/login');
-      req.flush('Unauthorized', { status: 401, statusText: 'Unauthorized' });
-    });
-  });
-
-  describe('logout', () => {
-    it('should clear localStorage and user data', () => {
-      // Setup localStorage with test data
-      localStorage.setItem('token', 'test-token');
-      localStorage.setItem('userType', 'student');
-      localStorage.setItem('userName', 'testuser');
-
-      service.logout();
-
-      // Verify localStorage is cleared
-      expect(localStorage.getItem('token')).toBeNull();
-      expect(localStorage.getItem('userType')).toBeNull();
-      expect(localStorage.getItem('userName')).toBeNull();
-      expect(userDataServiceSpy.clearUserData).toHaveBeenCalled();
-    });
-  });
-
-  describe('isLoggedIn', () => {
-    it('should return true when logged in', () => {
-      // Set the private property using a workaround
-      (service as any).loggedIn = true;
-      expect(service.isLoggedIn()).toBe(true);
-    });
-
-    it('should return false when not logged in', () => {
-      (service as any).loggedIn = false;
-      expect(service.isLoggedIn()).toBe(false);
-    });
-  });
-
-  describe('getUserType and getUserName', () => {
-    it('should return userType', () => {
-      (service as any).userType = 'student';
-      expect(service.getUserType()).toBe('student');
-    });
-
-    it('should return userName', () => {
-      (service as any).userName = 'testuser';
+    // Login-Methode aufrufen
+    service.login('testuser', 'password').subscribe((response) => {
+      expect(response).toEqual(mockResponse);
+      expect(service.isLoggedIn()).toBeTrue();
+      expect(service.getUserType()).toBe('admin');
       expect(service.getUserName()).toBe('testuser');
     });
+
+    // HTTP-Anfrage abfangen und beantworten
+    const req = httpMock.expectOne('http://localhost:3000/api/auth/login');
+    expect(req.request.method).toBe('POST');
+    req.flush(mockResponse);
+
+    // Prüfen, ob localStorage-Werte gesetzt wurden
+    expect(localStorage.setItem).toHaveBeenCalledWith('token', 'test-token');
+    expect(localStorage.setItem).toHaveBeenCalledWith('userType', 'admin');
+    expect(localStorage.setItem).toHaveBeenCalledWith('userName', 'testuser');
+
+    // Prüfen, ob Benutzerdaten abgerufen wurden
+    expect(userDataServiceSpy.fetchUserData).toHaveBeenCalled();
   });
 
-  describe('changePassword', () => {
-    it('should send password change request', () => {
-      const payload = {
-        userName: 'testuser',
-        password: 'oldpassword',
-        newPassword: 'newpassword'
-      };
-      const mockResponse = { 
-        passwordChangeSuccess: true
-      };
+  it('should not set logged in state after failed login', () => {
+    // Mock-Daten für die Antwort bei fehlgeschlagenem Login
+    const mockResponse = {
+      success: false,
+      message: 'Invalid credentials'
+    };
 
-      service.changePassword(payload).subscribe((res) => {
-        expect(res).toEqual(mockResponse);
-      });
-
-      const req = httpMock.expectOne('http://localhost:3000/api/auth/Schange-password');
-      expect(req.request.method).toBe('POST');
-      expect(req.request.body).toEqual(payload);
-      req.flush(mockResponse);
+    // Login-Methode aufrufen
+    service.login('testuser', 'wrongpassword').subscribe((response) => {
+      expect(response.success).toBeFalse();
+      expect(service.isLoggedIn()).toBeFalse();
     });
+
+    // HTTP-Anfrage abfangen und beantworten
+    const req = httpMock.expectOne('http://localhost:3000/api/auth/login');
+    expect(req.request.method).toBe('POST');
+    req.flush(mockResponse);
+  });
+
+  it('should clear user data on logout', () => {
+    // Spy direkt auf getUserName und getUserType, um die Rückgabewerte zu kontrollieren
+    spyOn(service, 'getUserName').and.returnValue(null);
+    spyOn(service, 'getUserType').and.returnValue(null);
+
+    // Login-Status manuell setzen
+    (service as any).loggedIn = true;
+    (service as any).userType = 'admin';
+    (service as any).userName = 'testuser';
+    (service as any).token = 'test-token';
+
+    // Logout ausführen
+    service.logout();
+
+    // Status prüfen
+    expect(service.isLoggedIn()).toBeFalse();
+
+    // localStorage-Aufrufe prüfen
+    expect(localStorage.removeItem).toHaveBeenCalledWith('token');
+    expect(localStorage.removeItem).toHaveBeenCalledWith('userType');
+    expect(localStorage.removeItem).toHaveBeenCalledWith('userName');
+
+    // UserDataService-Aufrufe prüfen
+    expect(userDataServiceSpy.clearUserData).toHaveBeenCalled();
+  });
+
+  it('should restore session from localStorage', () => {
+    // Einrichten des localStorage-Spys mit korrekten Werten
+    (localStorage.getItem as jasmine.Spy).and.callFake((key) => {
+      if (key === 'token') return 'stored-token';
+      if (key === 'userType') return 'student';
+      if (key === 'userName') return 'studentuser';
+      return null;
+    });
+
+    // Den Service manuell neu erstellen, um restoreSession zu triggern
+    service = new AuthService(TestBed.inject(HttpClient), userDataServiceSpy);
+
+    // Prüfen, ob die Werte korrekt wiederhergestellt wurden
+    expect(service.isLoggedIn()).toBeTrue();
+    expect(service.getUserType()).toBe('student');
+    expect(service.getUserName()).toBe('studentuser');
+  });
+
+  it('should send correct data when changing password', () => {
+    const payload = {
+      userName: 'testuser',
+      password: 'oldpassword',
+      newPassword: 'newpassword'
+    };
+
+    const mockResponse = {
+      passwordChangeSuccess: true
+    };
+
+    // Passwortänderung durchführen
+    service.changePassword(payload).subscribe(response => {
+      expect(response.passwordChangeSuccess).toBeTrue();
+    });
+
+    // HTTP-Anfrage prüfen
+    const req = httpMock.expectOne('http://localhost:3000/api/auth/change-password');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(payload);
+    req.flush(mockResponse);
   });
 });

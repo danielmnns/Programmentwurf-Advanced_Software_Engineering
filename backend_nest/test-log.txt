@@ -1,0 +1,800 @@
+
+> backend-nest@0.0.1 test
+> jest
+
+PASS src/app.controller.spec.ts
+PASS src/courses/courses.controller.spec.ts (5.838 s)
+PASS src/tasks/tasks.controller.spec.ts (5.895 s)
+  ● Console
+
+    console.log
+      Aufgabendetails abgerufen für: Kurs=Test Course, Aufgabe=Test Task, Benutzer=student1
+
+      at TasksController.getUserTaskDetails (tasks/tasks.controller.ts:26:13)
+
+    console.log
+      Gefundene Aufgabendetails: {
+        "taskId": "taskId",
+        "taskName": "Test Task",
+        "description": "Task description",
+        "documents": [],
+        "submission": null
+      }
+
+      at TasksController.getUserTaskDetails (tasks/tasks.controller.ts:28:13)
+
+    console.log
+      Abgabe wird hochgeladen:
+
+      at TasksController.uploadSubmission (tasks/tasks.controller.ts:63:13)
+
+    console.log
+      - Kurs: Test Course
+
+      at TasksController.uploadSubmission (tasks/tasks.controller.ts:64:13)
+
+    console.log
+      - Aufgabe: Test Task
+
+      at TasksController.uploadSubmission (tasks/tasks.controller.ts:65:13)
+
+    console.log
+      - Benutzer: student1
+
+      at TasksController.uploadSubmission (tasks/tasks.controller.ts:66:13)
+
+    console.log
+      - Datei: submission.pdf
+
+      at TasksController.uploadSubmission (tasks/tasks.controller.ts:67:13)
+
+    console.log
+      - Kommentar: keiner
+
+      at TasksController.uploadSubmission (tasks/tasks.controller.ts:68:13)
+
+    console.log
+      Abgabe erfolgreich gespeichert: {
+        userName: 'student1',
+        file: { name: 'submission.pdf', url: '/uploads/submissions/fileId123' }
+      }
+
+      at TasksController.uploadSubmission (tasks/tasks.controller.ts:96:15)
+
+    console.log
+      Typ taskDescription: string Wert: Description
+
+      at TasksController.addTask (tasks/tasks.controller.ts:204:15)
+
+    console.log
+      Neue Aufgabe wird hinzugefügt: {
+        courseName: 'Test Course',
+        taskName: 'New Task',
+        taskDescription: 'Description'
+      }
+
+      at TasksController.addTask (tasks/tasks.controller.ts:205:15)
+
+    console.log
+      Datei: task.pdf
+
+      at TasksController.addTask (tasks/tasks.controller.ts:206:15)
+
+    console.log
+      Aufgabenbeschreibung: Description
+
+      at TasksController.addTask (tasks/tasks.controller.ts:209:15)
+
+    console.log
+      Aufgabe erfolgreich erstellt und zum Kurs hinzugefügt: taskId
+
+      at TasksController.addTask (tasks/tasks.controller.ts:239:15)
+
+    console.log
+      Typ taskDescription: string Wert: Description
+
+      at TasksController.addTask (tasks/tasks.controller.ts:204:15)
+
+    console.log
+      Neue Aufgabe wird hinzugefügt: {
+        courseName: 'Test Course',
+        taskName: 'New Task',
+        taskDescription: 'Description'
+      }
+
+      at TasksController.addTask (tasks/tasks.controller.ts:205:15)
+
+    console.log
+      Datei: keine
+
+      at TasksController.addTask (tasks/tasks.controller.ts:206:15)
+
+    console.log
+      Aufgabenbeschreibung: Description
+
+      at TasksController.addTask (tasks/tasks.controller.ts:209:15)
+
+    console.error
+      Fehler beim Erstellen der Aufgabe: Error: Test error
+          at Object.<anonymous> (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\src\tasks\tasks.controller.spec.ts:332:53)
+          at Promise.then.completed (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\node_modules\jest-circus\build\utils.js:298:28)
+          at new Promise (<anonymous>)
+          at callAsyncCircusFn (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\node_modules\jest-circus\build\utils.js:231:10)
+          at _callCircusTest (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\node_modules\jest-circus\build\run.js:316:40)
+          at processTicksAndRejections (node:internal/process/task_queues:95:5)
+          at _runTest (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\node_modules\jest-circus\build\run.js:252:3)
+          at _runTestsForDescribeBlock (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\node_modules\jest-circus\build\run.js:126:9)
+          at _runTestsForDescribeBlock (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\node_modules\jest-circus\build\run.js:121:9)
+          at _runTestsForDescribeBlock (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\node_modules\jest-circus\build\run.js:121:9)
+          at run (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\node_modules\jest-circus\build\run.js:71:3)
+          at runAndTransformResultsToJestFormat (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapterInit.js:122:21)
+          at jestAdapter (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\node_modules\jest-circus\build\legacy-code-todo-rewrite\jestAdapter.js:79:19)
+          at runTestInternal (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\node_modules\jest-runner\build\runTest.js:367:16)
+          at runTest (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\node_modules\jest-runner\build\runTest.js:444:34)
+          at Object.worker (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\node_modules\jest-runner\build\testWorker.js:106:12)
+
+    [0m [90m 245 |[39m       }[33m;[39m
+     [90m 246 |[39m     } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 247 |[39m       console[33m.[39merror([32m'Fehler beim Erstellen der Aufgabe:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m               [31m[1m^[22m[39m
+     [90m 248 |[39m       [36mthrow[39m [36mnew[39m [33mBadRequestException[39m(error[33m.[39mmessage)[33m;[39m
+     [90m 249 |[39m     }
+     [90m 250 |[39m   }[0m
+
+      at TasksController.addTask (tasks/tasks.controller.ts:247:15)
+      at Object.<anonymous> (tasks/tasks.controller.spec.ts:334:7)
+
+    console.log
+      Delete submission payload: { courseName: 'Test Course', taskName: 'Test Task' }
+
+      at TasksController.deleteSubmission (tasks/tasks.controller.ts:256:13)
+
+    console.log
+      JWT username: student1
+
+      at TasksController.deleteSubmission (tasks/tasks.controller.ts:257:13)
+
+    console.log
+      Using username for deletion: student1
+
+      at TasksController.deleteSubmission (tasks/tasks.controller.ts:264:13)
+
+FAIL src/courses/courses.service.spec.ts (6.803 s)
+  ● Console
+
+    console.log
+      Kursdetails werden abgerufen für: Test Course
+
+      at CoursesService.findCourseDetails (courses/courses.service.ts:74:13)
+
+    console.log
+      Kurs gefunden: courseId, Titel: Test Course
+
+      at CoursesService.findCourseDetails (courses/courses.service.ts:86:13)
+
+    console.log
+      Tasks im Kurs vorhanden: Ja
+
+      at CoursesService.findCourseDetails (courses/courses.service.ts:87:13)
+
+    console.log
+      Anzahl Tasks: 1
+
+      at CoursesService.findCourseDetails (courses/courses.service.ts:88:13)
+
+    console.log
+      Tasks-Rohstruktur: [
+        {
+          "taskId": "1",
+          "name": "Task 1",
+          "description": "Task description",
+          "documents": []
+        }
+      ]
+
+      at CoursesService.findCourseDetails (courses/courses.service.ts:91:15)
+
+    console.log
+      Verarbeite Task: Task 1, ID: 1
+
+      at courses/courses.service.ts:110:15
+          at Array.map (<anonymous>)
+
+    console.log
+      Aufbereitete Taskliste für Frontend: [
+        {
+          "taskId": "1",
+          "name": "Task 1",
+          "description": "Task description",
+          "documents": []
+        }
+      ]
+
+      at CoursesService.findCourseDetails (courses/courses.service.ts:123:13)
+
+    console.log
+      Kursdetails werden abgerufen für: Non Existing Course
+
+      at CoursesService.findCourseDetails (courses/courses.service.ts:74:13)
+
+    console.log
+      Adding task to course: Test Course
+
+      at CoursesService.addTaskToCourse (courses/courses.service.ts:240:13)
+
+    console.log
+      Task object: {
+        "_id": "taskId",
+        "taskName": "Test Task",
+        "taskDescription": "Task description",
+        "documents": [
+          {
+            "name": "doc1",
+            "url": "/path/to/doc"
+          }
+        ]
+      }
+
+      at CoursesService.addTaskToCourse (courses/courses.service.ts:241:13)
+
+    console.log
+      Task properties available: [ '_id', 'taskName', 'taskDescription', 'documents' ]
+
+      at CoursesService.addTaskToCourse (courses/courses.service.ts:254:13)
+
+    console.log
+      Task description: Task description
+
+      at CoursesService.addTaskToCourse (courses/courses.service.ts:255:13)
+
+    console.log
+      Course after save - tasks: [
+        {
+          "taskId": "taskId",
+          "name": "Test Task",
+          "description": "Task description",
+          "documents": [
+            {
+              "name": "doc1",
+              "url": "/path/to/doc"
+            }
+          ]
+        }
+      ]
+
+      at CoursesService.addTaskToCourse (courses/courses.service.ts:273:15)
+
+    console.log
+      Adding task to course: Non Existing Course
+
+      at CoursesService.addTaskToCourse (courses/courses.service.ts:240:13)
+
+    console.log
+      Task object: {
+        "_id": "taskId"
+      }
+
+      at CoursesService.addTaskToCourse (courses/courses.service.ts:241:13)
+
+  ● CoursesService › create › should create a new course
+
+    TypeError: this.courseModel.findOne is not a function
+
+    [0m [90m 13 |[39m
+     [90m 14 |[39m   [36masync[39m create(createCourseDto[33m:[39m any)[33m:[39m [33mPromise[39m[33m<[39m[33mCourseDocument[39m[33m>[39m {
+    [31m[1m>[22m[39m[90m 15 |[39m     [36mconst[39m existingCourse [33m=[39m [36mawait[39m [36mthis[39m[33m.[39mcourseModel[33m.[39mfindOne({ title[33m:[39m createCourseDto[33m.[39mtitle })[33m.[39mexec()[33m;[39m
+     [90m    |[39m                                                   [31m[1m^[22m[39m
+     [90m 16 |[39m     
+     [90m 17 |[39m     [36mif[39m (existingCourse) {
+     [90m 18 |[39m       [36mthrow[39m [36mnew[39m [33mBadRequestException[39m([32m`Kurs "${createCourseDto.title}" existiert bereits`[39m)[33m;[39m[0m
+
+      at CoursesService.create (courses/courses.service.ts:15:51)
+      at Object.<anonymous> (courses/courses.service.spec.ts:118:36)
+
+FAIL src/tasks/tasks.service.spec.ts (6.859 s)
+  ● Console
+
+    console.log
+      Detaillierte Abfrage für Aufgabe: Kurs=Test Course, Aufgabe=Test Task, Benutzer=student1
+
+      at TasksService.getTaskDetailsForStudent (tasks/tasks.service.ts:56:13)
+
+    console.log
+      Task gefunden: ID=taskId
+
+      at TasksService.getTaskDetailsForStudent (tasks/tasks.service.ts:70:15)
+
+    console.log
+      Task mit 1 Abgaben
+
+      at TasksService.getTaskDetailsForStudent (tasks/tasks.service.ts:71:15)
+
+    console.log
+      Verfügbare Abgaben:
+
+      at TasksService.getTaskDetailsForStudent (tasks/tasks.service.ts:74:17)
+
+    console.log
+      Abgabe 0: Benutzer='student1', Datei='submission.pdf'
+
+      at tasks/tasks.service.ts:76:19
+          at Array.forEach (<anonymous>)
+
+    console.log
+        Feedback: Good job von teacher1
+
+      at tasks/tasks.service.ts:79:21
+          at Array.forEach (<anonymous>)
+
+    console.log
+      Abgabe für Benutzer student1: gefunden
+
+      at TasksService.getTaskDetailsForStudent (tasks/tasks.service.ts:93:17)
+
+    console.log
+      Aufgabendetails zusammengestellt: {
+        "taskId": "taskId",
+        "taskName": "Test Task",
+        "description": "Task description",
+        "documents": [
+          {
+            "name": "doc1",
+            "url": "/api/gridfs/file/doc-file-id"
+          }
+        ],
+        "submission": {
+          "userName": "student1",
+          "file": {
+            "name": "submission.pdf",
+            "url": "/api/gridfs/file/submission-file-id"
+          },
+          "feedback": {
+            "text": "Good job",
+            "feedbackFrom": "teacher1"
+          },
+          "comment": ""
+        }
+      }
+
+      at TasksService.getTaskDetailsForStudent (tasks/tasks.service.ts:116:15)
+
+    console.log
+      Detaillierte Abfrage für Aufgabe: Kurs=Test Course, Aufgabe=Test Task, Benutzer=student1
+
+      at TasksService.getTaskDetailsForStudent (tasks/tasks.service.ts:56:13)
+
+    console.log
+      Task gefunden: ID=taskId
+
+      at TasksService.getTaskDetailsForStudent (tasks/tasks.service.ts:70:15)
+
+    console.log
+      Task mit 1 Abgaben
+
+      at TasksService.getTaskDetailsForStudent (tasks/tasks.service.ts:71:15)
+
+    console.log
+      Verfügbare Abgaben:
+
+      at TasksService.getTaskDetailsForStudent (tasks/tasks.service.ts:74:17)
+
+    console.log
+      Abgabe 0: Benutzer='anotherStudent', Datei='submission.pdf'
+
+      at tasks/tasks.service.ts:76:19
+          at Array.forEach (<anonymous>)
+
+    console.log
+      Abgabe für Benutzer student1: nicht gefunden
+
+      at TasksService.getTaskDetailsForStudent (tasks/tasks.service.ts:93:17)
+
+    console.log
+      Aufgabendetails zusammengestellt: {
+        "taskId": "taskId",
+        "taskName": "Test Task",
+        "description": "Task description",
+        "documents": [
+          {
+            "name": "doc1",
+            "url": "/api/gridfs/file/undefined"
+          }
+        ],
+        "submission": null
+      }
+
+      at TasksService.getTaskDetailsForStudent (tasks/tasks.service.ts:116:15)
+
+    console.log
+      Detaillierte Abfrage für Aufgabe: Kurs=Course, Aufgabe=Task, Benutzer=student
+
+      at TasksService.getTaskDetailsForStudent (tasks/tasks.service.ts:56:13)
+
+    console.error
+      Aufgabe Task im Kurs Course nicht gefunden
+
+    [0m [90m 64 |[39m
+     [90m 65 |[39m       [36mif[39m ([33m![39mtask) {
+    [31m[1m>[22m[39m[90m 66 |[39m         console[33m.[39merror([32m`Aufgabe ${taskName} im Kurs ${courseName} nicht gefunden`[39m)[33m;[39m
+     [90m    |[39m                 [31m[1m^[22m[39m
+     [90m 67 |[39m         [36mthrow[39m [36mnew[39m [33mNotFoundException[39m([32m`Aufgabe ${taskName} im Kurs ${courseName} nicht gefunden`[39m)[33m;[39m
+     [90m 68 |[39m       }
+     [90m 69 |[39m[0m
+
+      at TasksService.getTaskDetailsForStudent (tasks/tasks.service.ts:66:17)
+      at Object.<anonymous> (tasks/tasks.service.spec.ts:316:7)
+
+    console.error
+      Fehler beim Abrufen der Aufgabendetails: NotFoundException: Aufgabe Task im Kurs Course nicht gefunden
+          at TasksService.getTaskDetailsForStudent (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\src\tasks\tasks.service.ts:67:15)
+          at processTicksAndRejections (node:internal/process/task_queues:95:5)
+          at Object.<anonymous> (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\src\tasks\tasks.service.spec.ts:316:7) {
+        response: {
+          message: 'Aufgabe Task im Kurs Course nicht gefunden',
+          error: 'Not Found',
+          statusCode: 404
+        },
+        status: 404,
+        options: {}
+      }
+
+    [0m [90m 117 |[39m       [36mreturn[39m result[33m;[39m
+     [90m 118 |[39m     } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 119 |[39m       console[33m.[39merror([32m'Fehler beim Abrufen der Aufgabendetails:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m               [31m[1m^[22m[39m
+     [90m 120 |[39m       [36mthrow[39m error[33m;[39m
+     [90m 121 |[39m     }
+     [90m 122 |[39m   }[0m
+
+      at TasksService.getTaskDetailsForStudent (tasks/tasks.service.ts:119:15)
+      at Object.<anonymous> (tasks/tasks.service.spec.ts:316:7)
+
+    console.log
+      Beginne Speicherung der Abgabe: Kurs=Test Course, Aufgabe=Test Task, Benutzer=student1
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:126:15)
+
+    console.log
+      Aufgabe gefunden: ID=taskId, aktuelle Abgaben=0
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:138:15)
+
+    console.log
+      Bestehende Abgabe für Benutzer student1: nicht gefunden
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:142:15)
+
+    console.log
+      Neue Abgabe erstellt: {
+        "userName": "student1",
+        "file": {
+          "name": "submission.pdf",
+          "fileId": "fileId123"
+        },
+        "comment": ""
+      }
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:154:15)
+
+    console.log
+      Füge neue Abgabe hinzu
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:178:17)
+
+    console.log
+      Versuche Task zu speichern mit 1 Abgaben
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:182:15)
+
+    console.log
+      Task gespeichert, neue Abgabenanzahl: 1
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:184:15)
+
+    console.log
+      Beginne Speicherung der Abgabe: Kurs=Test Course, Aufgabe=Test Task, Benutzer=student1
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:126:15)
+
+    console.log
+      Aufgabe gefunden: ID=taskId, aktuelle Abgaben=1
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:138:15)
+
+    console.log
+      Bestehende Abgabe für Benutzer student1: nicht gefunden
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:142:15)
+
+    console.log
+      Neue Abgabe erstellt: {
+        "userName": "student1",
+        "file": {
+          "name": "new_submission.pdf",
+          "fileId": "fileId123"
+        },
+        "comment": ""
+      }
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:154:15)
+
+    console.log
+      Füge neue Abgabe hinzu
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:178:17)
+
+    console.log
+      Versuche Task zu speichern mit 2 Abgaben
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:182:15)
+
+    console.log
+      Task gespeichert, neue Abgabenanzahl: 1
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:184:15)
+
+    console.log
+      Beginne Speicherung der Abgabe: Kurs=Course, Aufgabe=Task, Benutzer=student
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:126:15)
+
+    console.error
+      Aufgabe Task im Kurs Course nicht gefunden
+
+    [0m [90m 132 |[39m   
+     [90m 133 |[39m       [36mif[39m ([33m![39mtask) {
+    [31m[1m>[22m[39m[90m 134 |[39m         console[33m.[39merror([32m`Aufgabe ${taskName} im Kurs ${courseName} nicht gefunden`[39m)[33m;[39m
+     [90m     |[39m                 [31m[1m^[22m[39m
+     [90m 135 |[39m         [36mthrow[39m [36mnew[39m [33mNotFoundException[39m([32m`Aufgabe ${taskName} im Kurs ${courseName} nicht gefunden`[39m)[33m;[39m
+     [90m 136 |[39m       }
+     [90m 137 |[39m       [0m
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:134:17)
+      at Object.<anonymous> (tasks/tasks.service.spec.ts:442:7)
+
+    console.error
+      Fehler beim Speichern der Abgabe: NotFoundException: Aufgabe Task im Kurs Course nicht gefunden
+          at TasksService.createSubmission (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\src\tasks\tasks.service.ts:135:15)
+          at processTicksAndRejections (node:internal/process/task_queues:95:5)
+          at Object.<anonymous> (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\src\tasks\tasks.service.spec.ts:442:7) {
+        response: {
+          message: 'Aufgabe Task im Kurs Course nicht gefunden',
+          error: 'Not Found',
+          statusCode: 404
+        },
+        status: 404,
+        options: {}
+      }
+
+    [0m [90m 195 |[39m       }[33m;[39m
+     [90m 196 |[39m     } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 197 |[39m       console[33m.[39merror([32m'Fehler beim Speichern der Abgabe:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m               [31m[1m^[22m[39m
+     [90m 198 |[39m       [36mthrow[39m error[33m;[39m
+     [90m 199 |[39m     }
+     [90m 200 |[39m   }[0m
+
+      at TasksService.createSubmission (tasks/tasks.service.ts:197:15)
+      at Object.<anonymous> (tasks/tasks.service.spec.ts:442:7)
+
+    console.log
+      Versuche Abgabe zu löschen: Kurs=Test Course, Aufgabe=Test Task, Benutzer=student1
+
+      at TasksService.deleteSubmissionForUser (tasks/tasks.service.ts:232:13)
+
+    console.log
+      Aufgabe gefunden mit 1 Abgaben
+
+      at TasksService.deleteSubmissionForUser (tasks/tasks.service.ts:243:13)
+
+    console.log
+      Alle Abgaben für Test Task:
+
+      at TasksService.deleteSubmissionForUser (tasks/tasks.service.ts:247:15)
+
+    console.log
+      Abgabe 0: Benutzer='student1', Datei='submission.pdf'
+
+      at tasks/tasks.service.ts:249:17
+          at Array.forEach (<anonymous>)
+
+    console.log
+      Suche nach Abgabe für Benutzer='student1', Ergebnis: 0
+
+      at TasksService.deleteSubmissionForUser (tasks/tasks.service.ts:258:13)
+
+    console.log
+      Versuche Abgabe zu löschen: Kurs=Course, Aufgabe=Task, Benutzer=student
+
+      at TasksService.deleteSubmissionForUser (tasks/tasks.service.ts:232:13)
+
+    console.log
+      Versuche Aufgabe zu löschen: courseId=Test Course, taskId=taskId
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:363:15)
+
+    console.log
+      Aufgabe gefunden: taskId, Test Task
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:375:15)
+
+    console.log
+      Suche Kurs: Test Course
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:378:15)
+
+    console.log
+      Kurs gefunden mit 1 Aufgaben
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:384:17)
+
+    console.log
+      Entferne Aufgabe aus dem Kurs an Index 0
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:397:19)
+
+    console.log
+      Kurs erfolgreich aktualisiert
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:400:19)
+
+    console.log
+      Lösche 1 zugehörige Dokumente
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:410:17)
+
+    console.log
+      Lösche 1 zugehörige Submissions
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:425:17)
+
+    console.log
+      Löschvorgang abgeschlossen: {"deletedCount":1}
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:440:15)
+
+    console.log
+      Versuche Aufgabe zu löschen: courseId=Course, taskId=taskId
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:363:15)
+
+    console.error
+      Fehler beim Löschen der Aufgabe: NotFoundException: Aufgabe mit ID taskId im Kurs Course nicht gefunden
+          at TasksService.deleteTask (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\src\tasks\tasks.service.ts:372:15)
+          at processTicksAndRejections (node:internal/process/task_queues:95:5)
+          at Object.<anonymous> (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\src\tasks\tasks.service.spec.ts:577:7) {
+        response: {
+          message: 'Aufgabe mit ID taskId im Kurs Course nicht gefunden',
+          error: 'Not Found',
+          statusCode: 404
+        },
+        status: 404,
+        options: {}
+      }
+
+    [0m [90m 449 |[39m       }[33m;[39m
+     [90m 450 |[39m     } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 451 |[39m       console[33m.[39merror([32m'Fehler beim Löschen der Aufgabe:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m               [31m[1m^[22m[39m
+     [90m 452 |[39m       [36mthrow[39m error[33m;[39m
+     [90m 453 |[39m     }
+     [90m 454 |[39m   }[0m
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:451:15)
+      at Object.<anonymous> (tasks/tasks.service.spec.ts:577:7)
+
+    console.log
+      Versuche Aufgabe zu löschen: courseId=Course, taskId=taskId
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:363:15)
+
+    console.log
+      Aufgabe gefunden: taskId, undefined
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:375:15)
+
+    console.log
+      Suche Kurs: Course
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:378:15)
+
+    console.log
+      Kurs gefunden mit 0 Aufgaben
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:384:17)
+
+    console.log
+      Aufgabe nicht im Kurs gefunden
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:402:19)
+
+    console.log
+      Löschvorgang abgeschlossen: {"deletedCount":0}
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:440:15)
+
+    console.error
+      Fehler beim Löschen der Aufgabe: Error: Aufgabe konnte nicht gelöscht werden
+          at TasksService.deleteTask (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\src\tasks\tasks.service.ts:443:15)
+          at processTicksAndRejections (node:internal/process/task_queues:95:5)
+          at Object.<anonymous> (C:\Users\Philipp\Coding\Adv_SE_Laborarbeit\Programmentwurf-Advanced_Software_Engineering\backend_nest\src\tasks\tasks.service.spec.ts:605:7)
+
+    [0m [90m 449 |[39m       }[33m;[39m
+     [90m 450 |[39m     } [36mcatch[39m (error) {
+    [31m[1m>[22m[39m[90m 451 |[39m       console[33m.[39merror([32m'Fehler beim Löschen der Aufgabe:'[39m[33m,[39m error)[33m;[39m
+     [90m     |[39m               [31m[1m^[22m[39m
+     [90m 452 |[39m       [36mthrow[39m error[33m;[39m
+     [90m 453 |[39m     }
+     [90m 454 |[39m   }[0m
+
+      at TasksService.deleteTask (tasks/tasks.service.ts:451:15)
+      at Object.<anonymous> (tasks/tasks.service.spec.ts:605:7)
+
+  ● TasksService › createTask › should create a new task
+
+    TypeError: this.taskModel.findOne is not a function
+
+    [0m [90m 17 |[39m
+     [90m 18 |[39m   [36masync[39m createTask(courseName[33m:[39m string[33m,[39m taskName[33m:[39m string[33m,[39m taskDescription[33m:[39m string[33m,[39m file[33m:[39m any)[33m:[39m [33mPromise[39m[33m<[39m[33mTaskDocument[39m[33m>[39m {
+    [31m[1m>[22m[39m[90m 19 |[39m     [36mconst[39m existingTask [33m=[39m [36mawait[39m [36mthis[39m[33m.[39mtaskModel[33m.[39mfindOne({
+     [90m    |[39m                                               [31m[1m^[22m[39m
+     [90m 20 |[39m       courseName[33m,[39m
+     [90m 21 |[39m       taskName[33m,[39m
+     [90m 22 |[39m     })[33m.[39mexec()[33m;[39m[0m
+
+      at TasksService.createTask (tasks/tasks.service.ts:19:47)
+      at Object.<anonymous> (tasks/tasks.service.spec.ts:157:36)
+
+  ● TasksService › createTask › should create a task without a file
+
+    TypeError: this.taskModel.findOne is not a function
+
+    [0m [90m 17 |[39m
+     [90m 18 |[39m   [36masync[39m createTask(courseName[33m:[39m string[33m,[39m taskName[33m:[39m string[33m,[39m taskDescription[33m:[39m string[33m,[39m file[33m:[39m any)[33m:[39m [33mPromise[39m[33m<[39m[33mTaskDocument[39m[33m>[39m {
+    [31m[1m>[22m[39m[90m 19 |[39m     [36mconst[39m existingTask [33m=[39m [36mawait[39m [36mthis[39m[33m.[39mtaskModel[33m.[39mfindOne({
+     [90m    |[39m                                               [31m[1m^[22m[39m
+     [90m 20 |[39m       courseName[33m,[39m
+     [90m 21 |[39m       taskName[33m,[39m
+     [90m 22 |[39m     })[33m.[39mexec()[33m;[39m[0m
+
+      at TasksService.createTask (tasks/tasks.service.ts:19:47)
+      at Object.<anonymous> (tasks/tasks.service.spec.ts:211:36)
+
+  ● TasksService › createSubmission › should update an existing submission
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    Expected: "old-file-id"
+
+    Number of calls: 0
+
+    [0m [90m 430 |[39m
+     [90m 431 |[39m       [90m// Verify file deletion and save calls[39m
+    [31m[1m>[22m[39m[90m 432 |[39m       expect(mockGridFSService[33m.[39mdeleteFile)[33m.[39mtoHaveBeenCalledWith([32m'old-file-id'[39m)[33m;[39m
+     [90m     |[39m                                            [31m[1m^[22m[39m
+     [90m 433 |[39m       expect(mockTask[33m.[39msave)[33m.[39mtoHaveBeenCalled()[33m;[39m
+     [90m 434 |[39m       expect(result[33m.[39mmessage)[33m.[39mtoBe([32m'Abgabe erfolgreich gespeichert'[39m)[33m;[39m
+     [90m 435 |[39m     })[33m;[39m[0m
+
+      at Object.<anonymous> (tasks/tasks.service.spec.ts:432:44)
+
+  ● TasksService › deleteSubmissionForUser › should throw NotFoundException if submission not found
+
+    NotFoundException: Keine Abgabe für Benutzer student gefunden
+
+    [0m [90m 515 |[39m       [90m// Override the service method to make it throw the expected exception[39m
+     [90m 516 |[39m       jest[33m.[39mspyOn(service[33m,[39m [32m'deleteSubmissionForUser'[39m)[33m.[39mmockImplementation(() [33m=>[39m {
+    [31m[1m>[22m[39m[90m 517 |[39m         [36mthrow[39m [36mnew[39m [33mNotFoundException[39m([32m`Keine Abgabe für Benutzer ${username} gefunden`[39m)[33m;[39m
+     [90m     |[39m               [31m[1m^[22m[39m
+     [90m 518 |[39m       })[33m;[39m
+     [90m 519 |[39m       
+     [90m 520 |[39m       [36mawait[39m expect(service[33m.[39mdeleteSubmissionForUser(courseName[33m,[39m taskName[33m,[39m username))[0m
+
+      at TasksService.<anonymous> (tasks/tasks.service.spec.ts:517:15)
+      at Object.<anonymous> (tasks/tasks.service.spec.ts:520:28)
+
+Test Suites: 2 failed, 3 passed, 5 total
+Tests:       5 failed, 49 passed, 54 total
+Snapshots:   0 total
+Time:        7.382 s
+Ran all test suites.
