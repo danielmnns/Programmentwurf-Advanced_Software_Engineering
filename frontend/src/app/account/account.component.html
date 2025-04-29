@@ -1,5 +1,17 @@
-<div class="login-container">
-  <h2>{{ 'changePassword' | translate }}</h2>
+<div class="account-container">
+  <h2>{{ 'accountSettings' | translate }}</h2>
+  
+  <!-- Success/Error Alerts would go here -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    <span class="alert-icon">✓</span>
+    <span>{{ successMessage }}</span>
+  </div>
+  
+  <div *ngIf="errorMessage" class="alert alert-error">
+    <span class="alert-icon">⚠️</span>
+    <span>{{ errorMessage }}</span>
+  </div>
+
   <form (ngSubmit)="changePassword()">
     <div class="form-group">
       <label for="username">{{ 'username' | translate }}</label>
@@ -11,6 +23,7 @@
         class="form-control"
       />
     </div>
+    
     <div class="form-group">
       <label for="old-password">{{ 'oldPassword' | translate }}</label>
       <input
@@ -22,6 +35,7 @@
         required
       />
     </div>
+    
     <div class="form-group">
       <label for="new-password">{{ 'newPassword' | translate }}</label>
       <input
@@ -32,14 +46,30 @@
         class="form-control"
         required
       />
+      
+      <!-- Password strength indicators could go here -->
+      <div *ngIf="newPassword" class="password-requirements">
+        {{ 'passwordRequirements' | translate }}:
+        <ul>
+          <li>{{ 'minCharacters' | translate }}</li>
+          <li>{{ 'includeUppercase' | translate }}</li>
+          <li>{{ 'includeNumber' | translate }}</li>
+          <li>{{ 'includeSpecial' | translate }}</li>
+        </ul>
+      </div>
     </div>
-    <button type="submit" class="btn btn-primary">{{ 'changePassword' | translate }}</button>
+    
+    <div class="buttons-container">
+      <button type="submit" class="btn btn-primary">
+        {{ 'changePassword' | translate }}
+      </button>
+      <button
+        type="button"
+        class="btn btn-secondary"
+        (click)="logout()"
+      >
+        {{ 'logout' | translate }}
+      </button>
+    </div>
   </form>
-  <button
-    class="btn btn-secondary"
-    style="margin-top: 10px;"
-    (click)="logout()"
-  >
-    {{ 'logout' | translate }}
-  </button>
 </div>

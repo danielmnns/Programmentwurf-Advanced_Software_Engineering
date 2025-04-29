@@ -6,7 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router, convertToParamMap } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { of, throwError } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { TranslatePipe } from '../pipes/translate.pipe';
@@ -22,7 +23,10 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     const authSpy = jasmine.createSpyObj('AuthService', ['login', 'isLoggedIn']);
-    const languageSpy = jasmine.createSpyObj('LanguageService', ['getCurrentLanguage']);
+    const languageSpy = jasmine.createSpyObj('LanguageService',
+      ['getCurrentLanguage', 'translate', 'setLanguage'],
+      { currentLanguage$: of('de') }
+    );
     const routerSpyObj = jasmine.createSpyObj('Router', ['navigate']);
 
     // Mock LanguageService
@@ -34,21 +38,35 @@ describe('LoginComponent', () => {
       errorMessage: 'Login failed'
     };
 
+    // Add translate method implementation
+    languageSpy.translate.and.callFake((key: string) => {
+      return key; // Simply return the key as the translation
+    });
+
+    // Erstellen eines vollständigen ActivatedRoute-Mocks
+    const activatedRouteMock = {
+      queryParams: of({}),
+      paramMap: of(convertToParamMap({}))
+    };
+
     await TestBed.configureTestingModule({
       imports: [
+        LoginComponent,
         FormsModule,
         BrowserAnimationsModule,
         MatCardModule,
         MatFormFieldModule,
         MatInputModule,
         MatButtonModule,
-        MatSelectModule
+        MatSelectModule,
+        TranslatePipe,
+        RouterTestingModule
       ],
-      declarations: [LoginComponent, TranslatePipe],
       providers: [
         { provide: AuthService, useValue: authSpy },
         { provide: LanguageService, useValue: languageSpy },
-        { provide: Router, useValue: routerSpyObj }
+        { provide: Router, useValue: routerSpyObj },
+        { provide: ActivatedRoute, useValue: activatedRouteMock }
       ]
     }).compileComponents();
 
@@ -81,13 +99,13 @@ describe('LoginComponent', () => {
       token: 'test-token'
     };
     authServiceSpy.login.and.returnValue(of(mockLoginResponse));
-    
+
     fixture.detectChanges();
     component.username = 'testuser';
     component.password = 'password';
-    
+
     component.onSubmit();
-    
+
     expect(authServiceSpy.login).toHaveBeenCalledWith('testuser', 'password');
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/user-dashboard']);
     expect(component.loginFailed).toBeFalse();
@@ -100,13 +118,13 @@ describe('LoginComponent', () => {
       message: 'Invalid credentials'
     };
     authServiceSpy.login.and.returnValue(of(mockErrorResponse));
-    
+
     fixture.detectChanges();
     component.username = 'testuser';
     component.password = 'wrongpassword';
-    
+
     component.onSubmit();
-    
+
     expect(authServiceSpy.login).toHaveBeenCalledWith('testuser', 'wrongpassword');
     expect(component.loginFailed).toBeTrue();
     expect(component.errorMessage).toBe('Invalid credentials');
@@ -114,13 +132,13 @@ describe('LoginComponent', () => {
 
   it('should handle http error during login', () => {
     authServiceSpy.login.and.returnValue(throwError({ status: 401, error: 'Unauthorized' }));
-    
+
     fixture.detectChanges();
     component.username = 'testuser';
     component.password = 'password';
-    
+
     component.onSubmit();
-    
+
     expect(authServiceSpy.login).toHaveBeenCalledWith('testuser', 'password');
     expect(component.loginFailed).toBeTrue();
   });
@@ -136,13 +154,13 @@ describe('LoginComponent', () => {
       token: 'admin-token'
     };
     authServiceSpy.login.and.returnValue(of(mockLoginResponse));
-    
+
     fixture.detectChanges();
     component.username = 'admin';
     component.password = 'adminpass';
-    
+
     component.onSubmit();
-    
+
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/admin-dashboard']);
   });
 });

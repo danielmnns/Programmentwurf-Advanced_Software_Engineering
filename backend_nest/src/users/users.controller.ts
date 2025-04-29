@@ -54,6 +54,17 @@ async updateUserFromAdmin(@Body() updateData: any) {
         throw new NotFoundException(`Benutzer ${username} nicht gefunden`);
       }
       
+      // Prüfen, ob der Benutzer ein Admin ist und ob dies der letzte Admin wäre
+      if (user.userType === 'admin' && newUserType !== 'admin') {
+        const adminCount = await this.usersService.countAdmins();
+        if (adminCount <= 1) {
+          return {
+            success: false,
+            message: 'Diese Aktion kann nicht durchgeführt werden: Es muss immer mindestens ein Administrator im System vorhanden sein.'
+          };
+        }
+      }
+      
       user.userType = newUserType;
       await user.save();
       
@@ -64,6 +75,21 @@ async updateUserFromAdmin(@Body() updateData: any) {
     } 
     else if (updateData.operation === 'deleteUserById') {
       const { userId } = updateData;
+      
+      // Benutzer finden, um zu prüfen, ob er ein Admin ist
+      const user = await this.usersService.findById(userId);
+      
+      // Prüfen, ob der Benutzer ein Admin ist und ob dies der letzte Admin wäre
+      if (user.userType === 'admin') {
+        const adminCount = await this.usersService.countAdmins();
+        if (adminCount <= 1) {
+          return {
+            success: false,
+            message: 'Diese Aktion kann nicht durchgeführt werden: Es muss immer mindestens ein Administrator im System vorhanden sein.'
+          };
+        }
+      }
+      
       await this.usersService.removeById(userId);
       
       return {

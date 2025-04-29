@@ -70,6 +70,7 @@ export class LanguageService {
       'noSubmissionsYet': 'Noch keine Abgaben vorhanden',
       'noFileSubmitted': 'Keine Datei eingereicht',
       'enterFeedback': 'Feedback eingeben',
+      'accountSettings': 'Kontoeinstellungen',
 
       // Footer links
       'privacyPolicy': 'Datenschutzerklärung',
@@ -203,6 +204,7 @@ export class LanguageService {
       'noSubmissionsYet': 'No submissions yet',
       'noFileSubmitted': 'No file submitted',
       'enterFeedback': 'Enter feedback',
+      'accountSettings': 'Account Settings',
 
       // Footer links
       'privacyPolicy': 'Privacy Policy',
