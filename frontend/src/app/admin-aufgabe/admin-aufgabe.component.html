@@ -1,5 +1,5 @@
 <div class="admin-task-container">
-    <!-- Zurück-Button zur Kursübersicht -->
+    <!-- Navigationsbereich mit Zurück-Button zur Kursübersicht -->
     <div class="back-button-container">
       <button class="back-button" (click)="navigateBack()" [attr.aria-label]="'back' | translate">
         {{ 'back' | translate }}
@@ -9,7 +9,7 @@
     <h1>{{ taskName }}</h1>
     <p>{{ taskDescription }}</p>
 
-    <!-- Anzeige der Aufgabenmaterialien und Dokumente -->
+    <!-- Bereich für Materialien und Dokumente der Aufgabe -->
     <div class="task-documents" *ngIf="uploadedDocuments && uploadedDocuments.length > 0">
       <h3>{{ 'taskMaterials' | translate }}</h3>
       <ul class="document-list">
@@ -37,7 +37,7 @@
         <div *ngIf="!submission.file" class="no-file">
           <p>{{ 'noFileSubmitted' | translate }}</p>
         </div>
-        <!-- Kommentar des Studenten zur Abgabe -->
+        <!-- Anzeige des studentischen Kommentars zur Abgabe -->
         <div *ngIf="submission.comment" class="student-comment">
           <p><strong>{{ 'submissionComment' | translate }}:</strong> {{ submission.comment }}</p>
         </div>
@@ -49,7 +49,7 @@
     </div>
   </div>
 
-  <!-- Benachrichtigungs-Popup für Erfolgsmeldungen und Fehler -->
+  <!-- Benachrichtigungsbereich für Systemrückmeldungen -->
   <div *ngIf="showNotification" class="app-notification">
     <p>{{ notificationMessage }}</p>
     <button (click)="closeNotification()">{{ 'close' | translate }}</button>

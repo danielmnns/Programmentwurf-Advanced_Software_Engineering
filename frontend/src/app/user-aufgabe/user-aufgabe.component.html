@@ -1,5 +1,5 @@
 <div class="user-task-container">
-    <!-- Zurück-Button -->
+    <!-- Schaltfläche zum Zurückkehren zur vorherigen Ansicht -->
     <div class="back-button-container">
       <button class="back-button" (click)="navigateBack()">{{ 'back' | translate }}</button>
     </div>
@@ -7,7 +7,7 @@
     <h1>{{ taskName }}</h1>
     <p>{{ taskDescription }}</p>
 
-    <!-- Aufgabendateien anzeigen -->
+    <!-- Anzeige der zur Aufgabe gehörenden Dokumente und Materialien -->
     <div class="task-documents" *ngIf="taskDocuments && taskDocuments.length > 0">
       <h3>{{ 'taskMaterials' | translate }}</h3>
       <ul class="document-list">
@@ -23,7 +23,7 @@
     <div class="upload-section">
       <h3>{{ 'submitWork' | translate }}</h3>
       
-      <!-- Kommentarfeld für die Abgabe -->
+      <!-- Eingabefeld für zusätzliche Kommentare zur Abgabe -->
       <div class="comment-input-container">
         <label for="submission-comment">{{ 'submissionComment' | translate }}</label>
         <textarea 
@@ -35,12 +35,13 @@
         ></textarea>
       </div>
       
+      <!-- Dateiauswahl-Bereich für die Aufgabenabgabe -->
       <div class="file-input-container">
         <input type="file" accept="application/pdf" id="file-upload" (change)="handleFileUpload($event)" [disabled]="isUploading" />
         <label for="file-upload" class="file-input-label">{{ 'selectFile' | translate }}</label>
       </div>
       
-      <!-- Anzeige der ausgewählten Datei vor dem Upload -->
+      <!-- Vorschau der ausgewählten Datei vor dem Hochladen -->
       <div *ngIf="selectedFile" class="selected-file-preview">
         <div class="file-info">
           <span class="file-icon">📄</span>
@@ -55,7 +56,7 @@
         </div>
       </div>
       
-      <!-- Submit-Button für die Abgabe -->
+      <!-- Schaltfläche zum Einreichen der Aufgabe -->
       <button 
         class="btn-submit" 
         [disabled]="!selectedFile || isUploading" 
@@ -65,23 +66,24 @@
       </button>
     </div>
 
+    <!-- Anzeige der bereits hochgeladenen Abgabedatei -->
     <div class="submission-file" *ngIf="submissionFile">
       <h3>{{ 'submission' | translate }}</h3>
       <p>
         <a [href]="submissionFile.url" target="_blank">{{ submissionFile.name }}</a>
       </p>
       
-      <!-- Display student's submitted comment -->
+      <!-- Anzeige des eingereichten Kommentars des Studierenden -->
       <div class="submission-comment" *ngIf="submissionComment">
         <h4>{{ 'yourComment' | translate }}</h4>
         <p>{{ submissionComment }}</p>
       </div>
       
-      <!-- Button, der das Lösch-Popup öffnet -->
+      <!-- Schaltfläche zum Löschen der vorhandenen Abgabe -->
       <button class="btn-delete" (click)="openDeletePopup()">{{ 'delete' | translate }} </button>
     </div>
 
-    <!-- Enhanced feedback display section -->
+    <!-- Erweiterter Bereich zur Anzeige des Dozenten-Feedbacks -->
     <div class="submission-feedback" *ngIf="feedback">
       <h3>{{ 'feedback' | translate }}</h3>
       <div class="feedback-content">
@@ -92,7 +94,7 @@
       </div>
     </div>
 
-    <!-- Löschbestätigungspopup -->
+    <!-- Bestätigungsdialog vor dem Löschen einer Abgabe -->
     <div *ngIf="showDeletePopup" class="popup-overlay">
       <div class="app-popup popup-warning">
         <div class="popup-content">
@@ -107,7 +109,7 @@
       </div>
     </div>
 
-    <!-- Benachrichtigungs-Popup -->
+    <!-- Allgemeines Benachrichtigungsfenster für Systemnachrichten -->
     <div *ngIf="showNotification" class="popup-overlay">
       <div class="app-popup popup-info">
         <div class="popup-content">
