@@ -1,7 +1,7 @@
 <div class="courses">
-  <!-- Buttons nur für Admin sichtbar -->
+  <!-- Verwaltungsbuttons nur für Administratoren sichtbar -->
   <div *ngIf="isAdmin" class="user-management-container">
-    <!-- "Kurs hinzufügen" links -->
+    <!-- Button zum Hinzufügen eines neuen Kurses -->
     <button 
       class="button-standard" 
       (click)="openAddCourseModal()"
@@ -9,7 +9,7 @@
       ➕ {{ 'addCourse' | translate }}
     </button>
     
-    <!-- "Zur User-Verwaltung" rechts -->
+    <!-- Button zur Benutzerverwaltungsseite -->
     <button 
       class="button-standard" 
       (click)="navigateToUserVerwaltung()"
@@ -22,9 +22,9 @@
     <div *ngFor="let course of courses" class="course-content" (click)="navigateToCourse(course.title)" style="cursor: pointer;">
       <h3>{{ course.title }}</h3>
       
-      <!-- Container für Stift- und Mülleimer-Icons -->
+      <!-- Container für die Bearbeitungs- und Lösch-Icons -->
       <div class="icon-container">
-        <!-- Stift-Icon zur Admin-Kurs-Seite -->
+        <!-- Bearbeitungs-Icon für die Weiterleitung zur Admin-Kursansicht -->
         <span 
           class="edit-icon" 
           (click)="navigateToAdminKurs(course.title); $event.stopPropagation();" 
@@ -33,7 +33,7 @@
           ✏️
         </span>
         
-        <!-- Mülleimer-Icon zum Löschen des Kurses -->
+        <!-- Lösch-Icon zum Entfernen des Kurses -->
         <span 
           class="delete-icon" 
           (click)="showDeleteConfirmationPopup(course); $event.stopPropagation();" 
@@ -46,7 +46,7 @@
   </div>
 </div>
 
-<!-- Modal für Kurs hinzufügen -->
+<!-- Modal-Dialog zum Hinzufügen eines neuen Kurses -->
 <div class="modal" *ngIf="showAddCourseModal">
   <div class="modal-content">
     <h3>{{ 'addCourse' | translate }}</h3>
@@ -63,17 +63,17 @@
   </div>
 </div>
 
-<!-- Erfolgs-Popup -->
+<!-- Erfolgsmeldung nach dem Erstellen eines Kurses -->
 <div class="success-popup" *ngIf="showSuccessPopup">
   ✅ {{ 'courseCreatedSuccess' | translate }}
 </div>
 
-<!-- Error-Popup -->
+<!-- Fehlermeldung bei Problemen -->
 <div class="error-popup" *ngIf="showErrorPopup">
   ❌ {{ errorMessage }}
 </div>
 
-<!-- Bestätigungs-Popup für Kurs löschen -->
+<!-- Bestätigungsdialog vor dem Löschen eines Kurses -->
 <div class="confirmation-popup" *ngIf="showDeleteConfirmation">
   <p>{{ 'confirmDeleteCourse' | translate }}</p>
   <div class="confirmation-buttons">

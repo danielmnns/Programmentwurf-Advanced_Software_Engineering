@@ -8,8 +8,8 @@ import { AuthService } from '../auth/auth.service';
 export class InactivityService {
   private inactivityTimer: any;
   private delayTimer: any;
-  private readonly INACTIVITY_TIMEOUT = 15 * 60 * 1000; // 15 Minuten in Millisekunden
-  private readonly INACTIVITY_DELAY = 10 * 1000; // 10 Sekunden Verzögerung bevor der Timer startet
+  private readonly INACTIVITY_TIMEOUT = 15 * 60 * 1000; /* Automatische Abmeldung nach 15 Minuten Inaktivität */
+  private readonly INACTIVITY_DELAY = 10 * 1000; /* 10 Sekunden Verzögerung vor Timerstart */
   private lastActivityTime: number = Date.now();
   private timerActive: boolean = false;
 
@@ -19,52 +19,39 @@ export class InactivityService {
     private ngZone: NgZone
   ) { }
 
-  /**
-   * Initialisiert die Überwachung der Benutzeraktivität
-   */
+  /* Startet die Überwachung der Benutzeraktivität durch Registrierung von Event-Listenern */
   init(): void {
-    // Event-Listener für Benutzeraktivitäten
     const events = ['click', 'mousemove', 'keypress', 'scroll', 'touchstart'];
     
     events.forEach(event => {
       document.addEventListener(event, () => this.resetInactivityTimer());
     });
 
-    // Timer beim Start initialisieren
     this.resetInactivityTimer();
   }
 
-  /**
-   * Setzt den Inaktivitätstimer zurück
-   */
+  /* Setzt den Timer zurück, der die Benutzerinaktivität überwacht und ggf. automatisch abmeldet */
   resetInactivityTimer(): void {
-    // Nur ausführen, wenn der Benutzer angemeldet ist
     if (!this.authService.isLoggedIn()) {
       return;
     }
 
-    // Bestehenden Timer löschen
     if (this.inactivityTimer) {
       clearTimeout(this.inactivityTimer);
       this.inactivityTimer = null;
     }
 
-    // Verzögerungstimer löschen, falls vorhanden
     if (this.delayTimer) {
       clearTimeout(this.delayTimer);
       this.delayTimer = null;
     }
 
-    // Timer-Status aktualisieren
     this.timerActive = false;
     
-    // Verzögerungstimer starten, der nach 10 Sekunden Inaktivität den eigentlichen Timer startet
     this.delayTimer = setTimeout(() => {
-      // Aktuelle Zeit als letzte Aktivität speichern
       this.lastActivityTime = Date.now();
       this.timerActive = true;
       
-      // Den eigentlichen Inaktivitätstimer starten
       this.inactivityTimer = setTimeout(() => {
         this.ngZone.run(() => {
           console.log('Automatische Abmeldung nach Inaktivität');
@@ -77,33 +64,22 @@ export class InactivityService {
     }, this.INACTIVITY_DELAY);
   }
 
-  /**
-   * Prüft, ob der Inaktivitätstimer aktuell aktiv ist
-   * @returns true wenn der Timer läuft, sonst false
-   */
+  /* Gibt zurück, ob der Inaktivitätstimer gerade aktiv ist */
   isTimerActive(): boolean {
     return this.timerActive;
   }
 
-  /**
-   * Liefert die Zeitspanne in Millisekunden bis zur automatischen Abmeldung
-   * basierend auf der letzten Benutzeraktivität
-   * @returns Verbleibende Zeit in Millisekunden oder 0, wenn Timer noch nicht aktiv
-   */
+  /* Berechnet die verbleibende Zeit bis zur automatischen Abmeldung in Millisekunden */
   getTimeoutDuration(): number {
-    // Wenn der Timer noch nicht aktiv ist, 0 zurückgeben
     if (!this.timerActive) {
       return this.INACTIVITY_TIMEOUT;
     }
     
-    // Zeit berechnen: TIMEOUT abzüglich der Zeit seit der letzten Aktivität
     const elapsedSinceLastActivity = Date.now() - this.lastActivityTime;
     return Math.max(0, this.INACTIVITY_TIMEOUT - elapsedSinceLastActivity);
   }
 
-  /**
-   * Beendet die Überwachung der Benutzeraktivität
-   */
+  /* Stoppt die Überwachung der Benutzeraktivität und räumt alle Timer auf */
   stopMonitoring(): void {
     if (this.inactivityTimer) {
       clearTimeout(this.inactivityTimer);

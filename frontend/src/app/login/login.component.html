@@ -5,13 +5,13 @@
     </mat-card-header>
 
     <mat-card-content>
-      <!-- Info Message Box -->
+      <!-- Informationsmeldung für allgemeine Hinweise -->
       <div *ngIf="infoMessage" class="info-message-box">
         <span class="message-icon">ℹ️</span>
         <p>{{ infoMessage }}</p>
       </div>
 
-      <!-- Error Message Box -->
+      <!-- Fehlermeldung bei fehlgeschlagener Anmeldung -->
       <div *ngIf="loginFailed" class="error-message-box">
         <span class="message-icon">⚠️</span>
         <p>{{ errorMessage }}</p>

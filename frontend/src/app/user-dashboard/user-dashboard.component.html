@@ -1,19 +1,19 @@
 <div class="course-container">
-  <!-- Für eingeschriebene Kurse: Die gesamte Box ist klickbar -->
+  <!-- Für eingeschriebene Kurse kann die gesamte Box angeklickt werden, um zum Kurs zu navigieren -->
   <div *ngFor="let course of courses" 
        class="course-box" 
        [ngClass]="{'enrolled-course': course.enrolled, 'unenrolled-course': !course.enrolled}"
        [style.cursor]="course.enrolled ? 'pointer' : 'default'"
        (click)="course.enrolled ? navigateToCourse(course.title) : undefined">
     <div class="course-content">
-      <!-- Kurstitel für nicht eingeschriebene Kurse -->
+      <!-- Kurstitel für Kurse, in die der Benutzer nicht eingeschrieben ist -->
       <span 
         class="course-title unenrolled" 
         *ngIf="!course.enrolled"
       >
         {{ course.title }}
       </span>
-      <!-- Kurstitel für eingeschriebene Kurse -->
+      <!-- Kurstitel für Kurse, in die der Benutzer eingeschrieben ist -->
       <span 
         class="course-title enrolled" 
         *ngIf="course.enrolled" 
@@ -21,7 +21,7 @@
       >
         {{ course.title }}
       </span>
-      <!-- Indikator für nicht eingeschriebene Kurse (statt Enrollment-Button) -->
+      <!-- Schloss-Symbol für nicht eingeschriebene Kurse -->
       <div *ngIf="!course.enrolled" class="course-actions">
         <span class="lock-icon">🔒</span>
       </div>

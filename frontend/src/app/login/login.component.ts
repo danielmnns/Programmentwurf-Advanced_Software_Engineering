@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Nach URL-Parametern suchen
+    /* Nach URL-Parametern suchen, um spezielle Infomeldungen anzuzeigen */
     this.route.queryParams.subscribe(params => {
       const reason = params['reason'];
       
@@ -55,10 +55,11 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  /* Verarbeitet die Anmeldung beim Absenden des Formulars */
   onSubmit(): void {
     this.isLoading = true;
     this.loginFailed = false;
-    this.infoMessage = ''; // Infomeldung bei neuem Login-Versuch ausblenden
+    this.infoMessage = ''; /* Infomeldung bei neuem Login-Versuch ausblenden */
     
     console.log('LoginComponent: Login-Formular abgeschickt');
     this.authService.login(this.username, this.password).subscribe(
@@ -66,11 +67,12 @@ export class LoginComponent implements OnInit {
         this.isLoading = false;
         console.log('LoginComponent: Login-Antwort erhalten', response);
 
-        // Zusätzliche Prüfung auf response.user
+        /* Zusätzliche Prüfung auf response.user und Benutzertyp */
         if (response.success && response.user && response.user.userType) {
           const userType = response.user.userType;
           console.log('LoginComponent: Weiterleitung für Benutzer-Typ', userType);
 
+          /* Weiterleitung basierend auf dem Benutzertyp */
           if (userType === 'admin' || userType === 'studiengangsleiter') {
             this.router.navigate(['/admin-dashboard']);
           } else if (userType === 'student' || userType === 'dozent') {

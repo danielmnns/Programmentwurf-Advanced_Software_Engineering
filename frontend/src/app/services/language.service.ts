@@ -10,36 +10,36 @@ export interface Translations {
   providedIn: 'root'
 })
 export class LanguageService {
-  // Default language is German
+  /* Standardsprache ist Deutsch */
   private readonly currentLanguageSubject = new BehaviorSubject<Language>('de');
   public readonly currentLanguage$ = this.currentLanguageSubject.asObservable();
 
-  // Store translations for each language
+  /* Übersetzungen für jede Sprache speichern */
   private readonly translations: { [key in Language]: Translations } = {
     de: {},
     en: {}
   };
 
   constructor(private readonly ngZone: NgZone) {
-    // Zuerst Übersetzungen laden
+    /* Zuerst Übersetzungen laden */
     this.loadTranslations();
 
-    // Dann Spracheinstellung laden oder festlegen
+    /* Dann Spracheinstellung laden oder festlegen */
     const savedLang = localStorage.getItem('preferredLanguage') as Language;
     if (savedLang && (savedLang === 'de' || savedLang === 'en')) {
       this.setLanguage(savedLang);
     } else {
-      // If no saved preference, detect browser language
+      /* Wenn keine gespeicherte Präferenz vorhanden ist, Browsersprache erkennen */
       const browserLang = navigator.language.split('-')[0];
       if (browserLang === 'en') {
         this.setLanguage('en');
       }
-      // Default is already 'de'
+      /* Standard ist bereits 'de' */
     }
   }
 
   private loadTranslations() {
-    // German translations (default)
+    /* Deutsche Übersetzungen (Standard) */
     this.translations.de = {
       // Common
       'yes': 'Ja',
@@ -173,7 +173,7 @@ export class LanguageService {
       'sessionTimeout': 'Sitzungszeit verbleibend'
     };
 
-    // English translations
+    /* Englische Übersetzungen */
     this.translations.en = {
       // Common
       'yes': 'Yes',
@@ -308,9 +308,10 @@ export class LanguageService {
     };
   }
 
+  /* Setzt die aktuelle Sprache und speichert die Präferenz */
   public setLanguage(lang: Language): void {
     if (this.currentLanguageSubject.value !== lang) {
-      // Nur aktualisieren, wenn sich die Sprache ändert
+      /* Nur aktualisieren, wenn sich die Sprache ändert */
       this.ngZone.run(() => {
         this.currentLanguageSubject.next(lang);
         localStorage.setItem('preferredLanguage', lang);
@@ -319,18 +320,20 @@ export class LanguageService {
     }
   }
 
+  /* Gibt die aktuell eingestellte Sprache zurück */
   public getCurrentLanguage(): Language {
     return this.currentLanguageSubject.value;
   }
 
+  /* Übersetzt einen Schlüssel in die aktuelle Sprache mit optionalen Ersetzungen */
   public translate(key: string, replacements?: { [key: string]: string }): string {
     const lang = this.getCurrentLanguage();
     const translations = this.translations[lang];
     
-    // Get the translation or use the key as fallback
+    /* Übersetzung abrufen oder Schlüssel als Fallback verwenden */
     let translation = translations[key] || key;
     
-    // Handle replacements if provided
+    /* Ersetzungen verarbeiten, falls vorhanden */
     if (replacements) {
       Object.keys(replacements).forEach(replaceKey => {
         const placeholder = `{{${replaceKey}}}`;

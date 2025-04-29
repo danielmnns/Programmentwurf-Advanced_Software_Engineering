@@ -13,8 +13,9 @@ export class FileUrlService {
             private readonly http: HttpClient,
             private readonly route: ActivatedRoute) {}
 
+  /* Erstellt eine sichere Ressourcen-URL für Dateien basierend auf ihrem relativen Pfad */
   getFileUrl(relativePath: string | SafeResourceUrl): SafeResourceUrl {
-    // Wenn es bereits ein SafeResourceUrl ist, direkt zurückgeben
+    /* Wenn es bereits ein SafeResourceUrl ist, direkt zurückgeben */
     if (typeof relativePath !== 'string') {
       return relativePath;
     }
@@ -25,33 +26,33 @@ export class FileUrlService {
       return this.sanitizer.bypassSecurityTrustResourceUrl(relativePath);
     }
 
-    // Bereinigung des Pfades
+    /* Bereinigung des Pfades */
     let cleanPath = relativePath;
     
-    // Entferne führende Slashes
+    /* Entferne führende Slashes */
     while (cleanPath.startsWith('/')) {
       cleanPath = cleanPath.substring(1);
     }
     
-    // Identifiziere UUID-basierte Dateinamen (z.B. 40de5b57-e5ba-4a43-8d74-6803771723f1-neuer_kurs_Teilnehmerliste.pdf)
+    /* Identifiziere UUID-basierte Dateinamen (z.B. 40de5b57-e5ba-4a43-8d74-6803771723f1-neuer_kurs_Teilnehmerliste.pdf) */
     const uuidPattern = /^([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})(?:-.+)?\.pdf$/;
     const uuidMatch = RegExp.prototype.exec.call(uuidPattern, cleanPath);
     
-    // Bei PDF-Dateien, die mit einer UUID beginnen, direkt auf die Datei im Root-Upload-Verzeichnis zugreifen
+    /* Bei PDF-Dateien, die mit einer UUID beginnen, direkt auf die Datei im Root-Upload-Verzeichnis zugreifen */
     if (cleanPath.endsWith('.pdf') && uuidMatch) {
       const fullUrl = `${this.backendUrl}/${cleanPath}`;
       return this.sanitizer.bypassSecurityTrustResourceUrl(fullUrl);
     }
     
-    // Bei nur einer UUID ohne Dateiendung, suchen wir nach UUID-basierten PDFs
+    /* Bei nur einer UUID ohne Dateiendung, suchen wir nach UUID-basierten PDFs */
     const uuidOnlyPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
     if (uuidOnlyPattern.test(cleanPath)) {
-      // Da kein direkter Zugriff auf UUID möglich ist, nehmen wir an, dass es eine PDF mit dieser UUID ist
+      /* Da kein direkter Zugriff auf UUID möglich ist, nehmen wir an, dass es eine PDF mit dieser UUID ist */
       const fullUrl = `${this.backendUrl}/${cleanPath}.pdf`;
       return this.sanitizer.bypassSecurityTrustResourceUrl(fullUrl);
     }
     
-    // Verarbeite Dateien in Unterverzeichnissen (courseDocuments, taskDocuments, usw.)
+    /* Verarbeite Dateien in Unterverzeichnissen (courseDocuments, taskDocuments, usw.) */
     if (cleanPath.includes('/')) {
       const parts = cleanPath.split('/');
       const directory = parts[0];
@@ -63,7 +64,7 @@ export class FileUrlService {
       }
     }
     
-    // Fallback: Datei direkt im uploads-Verzeichnis
+    /* Fallback: Datei direkt im uploads-Verzeichnis */
     return this.sanitizer.bypassSecurityTrustResourceUrl(`${this.backendUrl}/${cleanPath}`);
   }
 }

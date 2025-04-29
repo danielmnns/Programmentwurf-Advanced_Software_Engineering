@@ -13,7 +13,7 @@ import { LanguageService } from '../services/language.service';
 export interface DocumentFile {
   name: string;
   url: SafeResourceUrl;
-  originalUrl?: string; // Hinzufügen der originalUrl-Eigenschaft
+  originalUrl?: string; /* Original-URL der Datei */
 }
 
 export interface Submission {
@@ -81,13 +81,14 @@ export class KursComponent implements OnInit, OnDestroy {
     this.loadCourseData();
   }
 
+  /* Prüft, ob der aktuelle Benutzer berechtigt ist, den Kurs zu verwalten */
   checkAuthorization(): void {
     const userRoles = ['admin', 'dozent', 'studiengangsleiter'];
     this.http.get('http://localhost:3000/api/user/userdata').subscribe({
       next: (response: any) => {
         if (response.success && response.user) {
           this.isAuthorized = userRoles.includes(response.user.userType);
-          this.userName = response.user.userName; // Setze den aktuellen Benutzernamen
+          this.userName = response.user.userName; /* Aktuellen Benutzernamen setzen */
         } else {
           console.error('Ungültige API-Antwort:', response);
         }
@@ -98,7 +99,7 @@ export class KursComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Navigiert zur Admin-Kursseite
+  /* Navigiert zur Admin-Kursseite */
   navigateToAdminCourse(courseName: string): void {
     const encodedName = encodeURIComponent(courseName);
     this.router.navigate(['/admin-kurs', encodedName]).catch((error) => {
@@ -106,16 +107,17 @@ export class KursComponent implements OnInit, OnDestroy {
     });
   }
 
+  /* Lädt alle Kursdaten vom Server */
   loadCourseData(): void {
     const url = `${this.apiUrl}/user-kurs?courseName=${encodeURIComponent(this.courseName)}`;
     this.http.get(url).subscribe({
       next: (response: any) => {
-        // Kursinformationen
+        /* Kursinformationen */
         this.textContent = response.textContent ?? '';
         this.feedbackContent = response.feedbackContent ?? '';
         this.participants = response.participants ?? [];
 
-        // Kursdokumente mit absoluten URLs
+        /* Kursdokumente mit absoluten URLs */
         if (response.documents) {
           this.uploadedFiles.documents = response.documents.map((doc: any) => ({
             name: doc.name,
@@ -124,7 +126,7 @@ export class KursComponent implements OnInit, OnDestroy {
           }));
         }
 
-        // Allgemeine Abgaben des Kurses
+        /* Allgemeine Abgaben des Kurses */
         if (response.abgaben) {
           this.uploadedFiles.abgaben = response.abgaben.map((sub: any) => ({
             name: sub.name,
@@ -132,13 +134,13 @@ export class KursComponent implements OnInit, OnDestroy {
           }));
         }
 
-        // Aufgaben inkl. Dokumente und submissions
+        /* Aufgaben inkl. Dokumente und Abgaben */
         if (response.tasks) {
           this.tasks = response.tasks.map((task: any) => {
             if (task.documents) {
               task.documents = task.documents.map((doc: any) => ({
                 name: doc.name,
-                // Verwende den fileUrlService für einheitliche URL-Verarbeitung
+                /* Verwende den fileUrlService für einheitliche URL-Verarbeitung */
                 originalUrl: doc.url,
                 url: this.fileUrlService.getFileUrl(doc.url),
               }));
@@ -153,25 +155,27 @@ export class KursComponent implements OnInit, OnDestroy {
     });
   }
 
-  // Öffnet die PDF-Vorschau
+  /* Öffnet die PDF-Vorschau */
   openPdfPreview(url: SafeResourceUrl | string) {
-    // Sicherstellen, dass die URL ordnungsgemäß verarbeitet und sanitisiert wird
+    /* Sicherstellen, dass die URL ordnungsgemäß verarbeitet und sanitisiert wird */
     if (typeof url === 'string') {
-      // String-URL durch fileUrlService verarbeiten
+      /* String-URL durch fileUrlService verarbeiten */
       this.currentPdfUrl = this.fileUrlService.getFileUrl(url);
     } else {
-      // Wenn es bereits eine SafeResourceUrl ist, direkt verwenden
+      /* Wenn es bereits eine SafeResourceUrl ist, direkt verwenden */
       this.currentPdfUrl = url;
     }
     this.showPdfPreview = true;
   }
 
+  /* Schließt die PDF-Vorschau */
   closePdfPreview(): void {
     this.showPdfPreview = false;
-    // Das Zurücksetzen auf einen leeren String erzeugt Probleme, da currentPdfUrl als SafeResourceUrl definiert ist
+    /* Das Zurücksetzen auf einen leeren String erzeugt Probleme, da currentPdfUrl als SafeResourceUrl definiert ist */
     this.currentPdfUrl = this.sanitizer.bypassSecurityTrustResourceUrl('about:blank');
   }
 
+  /* Verarbeitet einen Datei-Upload über Datei-Dialog */
   handleFileUpload(event: Event, type: string): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -188,6 +192,7 @@ export class KursComponent implements OnInit, OnDestroy {
     }
   }
 
+  /* Verarbeitet das Hochladen einer Abgabe zu einer Aufgabe */
   handleTaskSubmission(event: Event, task: Task): void {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
@@ -205,21 +210,22 @@ export class KursComponent implements OnInit, OnDestroy {
     }
   }
 
-  // Neuer Code: Öffnet die Aufgabe abhängig von der Benutzerrolle
+  /* Öffnet die Aufgabe abhängig von der Benutzerrolle */
   openTask(task: Task): void {
     if (this.isAuthorized) {
-      // Für Admin, Dozent, Studiengangsleiter: Weiterleitung zur admin-aufgabe
+      /* Für Admin, Dozent, Studiengangsleiter: Weiterleitung zur admin-aufgabe */
       this.router.navigate(['/admin-aufgabe', this.courseName, task.name]).catch((error) => {
         console.error('Fehler beim Navigieren zur Admin-Aufgabenseite:', error);
       });
     } else {
-      // Für Studierende: Weiterleitung zur user-aufgabe
+      /* Für Studierende: Weiterleitung zur user-aufgabe */
       this.router.navigate(['/', this.courseName, task.name]).catch((error) => {
         console.error('Fehler beim Navigieren zur User-Aufgabenseite:', error);
       });
     }
   }
 
+  /* Zeigt einen Bestätigungsdialog zum Löschen einer Datei an */
   confirmDeletion(type: 'abgaben', index: number): void {
     const fileToDelete = this.uploadedFiles.abgaben[index];
     if (fileToDelete) {
@@ -231,6 +237,7 @@ export class KursComponent implements OnInit, OnDestroy {
     }
   }
 
+  /* Löscht eine Datei nach Bestätigung */
   deleteFile(): void {
     if (this.fileToDelete && this.fileToDeleteIndex !== null) {
       const payload = {
@@ -255,6 +262,7 @@ export class KursComponent implements OnInit, OnDestroy {
     this.cancelDeletion();
   }
 
+  /* Bricht den Löschvorgang ab */
   cancelDeletion(): void {
     this.showConfirmationDialog = false;
     this.fileToDelete = null;

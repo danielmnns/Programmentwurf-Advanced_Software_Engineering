@@ -34,13 +34,13 @@ export class HeadbarComponent implements OnInit, OnDestroy {
   userType: string | null = '';
   currentLanguage: Language;
   
-  // Neue Eigenschaften für die Sitzungszeitanzeige
+  /* Eigenschaften für die Anzeige der verbleibenden Sitzungszeit */
   remainingTime: string = '';
   isLoggedIn: boolean = false;
   isTimerWarning: boolean = false;
-  timerActive: boolean = false; // Für Sichtbarkeitssteuerung des Timers
+  timerActive: boolean = false; /* Steuert die Sichtbarkeit des Timers in der UI */
   private sessionTimerSubscription?: Subscription;
-  private readonly WARNING_THRESHOLD = 5 * 60 * 1000; // 5 Minuten in Millisekunden
+  private readonly WARNING_THRESHOLD = 5 * 60 * 1000; /* Warnschwelle: 5 Minuten vor Ablauf der Sitzung */
 
   constructor(
     private router: Router, 
@@ -56,16 +56,16 @@ export class HeadbarComponent implements OnInit, OnDestroy {
     this.updateDateTime();
     setInterval(() => {
       this.updateDateTime();
-    }, 1000); // Jede Sekunde aktualisieren
+    }, 1000); /* Datum und Uhrzeit jede Sekunde aktualisieren */
 
     this.loadUserData();
     
-    // Subscribe to language changes
+    /* Auf Sprachänderungen reagieren */
     this.languageService.currentLanguage$.subscribe(lang => {
       this.currentLanguage = lang;
     });
     
-    // Login-Status prüfen und Timer starten
+    /* Login-Status prüfen und Timer starten falls eingeloggt */
     this.isLoggedIn = this.authService.isLoggedIn();
     if (this.isLoggedIn) {
       this.startSessionTimer();
@@ -73,12 +73,13 @@ export class HeadbarComponent implements OnInit, OnDestroy {
   }
   
   ngOnDestroy(): void {
-    // Aufräumen der Subscription beim Zerstören der Komponente
+    /* Aufräumen der Subscription beim Zerstören der Komponente */
     if (this.sessionTimerSubscription) {
       this.sessionTimerSubscription.unsubscribe();
     }
   }
 
+  /* Lädt die Benutzerdaten vom Backend und aktualisiert die UI entsprechend */
   loadUserData(): void {
     this.http.get('http://localhost:3000/api/user/userdata').subscribe(
       (response: any) => {
@@ -88,7 +89,7 @@ export class HeadbarComponent implements OnInit, OnDestroy {
           console.log('Benutzerdaten erfolgreich geladen:', response.user);
           this.isLoggedIn = true;
           
-          // Timer neu starten, wenn Benutzerdaten geladen wurden
+          /* Timer neu starten, wenn Benutzerdaten geladen wurden */
           this.startSessionTimer();
         } else {
           console.error('Ungültige Antwort von /api/user/userdata:', response);
@@ -102,67 +103,58 @@ export class HeadbarComponent implements OnInit, OnDestroy {
     );
   }
 
+  /* Aktualisiert das aktuelle Datum und die Uhrzeit für die Anzeige */
   updateDateTime(): void {
     const now = new Date();
     this.currentDate = now.toLocaleDateString();
     this.currentTime = now.toLocaleTimeString();
   }
 
+  /* Navigiert zum passenden Dashboard je nach Benutzerrolle */
   navigateToHome(): void {
     if (this.userType === 'admin' || this.userType === 'studiengangsleiter') {
-      this.router.navigate(['/admin-dashboard']);  // Weiterleitung zur Admin- oder Studiengangsleiter-Dashboard-Seite
+      this.router.navigate(['/admin-dashboard']);
     } else if (this.userType === 'student' || this.userType === 'dozent') {
-      this.router.navigate(['/user-dashboard']);  // Weiterleitung zur Benutzer-Dashboard-Seite
+      this.router.navigate(['/user-dashboard']);
     } else {
-      this.router.navigate(['/']);  // Standard-Route, wenn der Benutzertyp nicht erkannt wird
+      this.router.navigate(['/']);
     }
   }
 
+  /* Navigiert zur Kontoseite des Benutzers */
   navigateToAccount(): void {
     this.router.navigate(['/account']);
   }
 
-  // Change language method
+  /* Ändert die Anzeigesprache der Anwendung */
   changeLanguage(lang: Language): void {
-    // Nutze die verbesserte setLanguage-Methode des LanguageService
-    // Die Angular Change Detection wird innerhalb des Service erzwungen
     this.languageService.setLanguage(lang);
-    
-    // Das UI wird automatisch aktualisiert durch die Observable-Subscription
-    // in der ngOnInit-Methode
   }
 
+  /* Gibt die lokalisierte Bezeichnung der aktuellen Sprache zurück */
   getLanguageLabel(): string {
     return this.languageService.translate(this.currentLanguage === 'de' ? 'german' : 'english');
   }
 
+  /* Gibt das Flaggen-Emoji für die aktuelle Sprache zurück */
   getLanguageFlag(): string {
     return this.currentLanguage === 'de' ? '🇩🇪' : '🇬🇧';
   }
   
-  /**
-   * Startet den Timer für die Sitzungszeitanzeige
-   */
+  /* Startet den Timer für die Anzeige der verbleibenden Sitzungszeit */
   startSessionTimer(): void {
-    // Alte Subscription aufräumen, falls vorhanden
     if (this.sessionTimerSubscription) {
       this.sessionTimerSubscription.unsubscribe();
     }
     
-    // Alle Sekunde die verbleibende Zeit aktualisieren
     this.sessionTimerSubscription = interval(1000).subscribe(() => {
-      // Timer-Status aus dem Service abfragen
       this.timerActive = this.inactivityService.isTimerActive();
       
-      // Nur verbleibende Zeit berechnen, wenn Timer aktiv ist
       if (this.timerActive) {
         const timeLeft = this.inactivityService.getTimeoutDuration();
         
         if (timeLeft > 0) {
-          // Verbleibende Zeit formatieren
           this.formatRemainingTime(timeLeft);
-          
-          // Warnung anzeigen, wenn weniger als 5 Minuten übrig sind
           this.isTimerWarning = timeLeft <= this.WARNING_THRESHOLD;
         } else {
           this.remainingTime = '0:00';
@@ -172,9 +164,7 @@ export class HeadbarComponent implements OnInit, OnDestroy {
     });
   }
   
-  /**
-   * Formatiert die verbleibende Zeit in Minuten und Sekunden (MM:SS)
-   */
+  /* Hilfsmethode zur Formatierung der verbleibenden Zeit in MM:SS Format */
   private formatRemainingTime(timeInMs: number): void {
     const totalSeconds = Math.floor(timeInMs / 1000);
     const minutes = Math.floor(totalSeconds / 60);

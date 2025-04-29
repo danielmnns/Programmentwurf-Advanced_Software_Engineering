@@ -37,6 +37,7 @@ export class UserDashboardComponent {
     this.loadCourses();
   }
 
+  /* Lädt alle verfügbaren Kurse für den eingeloggten Benutzer */
   loadCourses(): void {
     this.courseService.getAllCourses().subscribe(
       (data) => this.courses = data,
@@ -44,12 +45,14 @@ export class UserDashboardComponent {
     );
   }
 
+  /* Prüft, ob der aktuelle Benutzer in einem Kurs eingeschrieben ist */
   isUserEnrolled(course: any): boolean {
     return course.enrolled;
   }
 
+  /* Navigiert zur Detailansicht eines Kurses */
   navigateToCourse(courseName: string): void {
-    // Navigation zur Kursseite mit Kursnamen in der URL
+    /* Navigation zur Kursseite mit Kursnamen in der URL */
     this.router.navigate(['/user-kurs', encodeURIComponent(courseName)]);
   }
 }

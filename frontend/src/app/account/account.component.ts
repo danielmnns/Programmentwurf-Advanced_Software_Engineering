@@ -32,21 +32,23 @@ export class AccountComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.userName = this.authService.getUserName(); // Get username from AuthService
+    this.userName = this.authService.getUserName(); /* Benutzernamen aus dem AuthService abrufen */
     
     if (!this.userName) {
-      // Redirect to login if not authenticated
+      /* Zum Login weiterleiten, wenn nicht authentifiziert */
       this.router.navigate(['/login']);
     }
   }
 
+  /* Benutzer abmelden und zur Login-Seite weiterleiten */
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
 
+  /* Passwort des Benutzers ändern mit Validierung und Feedback */
   changePassword(): void {
-    // Reset messages
+    /* Statusmeldungen zurücksetzen */
     this.successMessage = '';
     this.errorMessage = '';
     
@@ -55,7 +57,7 @@ export class AccountComponent implements OnInit {
       return;
     }
     
-    // Simple password validation
+    /* Einfache Validierung der Passwortstärke */
     if (this.newPassword.length < 8) {
       this.errorMessage = 'Das neue Passwort muss mindestens 8 Zeichen lang sein.';
       return;
@@ -73,11 +75,11 @@ export class AccountComponent implements OnInit {
         this.isLoading = false;
         if (response.passwordChangeSuccess) {
           this.successMessage = 'Ihr Passwort wurde erfolgreich geändert.';
-          // Clear the password fields
+          /* Passwortfelder leeren */
           this.oldPassword = '';
           this.newPassword = '';
           
-          // Set a timeout to logout after showing success message
+          /* Verzögerte Abmeldung nach erfolgreicher Änderung */
           setTimeout(() => {
             this.logout();
           }, 3000);
@@ -93,7 +95,7 @@ export class AccountComponent implements OnInit {
     );
   }
   
-  // Helper method to check password strength
+  /* Hilfsmethode zur Beurteilung der Passwortstärke */
   getPasswordStrength(password: string): 'weak' | 'medium' | 'strong' {
     if (!password || password.length < 8) {
       return 'weak';
