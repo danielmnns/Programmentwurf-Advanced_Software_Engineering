@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # MongoDB-Datenbank
+  mongodb:
+    image: mongo:latest
+    container_name: lms-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=lms_db
+    networks:
+      - lms-network
+    restart: unless-stopped
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/lms_db --quiet
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 40s
+
+  # Backend-Service (NestJS)
+  backend:
+    build:
+      context: ./backend_nest
+      dockerfile: Dockerfile
+    container_name: lms-backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend_nest:/app
+      - /app/node_modules
+      - backend_uploads:/app/uploads
+    environment:
+      - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongodb:27017/lms_db
+      - JWT_SECRET=lms-secret-key
+      - JWT_EXPIRES_IN=7d
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - lms-network
+    restart: unless-stopped
+
+  # Frontend-Service (Angular)
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: lms-frontend
+    ports:
+      - "4200:4200"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
+    networks:
+      - lms-network
+    restart: unless-stopped
+
+networks:
+  lms-network:
+    driver: bridge
+
+volumes:
+  mongodb_data:
+  backend_uploads:
