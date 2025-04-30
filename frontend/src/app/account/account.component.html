@@ -1,7 +1,7 @@
 <div class="account-container">
   <h2>{{ 'accountSettings' | translate }}</h2>
   
-  <!-- Success/Error Alerts would go here -->
+  <!-- Erfolgs- und Fehlermeldungen werden hier angezeigt -->
   <div *ngIf="successMessage" class="alert alert-success">
     <span class="alert-icon">✓</span>
     <span>{{ successMessage }}</span>
@@ -12,7 +12,9 @@
     <span>{{ errorMessage }}</span>
   </div>
 
+  <!-- Formular zur Änderung des Passworts -->
   <form (ngSubmit)="changePassword()">
+    <!-- Benutzername (schreibgeschützt) -->
     <div class="form-group">
       <label for="username">{{ 'username' | translate }}</label>
       <input
@@ -24,6 +26,7 @@
       />
     </div>
     
+    <!-- Eingabefeld für das aktuelle Passwort -->
     <div class="form-group">
       <label for="old-password">{{ 'oldPassword' | translate }}</label>
       <input
@@ -36,6 +39,7 @@
       />
     </div>
     
+    <!-- Eingabefeld für das neue Passwort -->
     <div class="form-group">
       <label for="new-password">{{ 'newPassword' | translate }}</label>
       <input
@@ -47,7 +51,7 @@
         required
       />
       
-      <!-- Password strength indicators could go here -->
+      <!-- Anzeige der Passwortanforderungen -->
       <div *ngIf="newPassword" class="password-requirements">
         {{ 'passwordRequirements' | translate }}:
         <ul>
@@ -59,6 +63,7 @@
       </div>
     </div>
     
+    <!-- Schaltflächen für Passwortänderung und Abmelden -->
     <div class="buttons-container">
       <button type="submit" class="btn btn-primary">
         {{ 'changePassword' | translate }}

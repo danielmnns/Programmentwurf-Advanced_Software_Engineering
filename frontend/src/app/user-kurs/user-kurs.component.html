@@ -1,4 +1,4 @@
-<!-- src/app/user-kurs/user-kurs.component.html -->
+<!-- Benutzer-Kursansicht mit allen relevanten Kursinformationen -->
 <div class="container">
   <div class="users">
     <h2>
@@ -13,7 +13,7 @@
       </span>
     </h2>
     <ul>
-      <!-- Beschreibung -->
+      <!-- Kursbeschreibung -->
       <li *ngIf="textContent">
         <mat-card>
           <mat-card-title>{{ 'courseDescription' | translate }}</mat-card-title>
@@ -23,19 +23,14 @@
         </mat-card>
       </li>
 
-      <!-- Kurs-Dokumente -->
+      <!-- Kursmaterialien und Dokumente -->
       <li *ngIf="uploadedFiles.documents.length">
         <mat-card>
           <mat-card-title>{{ 'materials' | translate }}</mat-card-title>
           <mat-card-content>
             <ul>
               <li *ngFor="let file of uploadedFiles.documents">
-                <!-- Debug-Informationen -->
-                <!-- <div style="font-size: 11px; color: #666; margin-bottom: 5px;">
-                  URL: {{file.originalUrl}}
-                </div> -->
-                
-                <!-- Korrigierter Link, der immer auf das PDF zeigt -->
+                <!-- Direkter Link zum Herunterladen der Datei -->
                 <a [href]="file.url" target="_blank">{{ file.name }}</a>
                 <button (click)="openPdfPreview(file.originalUrl || file.url)" class="preview-button">{{ 'preview' | translate }}</button>
               </li>
@@ -44,7 +39,7 @@
         </mat-card>
       </li>
 
-      <!-- Aufgabenbereich-->
+      <!-- Liste der verfügbaren Aufgaben im Kurs -->
       <li *ngFor="let task of tasks">
         <mat-card class="task-card">
           <mat-card-title (click)="openTask(task)" style="cursor: pointer;">
@@ -54,7 +49,7 @@
             <p>{{ task.description }}</p>
           </mat-card-content>
           
-          <!-- Zeige Aufgaben-Materialien an -->
+          <!-- Anzeige der Aufgabenmaterialien und zugehörigen Dokumente -->
           <mat-card-content *ngIf="task.documents && task.documents.length > 0">
             <h4>{{ 'taskMaterials' | translate }}</h4>
             <ul class="task-document-list">
@@ -68,7 +63,7 @@
             </ul>
           </mat-card-content>
           
-          <!-- Neuer Button zum Öffnen der Aufgabe -->
+          <!-- Button zur Navigationsseite der spezifischen Aufgabenansicht -->
           <mat-card-actions>
             <button (click)="openTask(task)" class="open-task-button">
               {{ 'openTask' | translate }}
@@ -78,7 +73,7 @@
       </li>
     </ul>
 
-    <!-- PDF-Vorschau Modal -->
+    <!-- PDF-Vorschaumodul für Dokumente und Aufgabenmaterialien -->
     <div *ngIf="showPdfPreview" class="pdf-preview">
       <div class="pdf-container">
         <button class="close-button" (click)="showPdfPreview = false">✖</button>
@@ -95,7 +90,7 @@
   </div>
 </div>
 
-<!-- Bestätigungsdialog -->
+<!-- Bestätigungsdialog vor dem Löschen einer Datei -->
 <div *ngIf="showConfirmationDialog" class="popup-overlay">
   <div class="app-popup popup-warning">
     <div class="popup-content">

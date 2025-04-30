@@ -62,11 +62,11 @@ interface UserType {
 export class UserVerwaltungComponent implements OnInit, OnDestroy {
   users: User[] = [];
   
-  // Popup-related properties for user deletion
+  /* Eigenschaften für Benutzer-Löschbestätigung */
   showDeleteUserConfirmation: boolean = false;
   userToDelete: User | null = null;
 
-  // Korrigierte Benutzertypen als Objekte mit value/label
+  /* Benutzertypen als Objekte mit Wert und Anzeigetext */
   userTypes: UserType[] = [
     { value: 'admin', label: 'Administrator' },
     { value: 'dozent', label: 'Dozent' },
@@ -74,7 +74,7 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
     { value: 'studiengangsleiter', label: 'Studiengangsleiter' }
   ];
 
-  // Initiale Werte mit kleingeschriebenem userType
+  /* Initiale Werte für Formulare */
   newUser = { username: '', password: '', userType: 'student' };
   displayedColumns: string[] = ['username', 'userType', 'actions'];
   dataSource = new MatTableDataSource<User>([]);
@@ -84,27 +84,27 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
   courseDisplayedColumns: string[] = ['courseName', 'participants', 'actions'];
   courseDataSource = new MatTableDataSource<Course>([]);
 
-  // API-URLs
-  private apiUrl = 'http://localhost:3000/api/admin/user-verwaltung'; // Korrigierte URL
+  /* API-Endpunkte */
+  private apiUrl = 'http://localhost:3000/api/admin/user-verwaltung';
   private courseApiUrl = 'http://localhost:3000/api/courses/user-verwaltung';
 
-  // Dialog-Referenzen
+  /* Referenzen für Dialog-Templates */
   @ViewChild('participantDialogTemplate') participantDialogTemplate!: TemplateRef<any>;
   @ViewChild('editUserDialogTemplate') editUserDialogTemplate!: TemplateRef<any>;
   @ViewChild('dialogTrigger') dialogTrigger!: ElementRef;
   participantDialogRef: MatDialogRef<any> | null = null;
   editUserDialogRef: MatDialogRef<any> | null = null;
 
-  // Ausgewählte Objekte für Dialoge
+  /* Ausgewählte Objekte für Dialogfenster */
   selectedCourse: Course | null = null;
   selectedUser: User | null = null;
   selectedUserType: string = '';
 
-  // Suchbegriffe
+  /* Suchbegriffe für Filterfunktionen */
   participantSearchTerm: string = '';
   userSearchTerm: string = '';
 
-  // Gefilterte Listen
+  /* Gefilterte Teilnehmerliste basierend auf Suchbegriff */
   get filteredParticipants(): string[] {
     if (!this.selectedCourse) return [];
 
@@ -113,6 +113,7 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
     );
   }
 
+  /* Gefilterte Benutzerliste ohne bereits zugewiesene Teilnehmer */
   get filteredAvailableUsers(): User[] {
     if (!this.selectedCourse) return [];
 
@@ -136,20 +137,22 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
   }
 
   ngAfterViewInit() {
-    // Überwache den Dialog-Trigger für korrektes Fokusmanagement
+    /* Überwache Dialog-Trigger für korrektes Fokusmanagement */
     if (this.dialogTrigger) {
       this.focusMonitor.monitor(this.dialogTrigger);
     }
   }
 
   ngOnDestroy(): void {
+    /* Bereinige Fokusüberwachung beim Zerstören der Komponente */
     if (this.dialogTrigger) {
       this.focusMonitor.stopMonitoring(this.dialogTrigger);
     }
   }
 
+  /* Öffnet das Dialog für die Teilnehmerverwaltung eines Kurses */
   openParticipantDialog(course: Course) {
-    // Speichere aktiven Element vor Dialog-Öffnung
+    /* Speichere aktives Element vor Dialog-Öffnung für spätere Fokuswiederherstellung */
     const previouslyFocused = document.activeElement as HTMLElement;
 
     this.selectedCourse = { ...course };
@@ -157,23 +160,24 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
       width: '800px',
       maxHeight: '80vh',
       data: { course: this.selectedCourse },
-      autoFocus: 'dialog', // Fokus auf den Dialog selbst setzen
-      restoreFocus: true,  // Fokus nach Schließen wiederherstellen
+      autoFocus: 'dialog', /* Fokus auf den Dialog selbst setzen */
+      restoreFocus: true,  /* Fokus nach Schließen wiederherstellen */
       ariaDescribedBy: null,
       hasBackdrop: true
     });
 
-    // Verwende afterClosed für Fokus-Wiederherstellung
+    /* Wiederherstellung des Fokus nach Schließen des Dialogs */
     this.participantDialogRef.afterClosed().subscribe(() => {
-      // Manuelles Fokussetzen um sicherzustellen, dass ein Element fokussiert ist
+      /* Manuelles Fokussetzen um sicherzustellen, dass ein Element fokussiert ist */
       if (previouslyFocused && 'focus' in previouslyFocused) {
         previouslyFocused.focus();
       }
     });
   }
   
+  /* Öffnet das Dialog zur Bearbeitung eines Benutzertyps */
   openEditUserDialog(user: User) {
-    // Speichere aktiven Element vor Dialog-Öffnung
+    /* Speichere aktives Element vor Dialog-Öffnung für spätere Fokuswiederherstellung */
     const previouslyFocused = document.activeElement as HTMLElement;
 
     this.selectedUser = { ...user };
@@ -190,25 +194,27 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
       hasBackdrop: true
     });
 
+    /* Verarbeite Ergebnis nach Schließen des Dialogs */
     this.editUserDialogRef.afterClosed().subscribe(result => {
       if (result && result.userType) {
         this.updateUserType(this.selectedUser!, result.userType);
       }
       
+      /* Stelle Fokus wieder her */
       if (previouslyFocused && 'focus' in previouslyFocused) {
         previouslyFocused.focus();
       }
     });
   }
 
-  // Fügt ausgewählte Benutzer zum Kurs hinzu
+  /* Fügt ausgewählte Benutzer zum Kurs hinzu */
   addParticipants(selectedOptions: MatListOption[]): void {
     if (!this.selectedCourse) return;
 
     const usernames = selectedOptions.map(option => option.value);
     
-    // Einzelne Anfragen für jeden Benutzer senden, da das Backend
-    // nur einen Benutzer pro Anfrage unterstützt
+    /* Einzelne Anfragen für jeden Benutzer senden, da das Backend
+       nur einen Benutzer pro Anfrage unterstützt */
     const requests = usernames.map(username => {
       const payload = {
         courseId: this.selectedCourse!.courseName,
@@ -219,10 +225,10 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
       return this.http.post<any>(this.courseApiUrl, payload);
     });
     
-    // Alle Anfragen ausführen
+    /* Alle Anfragen ausführen */
     Promise.all(requests.map(request => request.toPromise()))
       .then(() => {
-        // Lokale Daten aktualisieren
+        /* Lokale Daten aktualisieren */
         this.selectedCourse!.participants = [
           ...this.selectedCourse!.participants,
           ...usernames
@@ -235,14 +241,14 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
       });
   }
 
-  // Entfernt ausgewählte Teilnehmer aus dem Kurs
+  /* Entfernt ausgewählte Teilnehmer aus dem Kurs */
   removeParticipants(selectedOptions: MatListOption[]): void {
     if (!this.selectedCourse) return;
 
     const usernamesToRemove = selectedOptions.map(option => option.value);
     
-    // Einzelne Anfragen für jeden Benutzer senden, da das Backend
-    // nur einen Benutzer pro Anfrage unterstützt
+    /* Einzelne Anfragen für jeden Benutzer senden, da das Backend
+       nur einen Benutzer pro Anfrage unterstützt */
     const requests = usernamesToRemove.map(username => {
       const payload = {
         courseId: this.selectedCourse!.courseName,
@@ -253,10 +259,10 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
       return this.http.post<any>(this.courseApiUrl, payload);
     });
     
-    // Alle Anfragen ausführen
+    /* Alle Anfragen ausführen */
     Promise.all(requests.map(request => request.toPromise()))
       .then(() => {
-        // Lokale Daten aktualisieren
+        /* Lokale Daten aktualisieren */
         this.selectedCourse!.participants = this.selectedCourse!.participants.filter(
           p => !usernamesToRemove.includes(p)
         );
@@ -268,7 +274,7 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
       });
   }
 
-  // Benutzer laden
+  /* Lädt alle Benutzer vom Server */
   loadUsers(): void {
     this.http.get<any>('http://localhost:3000/api/users').subscribe(
       (data) => {
@@ -284,7 +290,7 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
     );
   }
 
-  // Kurse laden - unverändert
+  /* Lädt alle Kurse vom Server */
   loadCourses(): void {
     this.http.get<{ id: number, courseName: string, participants: string[] }[]>(this.courseApiUrl).subscribe(
       (data) => {
@@ -295,14 +301,14 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
     );
   }
 
-  // Benutzer hinzufügen - angepasst mit operation
+  /* Erstellt einen neuen Benutzer */
   addUser(): void {
     if (!this.newUser.username || !this.newUser.password || !this.newUser.userType) {
       this.showError('Bitte alle Felder ausfüllen!');
       return;
     }
 
-    // Payload mit operation erweitern
+    /* Payload mit operation-Parameter für Backend */
     const payload = {
       ...this.newUser,
       operation: 'createUser'
@@ -312,7 +318,7 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
       (response: { success: boolean; message?: string }) => {
         if (response.success) {
           this.loadUsers();
-          this.newUser = { username: '', password: '', userType: 'student' }; // Zurücksetzen mit kleingeschriebenen Werten
+          this.newUser = { username: '', password: '', userType: 'student' }; /* Formular zurücksetzen */
           this.showSuccess('Benutzer erfolgreich hinzugefügt!');
         } else {
           this.showError(response.message || 'Fehler beim Hinzufügen eines Benutzers.');
@@ -322,13 +328,13 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
     );
   }
 
-  // Show delete user confirmation popup
+  /* Zeigt den Bestätigungsdialog zum Löschen eines Benutzers an */
   showDeleteUserConfirmationPopup(user: User): void {
     this.userToDelete = user;
     this.showDeleteUserConfirmation = true;
   }
 
-  // Confirm user deletion
+  /* Bestätigt und führt das Löschen eines Benutzers durch */
   confirmDeleteUser(): void {
     if (!this.userToDelete) return;
     
@@ -353,20 +359,20 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
     );
   }
 
-  // Cancel user deletion
+  /* Bricht den Löschvorgang eines Benutzers ab */
   cancelDeleteUser(): void {
     this.showDeleteUserConfirmation = false;
     this.userToDelete = null;
   }
 
-  // Benutzer löschen (über ID) - replaced with custom popup
+  /* Initiiert den Löschvorgang für einen Benutzer */
   deleteUser(user: User): void {
     this.showDeleteUserConfirmationPopup(user);
   }
 
-  // Benutzer-Typ aktualisieren - aktualisierte Version
+  /* Aktualisiert den Benutzertyp eines Benutzers */
   updateUserType(user: User, newUserTypeValue?: string): void {
-    // Wenn kein expliziter neuer Typ übergeben wurde, verwende den aus dem Dialog
+    /* Wenn kein expliziter neuer Typ übergeben wurde, verwende den aus dem Dialog */
     const newTypeValue = newUserTypeValue || this.selectedUserType;
     
     if (!newTypeValue) {
@@ -389,14 +395,14 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
     );
   }
 
-  // Kurs hinzufügen
+  /* Erstellt einen neuen Kurs mit einem initialen Teilnehmer */
   addCourse(): void {
     if (!this.newCourse.name || !this.newCourse.user) {
       this.showError('Bitte alle Felder ausfüllen!');
       return;
     }
 
-    // Payload an das richtige Format anpassen
+    /* Payload an das richtige Format anpassen */
     const payload = {
       courseName: this.newCourse.name,
       participants: [this.newCourse.user]
@@ -412,7 +418,7 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
     );
   }
 
-  // Teilnehmer hinzufügen
+  /* Fügt einen einzelnen Teilnehmer zu einem Kurs hinzu */
   addParticipant(course: Course): void {
     this.http.patch(`${this.courseApiUrl}/${course.id}`, { participants: [...course.participants, this.newCourse.user] }).subscribe(
       () => {
@@ -423,7 +429,7 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
     );
   }
 
-  // Teilnehmer entfernen
+  /* Entfernt einen einzelnen Teilnehmer aus einem Kurs */
   removeParticipant(course: Course): void {
     const updatedParticipants = course.participants.slice(0, -1);
     this.http.patch(`${this.courseApiUrl}/${course.id}`, { participants: updatedParticipants }).subscribe(
@@ -435,17 +441,17 @@ export class UserVerwaltungComponent implements OnInit, OnDestroy {
     );
   }
 
-  // Erfolgsnachricht
+  /* Zeigt eine Erfolgsmeldung als Snackbar an */
   private showSuccess(message: string): void {
     this.snackBar.open(message, 'Schließen', { duration: 3000, panelClass: ['success-snack'] });
   }
 
-  // Fehlermeldung
+  /* Zeigt eine Fehlermeldung als Snackbar an */
   private showError(message: string): void {
     this.snackBar.open(message, 'Schließen', { duration: 3000, panelClass: ['error-snack'] });
   }
 
-  // Diese Methode gibt den übersetzten Benutzertyp zurück
+  /* Gibt den übersetzten Benutzertyp für die Anzeige zurück */
   showTranslatedUserType(userType: string): string {
     return this.languageService.translate(userType);
   }

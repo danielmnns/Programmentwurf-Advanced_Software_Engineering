@@ -21,6 +21,7 @@ export class AuthService {
     this.restoreSession();
   }
 
+  /* Stellt eine vorherige Benutzersitzung aus dem lokalen Speicher wieder her */
   private restoreSession(): void {
     const token = localStorage.getItem('token');
     const userType = localStorage.getItem('userType');
@@ -32,12 +33,13 @@ export class AuthService {
       this.userType = userType;
       this.userName = userName;
       
-      // Wir initialisieren die Inaktivitätsüberwachung nicht hier,
-      // da wir eine zirkuläre Abhängigkeit vermeiden wollen.
-      // Der InactivityService wird im app.component.ts initialisiert.
+      /* Wir initialisieren die Inaktivitätsüberwachung nicht hier,
+         da wir eine zirkuläre Abhängigkeit vermeiden wollen.
+         Der InactivityService wird im app.component.ts initialisiert. */
     }
   }
 
+  /* Führt die Benutzeranmeldung durch und speichert die Sitzungsdaten */
   login(username: string, password: string): Observable<LoginResponse> {
     console.log('AuthService: Login gestartet');
     const payload = { username, password };
@@ -59,8 +61,8 @@ export class AuthService {
   
           this.userDataService.fetchUserData().subscribe();
           
-          // Die Inaktivitätsüberwachung wird in app.component.ts gestartet
-          // nachdem der Login erfolgreich war
+          /* Die Inaktivitätsüberwachung wird in app.component.ts gestartet
+             nachdem der Login erfolgreich war */
         } else {
           this.loggedIn = false;
         }
@@ -68,18 +70,22 @@ export class AuthService {
     );
   }
 
+  /* Gibt zurück, ob ein Benutzer angemeldet ist */
   isLoggedIn(): boolean {
     return this.loggedIn;
   }
 
+  /* Gibt den Benutzertyp (Rolle) des angemeldeten Benutzers zurück */
   getUserType(): string | null {
     return this.userType;
   }
 
+  /* Gibt den Benutzernamen des angemeldeten Benutzers zurück */
   getUserName(): string | null {
     return this.userName;
   }
 
+  /* Meldet den Benutzer ab und löscht alle Sitzungsdaten */
   logout(): void {
     this.loggedIn = false;
     this.userType = null;
@@ -90,9 +96,10 @@ export class AuthService {
     localStorage.removeItem('userName');
     this.userDataService.clearUserData();
     
-    // Die Inaktivitätsüberwachung wird in app.component.ts gestoppt
+    /* Die Inaktivitätsüberwachung wird in app.component.ts gestoppt */
   }
 
+  /* Sendet eine Anfrage an den Server, um das Passwort des Benutzers zu ändern */
   changePassword(payload: { userName: string | null; password: string; newPassword: string }): Observable<{ passwordChangeSuccess: boolean }> {
     console.log('AuthService: Passwortänderung gestartet');
     return this.http.post<{ passwordChangeSuccess: boolean }>('http://localhost:3000/api/auth/change-password', payload).pipe(

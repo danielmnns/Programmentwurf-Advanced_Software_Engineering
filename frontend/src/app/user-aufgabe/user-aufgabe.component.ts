@@ -36,14 +36,13 @@ export class UserAufgabeComponent implements OnInit {
   showDeletePopup: boolean = false;
   showNotification: boolean = false;
   notificationMessage: string = '';
-  taskDocuments: DocumentFile[] = []; // Array für die Aufgabendateien
+  taskDocuments: DocumentFile[] = []; /* Array für die Aufgabendateien */
   
-  // Neues Feld für die ausgewählte Datei vor dem Upload
+  /* Daten für die Dateiupload-Funktionalität */
   selectedFile: { name: string, size: string } | null = null;
-  uploadedFile: File | null = null; // Speichert die tatsächliche Datei
-  submissionComment: string = ''; // Kommentar zur Abgabe
+  uploadedFile: File | null = null; /* Speichert die tatsächliche Datei für den Upload */
+  submissionComment: string = ''; /* Kommentar zur Aufgabenabgabe */
   isUploading: boolean = false;
-  // Sprachmanagement
   currentLang: 'de' | 'en' = 'de';
 
   constructor(
@@ -63,22 +62,23 @@ export class UserAufgabeComponent implements OnInit {
       this.loadTaskDetails();
     });
 
-    // Sprachänderungen abonnieren
+    /* Auf Sprachänderungen reagieren */
     this.languageService.currentLanguage$.subscribe(lang => {
       this.currentLang = lang;
     });
   }
 
+  /* Lädt die Details einer Aufgabe inklusive vorhandener Abgaben und Feedback */
   loadTaskDetails() {
     const apiUrl = `http://localhost:3000/api/tasks/user-task`;
     const userName = this.authService.getUserName();
 
     this.http.get(`${apiUrl}?courseName=${this.courseName}&taskName=${this.taskName}&userName=${userName}`).subscribe({
       next: (response: any) => {
-        console.log('Task details response:', response); // Log the response for debugging
+        console.log('Task details response:', response);
         this.taskDescription = response.description || '';
 
-        // Laden der Aufgabendateien
+        /* Aufgabendateien laden */
         if (response.documents && response.documents.length > 0) {
           this.taskDocuments = response.documents.map((doc: any) => ({
             name: doc.name,
@@ -87,25 +87,25 @@ export class UserAufgabeComponent implements OnInit {
           }));
         }
 
-        // Prüfen, ob eine Abgabe vorhanden ist
+        /* Prüfen, ob bereits eine Abgabe existiert */
         if (response.submission?.file) {
           this.submissionFile = {
             name: response.submission.file.name,
             url: this.fileUrlService.getFileUrl(response.submission.file.url)
           };
 
-          // Speichere den Kommentar zur Anzeige
+          /* Kommentar der bestehenden Abgabe anzeigen */
           this.submissionComment = response.submission.comment || '';
 
-          // Prüfen, ob Feedback vorhanden ist
+          /* Feedback anzeigen, falls vorhanden */
           if (response.submission.feedback) {
             this.feedback = {
               text: response.submission.feedback.text || '',
               feedbackFrom: response.submission.feedback.feedbackFrom || 'Dozent'
             };
-            console.log('Feedback loaded:', this.feedback); // Log the feedback
+            console.log('Feedback loaded:', this.feedback);
           } else {
-            this.feedback = null; // Reset feedback if none exists
+            this.feedback = null;
           }
         }
       },
@@ -115,15 +115,14 @@ export class UserAufgabeComponent implements OnInit {
     });
   }
 
+  /* Verarbeitet die Dateiauswahl für die Aufgabenabgabe */
   handleFileUpload(event: Event) {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
       
-      // Datei für späteres Hochladen speichern
       this.uploadedFile = file;
       
-      // Anzeigen der ausgewählten Datei vor dem Upload
       this.selectedFile = {
         name: file.name,
         size: this.formatFileSize(file.size)
@@ -131,7 +130,7 @@ export class UserAufgabeComponent implements OnInit {
     }
   }
   
-  // Neue Methode zum Abgeben der Aufgabe mit Datei und Kommentar
+  /* Sendet die Aufgabenabgabe mit Datei und optionalem Kommentar an den Server */
   submitAssignment() {
     if (!this.uploadedFile) {
       this.showNotification = true;
@@ -144,12 +143,10 @@ export class UserAufgabeComponent implements OnInit {
     formData.append('courseName', this.courseName);
     formData.append('taskName', this.taskName);
     
-    // Füge den Kommentar hinzu, wenn vorhanden
     if (this.submissionComment) {
       formData.append('comment', this.submissionComment);
     }
     
-    // Uploadstatus aktualisieren
     this.isUploading = true;
     
     this.http.post('http://localhost:3000/api/tasks/submit', formData).subscribe({
@@ -163,7 +160,6 @@ export class UserAufgabeComponent implements OnInit {
           this.showNotification = true;
           this.notificationMessage = 'Abgabe erfolgreich hochgeladen';
           
-          // Ausgewählte Datei und Kommentar zurücksetzen nach erfolgreichem Upload
           this.selectedFile = null;
           this.uploadedFile = null;
           this.submissionComment = '';
@@ -178,7 +174,7 @@ export class UserAufgabeComponent implements OnInit {
     });
   }
 
-  // Hilfsfunktion zur Formatierung der Dateigröße
+  /* Formatiert die Dateigröße in lesbare Einheiten (Bytes, KB, MB, GB) */
   formatFileSize(bytes: number): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -187,19 +183,22 @@ export class UserAufgabeComponent implements OnInit {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   }
 
+  /* Navigation zurück zur Kursübersicht */
   navigateBack() {
-    // Navigate to the user-kurs route with the course name
     this.router.navigate(['/user-kurs', encodeURIComponent(this.courseName)]);
   }
 
+  /* Öffnet den Bestätigungsdialog zum Löschen einer Abgabe */
   openDeletePopup() {
     this.showDeletePopup = true;
   }
 
+  /* Bricht den Löschvorgang ab */
   cancelDelete() {
     this.showDeletePopup = false;
   }
 
+  /* Bestätigt und führt das Löschen einer Abgabe durch */
   confirmDelete() {
     const apiUrl = `http://localhost:3000/api/tasks/delete`;
     const payload = {
@@ -224,12 +223,13 @@ export class UserAufgabeComponent implements OnInit {
     });
   }
 
+  /* Schließt die Benachrichtigungsanzeige */
   closeNotification(): void {
     this.showNotification = false;
     this.notificationMessage = '';
   }
 
-  // Hilfsmethode zum Öffnen einer Datei in einem neuen Tab
+  /* Öffnet ein Dokument in einem neuen Tab */
   openDocument(url: SafeResourceUrl | string) {
     window.open(url.toString(), '_blank');
   }

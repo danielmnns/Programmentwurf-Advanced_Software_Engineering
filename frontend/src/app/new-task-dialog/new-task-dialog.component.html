@@ -1,26 +1,30 @@
 <h2>{{ 'addTask' | translate }}</h2>
 <div class="new-task-container">
+  <!-- Eingabefeld für den Namen der neuen Aufgabe -->
   <mat-form-field appearance="outline" class="full-width">
     <input matInput placeholder="{{ 'taskName' | translate }}" [(ngModel)]="taskName" />
   </mat-form-field>
 
+  <!-- Textbereich für die Beschreibung der Aufgabe -->
   <mat-form-field appearance="outline" class="full-width">
     <textarea matInput placeholder="{{ 'taskDescription' | translate }}" [(ngModel)]="taskText"></textarea>
   </mat-form-field>
 
+  <!-- Dateiupload-Bereich für Aufgabenmaterialien -->
   <div class="file-upload">
     <input type="file" id="fileInput" multiple (change)="onFileSelected($event)" />
     <label for="fileInput">📁 {{ 'selectFile' | translate }}</label>
     <span id="file-name">{{ 'noFileSelected' | translate }}</span>
   </div>
 
+  <!-- Aktionsschaltflächen zum Bestätigen oder Abbrechen -->
   <div class="dialog-actions">
     <button mat-raised-button color="primary" (click)="createTask()">{{ 'submit' | translate }}</button>
     <button mat-raised-button color="warn" (click)="cancel()">{{ 'cancel' | translate }}</button>
   </div>
 </div>
 
-<!-- Custom Task Creation Success Dialog -->
+<!-- Erfolgsmeldung nach erfolgreicher Aufgabenerstellung -->
 <div *ngIf="showTaskCreationSuccess" class="popup-overlay">
   <div class="app-popup popup-success">
     <div class="popup-content">
@@ -31,7 +35,7 @@
   </div>
 </div>
 
-<!-- Validation Error Message -->
+<!-- Validierungsfehlermeldung bei unvollständigen Eingaben -->
 <div id="validation-error" class="app-popup popup-error" style="display: none;">
   <div class="popup-content">
     <div class="popup-icon">⚠️</div>
@@ -40,7 +44,7 @@
   </div>
 </div>
 
-<!-- Creation Error Message -->
+<!-- Fehlermeldung bei Problemen mit der Aufgabenerstellung -->
 <div id="creation-error" class="app-popup popup-error" style="display: none;">
   <div class="popup-content">
     <div class="popup-icon">❌</div>

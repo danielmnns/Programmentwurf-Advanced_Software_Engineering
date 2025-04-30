@@ -26,8 +26,8 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Initialisiere die Spracheinstellung beim Anwendungsstart
-    // Der LanguageService lädt die gespeicherte Sprache automatisch
+    /* Initialisiere die Spracheinstellung beim Anwendungsstart
+       Der LanguageService lädt die gespeicherte Sprache automatisch */
 
     const token = localStorage.getItem('token');
     if (token) {
@@ -35,7 +35,7 @@ export class AppComponent implements OnInit, OnDestroy {
         this.userDataService.fetchUserData().subscribe(
           () => {
             console.log('Benutzerdaten erfolgreich geladen.');
-            // Starte die Inaktivitätsüberwachung wenn der Benutzer angemeldet ist
+            /* Starte die Inaktivitätsüberwachung wenn der Benutzer angemeldet ist */
             this.startInactivityMonitoring();
           },
           (error) => {
@@ -45,16 +45,16 @@ export class AppComponent implements OnInit, OnDestroy {
           }
         );
       } else {
-        // Benutzer ist angemeldet und Daten sind bereits geladen
+        /* Benutzer ist angemeldet und Daten sind bereits geladen */
         this.startInactivityMonitoring();
       }
     }
 
-    // Überwache Routerwechsel für die Inaktivitätsüberwachung
+    /* Überwache Routerwechsel für die Inaktivitätsüberwachung */
     this.routerSubscription = this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe(() => {
-      // Nach jedem Routerwechsel prüfen, ob Benutzer angemeldet ist
+      /* Nach jedem Routerwechsel prüfen, ob Benutzer angemeldet ist */
       if (this.authService.isLoggedIn()) {
         this.startInactivityMonitoring();
       } else {
@@ -64,18 +64,16 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    // Router-Subscription bereinigen
+    /* Router-Subscription bereinigen */
     if (this.routerSubscription) {
       this.routerSubscription.unsubscribe();
     }
     
-    // Inaktivitätsüberwachung beenden
+    /* Inaktivitätsüberwachung beenden */
     this.stopInactivityMonitoring();
   }
 
-  /**
-   * Startet die Überwachung der Benutzeraktivität
-   */
+  /* Startet die Überwachung der Benutzeraktivität */
   private startInactivityMonitoring(): void {
     if (this.authService.isLoggedIn()) {
       this.inactivityService.init();
@@ -83,14 +81,13 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * Beendet die Überwachung der Benutzeraktivität
-   */
+  /* Beendet die Überwachung der Benutzeraktivität */
   private stopInactivityMonitoring(): void {
     this.inactivityService.stopMonitoring();
     console.log('Inaktivitätsüberwachung beendet');
   }
 
+  /* Prüft, ob die aktuelle Seite die Login-Seite ist */
   isLoginPage(): boolean {
     return this.router.url === '/login';
   }

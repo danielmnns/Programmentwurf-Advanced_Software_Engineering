@@ -20,13 +20,13 @@ interface DocumentFile {
 
 interface Submission {
   userName: string;
-  file?: { name: string; url: string }; // Optional gemacht
+  file?: { name: string; url: string }; /* Optional gemacht */
   feedback?: { text: string };
   feedbackText?: string;
   date?: Date;
   fileName?: string;
   fileUrl?: SafeResourceUrl;
-  comment?: string; // Added student comment field
+  comment?: string; /* Feld für Studentenkommentar hinzugefügt */
 }
 
 interface AdminTaskDetails {
@@ -83,7 +83,7 @@ export class AdminAufgabeComponent implements OnInit {
   adminUsername: string = 'admin';
   showNotification: boolean = false;
   notificationMessage: string = '';
-  // Sprachmanagement
+  /* Sprachmanagement */
   currentLang: 'de' | 'en' = 'de';
 
   private readonly apiUrl = 'http://localhost:3000/api';
@@ -109,33 +109,34 @@ export class AdminAufgabeComponent implements OnInit {
       }
     });
     
-    // Sprachänderungen abonnieren
+    /* Sprachänderungen abonnieren */
     this.languageService.currentLanguage$.subscribe(lang => {
       this.currentLang = lang;
     });
   }
 
+  /* Lädt die Details einer Aufgabe inklusive aller Abgaben */
   loadTaskDetails(): void {
-    // URL für Admin-Ansicht korrigiert, um den richtigen Endpunkt zu verwenden
+    /* URL für Admin-Ansicht korrigiert, um den richtigen Endpunkt zu verwenden */
     const payload = {
       courseName: this.courseName,
       taskName: this.taskName
     };
 
-    // Nutze den korrekten Endpunkt für die Abfrage der Aufgabendetails mit den Abgaben
+    /* Nutze den korrekten Endpunkt für die Abfrage der Aufgabendetails mit den Abgaben */
     this.http.post(`${this.apiUrl}/tasks/admin/submissions`, payload).subscribe({
       next: (data: any) => {
         this.taskName = data.taskName;
         this.taskDescription = data.taskDescription ?? '';
 
-        // Abgaben verarbeiten
+        /* Abgaben verarbeiten */
         if (data.submissions && data.submissions.length > 0) {
           this.submissions = data.submissions.map((sub: any) => {
             const submission: Submission = {
               userName: sub.userName,
               feedbackText: sub.feedback?.text || '',
               date: sub.date ? new Date(sub.date) : new Date(),
-              comment: sub.comment || '' // Added to capture student comment
+              comment: sub.comment || '' /* Erfasst den Kommentar des Studenten */
             };
 
             if (sub.file) {
@@ -150,7 +151,7 @@ export class AdminAufgabeComponent implements OnInit {
           this.submissions = [];
         }
 
-        // Aufgabendokumente laden
+        /* Aufgabendokumente laden */
         this.loadTaskDocuments();
 
         console.log("Geladene Aufgabendetails:", {
@@ -166,14 +167,14 @@ export class AdminAufgabeComponent implements OnInit {
     });
   }
 
-  // Separate Methode zum Laden der Aufgabendokumente
+  /* Separate Methode zum Laden der Aufgabendokumente */
   loadTaskDocuments(): void {
-    const userName = 'admin'; // Verwende einen Admin-Benutzer für die Abfrage
+    const userName = 'admin'; /* Verwende einen Admin-Benutzer für die Abfrage */
     const apiUrl = `${this.apiUrl}/tasks/user-task`;
 
     this.http.get(`${apiUrl}?courseName=${encodeURIComponent(this.courseName)}&taskName=${encodeURIComponent(this.taskName)}&userName=${userName}`).subscribe({
       next: (response: any) => {
-        // Aufgabendokumente verarbeiten
+        /* Aufgabendokumente verarbeiten */
         if (response.documents && response.documents.length > 0) {
           this.uploadedDocuments = response.documents.map((doc: any) => ({
             name: doc.name,
@@ -190,7 +191,7 @@ export class AdminAufgabeComponent implements OnInit {
     });
   }
 
-  // Speichert das Feedback für eine bestimmte Abgabe
+  /* Speichert das Feedback für eine bestimmte Abgabe */
   saveFeedback(submission: Submission): void {
     if (!submission.feedbackText || submission.feedbackText.trim() === '') {
       this.showNotificationPopup('Bitte geben Sie ein Feedback ein.');
@@ -210,7 +211,7 @@ export class AdminAufgabeComponent implements OnInit {
       next: (response) => {
         console.log('Feedback erfolgreich gespeichert', response);
         this.showNotificationPopup('Feedback erfolgreich gespeichert.');
-        // Nach erfolgreichem Speichern können die Daten neu geladen werden
+        /* Nach erfolgreichem Speichern können die Daten neu geladen werden */
         this.loadAdminTaskData();
       },
       error: (error) => {
@@ -220,24 +221,25 @@ export class AdminAufgabeComponent implements OnInit {
     });
   }
 
-  // Lädt Aufgabendaten neu
+  /* Lädt Aufgabendaten neu */
   loadAdminTaskData(): void {
-    // Einfach die bestehende loadTaskDetails-Methode aufrufen
+    /* Einfach die bestehende loadTaskDetails-Methode aufrufen */
     this.loadTaskDetails();
   }
 
-  // Zeigt das Benachrichtigungs-Popup an
+  /* Zeigt das Benachrichtigungs-Popup an */
   showNotificationPopup(message: string): void {
     this.notificationMessage = message;
     this.showNotification = true;
   }
 
+  /* Schließt das Benachrichtigungs-Popup */
   closeNotification(): void {
     this.showNotification = false;
     this.notificationMessage = '';
   }
 
-  // Navigiert zurück zur Kursverwaltungs-Seite
+  /* Navigiert zurück zur Kursverwaltungs-Seite */
   navigateBack(): void {
     this.router.navigate(['/user-kurs', this.courseName]);
   }

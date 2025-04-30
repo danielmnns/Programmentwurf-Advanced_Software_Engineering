@@ -1,5 +1,5 @@
 <div class="container">
-  <!-- Hauptbereich: Kursinhalte -->
+  <!-- Hauptbereich für die Kursverwaltung durch den Administrator -->
   <div class="users">
     <h2>
       {{ courseName }}
@@ -9,7 +9,7 @@
     </h2>
 
     <ul>
-      <!-- Textbereich -->
+      <!-- Bearbeitung der Kursbeschreibung -->
       <li>
         <mat-card class="section-card">
           <mat-card-title>{{ 'courseDescription' | translate }}</mat-card-title>
@@ -26,7 +26,7 @@
         </mat-card>
       </li>
 
-      <!-- Dokumente des Kurses -->
+      <!-- Verwaltung der Kursmaterialien (Dokumente) -->
       <li>
         <mat-card class="section-card">
           <mat-card-title>{{ 'materials' | translate }}</mat-card-title>
@@ -52,7 +52,7 @@
         </mat-card>
       </li>
 
-      <!-- Aufgabenbereich -->
+      <!-- Verwaltung der Kursaufgaben -->
       <li>
         <mat-card class="section-card">
           <mat-card-title>{{ 'tasks' | translate }}</mat-card-title>
@@ -62,12 +62,12 @@
                 <mat-card class="task-card">
                   <mat-card-title>{{ task.name }}</mat-card-title>
                   <mat-card-content>
-                    <!-- Aufgabenbeschreibung -->
+                    <!-- Eingabefeld für die Aufgabenbeschreibung -->
                     <mat-form-field appearance="outline" class="full-width">
                       <textarea matInput placeholder="{{ 'taskDescription' | translate }}" [(ngModel)]="task.description"></textarea>
                     </mat-form-field>
                     
-                    <!-- Dokumente innerhalb der Aufgabe -->
+                    <!-- Liste der vorhandenen Aufgabendokumente -->
                     <div class="task-documents" *ngIf="(task.documents || []).length > 0">
                       <h4>{{ 'materials' | translate }}</h4>
                       <ul class="document-list">
@@ -83,7 +83,7 @@
                       </ul>
                     </div>
                     
-                    <!-- Datei-Upload für neue Dokumente in der Aufgabe -->
+                    <!-- Bereich zum Hochladen neuer Dokumente zur Aufgabe -->
                     <div class="upload-section">
                       <input type="file" #taskDocInput hidden accept="application/pdf" (change)="addTaskDocument(task, $event)" />
                       <button mat-stroked-button color="accent" (click)="taskDocInput.click()">
@@ -103,7 +103,7 @@
               </div>
             </div>
             
-            <!-- Button zum Hinzufügen einer neuen Aufgabe -->
+            <!-- Button zum Erstellen einer neuen Aufgabe im Kurs -->
             <div class="add-task-container">
               <button mat-raised-button color="primary" (click)="openNewTaskDialog()">
                 ➕ {{ 'addTask' | translate }}
@@ -115,12 +115,12 @@
     </ul>
   </div>
 
-  <!-- Teilnehmerliste -->
+  <!-- Übersicht und Export der Kursteilnehmer -->
   <div class="teilnehmer">
     <h2>{{ 'participants' | translate }}</h2>
   <mat-card>
       <mat-card-content>
-        <!-- Export-Buttons -->
+        <!-- Buttons zum Exportieren der Teilnehmerliste -->
         <div class="export-buttons">
           <button mat-stroked-button (click)="exportParticipantsToPDF()">
              {{ 'exportPDF' | translate }}
@@ -139,7 +139,7 @@
   </div>
 </div>
 
-<!--PDF viewer -->
+<!-- PDF-Vorschau für Dokumente und Aufgabenmaterialien -->
 <div *ngIf="showPdfPreview" class="pdf-preview">
   <div class="pdf-container">
     <button class="close-button" (click)="closePdfPreview()">✖</button>
@@ -147,7 +147,7 @@
   </div>
 </div>
 
-<!-- Bestätigungs-Popup für Material löschen -->
+<!-- Bestätigungsdialog vor dem Löschen eines Kursmaterials -->
 <div *ngIf="showDeleteMaterialConfirmation" class="popup-overlay">
   <div class="app-popup popup-warning">
     <div class="popup-content">
@@ -162,7 +162,7 @@
   </div>
 </div>
 
-<!-- Bestätigungs-Popup für Material erstellen -->
+<!-- Erfolgsmeldung nach Erstellung eines neuen Kursmaterials -->
 <div *ngIf="showMaterialCreationConfirmation" class="popup-overlay">
   <div class="app-popup popup-success">
     <div class="popup-content">
@@ -176,7 +176,7 @@
   </div>
 </div>
 
-<!-- Bestätigungs-Popup für Aufgaben-Material erstellen -->
+<!-- Erfolgsmeldung nach Erstellung eines neuen Aufgabenmaterials -->
 <div *ngIf="showTaskMaterialConfirmation" class="popup-overlay">
   <div class="app-popup popup-success">
     <div class="popup-content">
@@ -190,7 +190,7 @@
   </div>
 </div>
 
-<!-- Erfolgsmeldung für Material löschen -->
+<!-- Erfolgsmeldung nach dem Löschen eines Materials -->
 <div *ngIf="showMaterialRemovalSuccess" class="popup-overlay">
   <div class="app-popup popup-info">
     <div class="popup-content">
@@ -204,7 +204,7 @@
   </div>
 </div>
 
-<!-- Popup for removeMaterialSuccess -->
+<!-- Bestätigung der erfolgreichen Entfernung eines Materials -->
 <div *ngIf="showRemoveMaterialSuccess" class="popup-overlay">
   <div class="app-popup popup-success">
     <div class="popup-content">
@@ -218,7 +218,7 @@
   </div>
 </div>
 
-<!-- Export-Erfolgsmeldung -->
+<!-- Bestätigung nach erfolgreicher Teilnehmerlistenexport -->
 <div *ngIf="showExportSuccess" class="popup-overlay">
   <div class="app-popup popup-success">
     <div class="popup-content">
@@ -232,7 +232,7 @@
   </div>
 </div>
 
-<!-- Task Deletion Confirmation Popup -->
+<!-- Bestätigungsdialog vor dem Löschen einer Aufgabe -->
 <div *ngIf="showTaskDeleteConfirmation" class="popup-overlay">
   <div class="app-popup popup-confirm">
     <div class="popup-content">
@@ -247,7 +247,7 @@
   </div>
 </div>
 
-<!-- Task Deletion Success Popup -->
+<!-- Erfolgsmeldung nach dem Löschen einer Aufgabe -->
 <div *ngIf="showTaskDeleteSuccess" class="app-popup popup-success">
   <div class="popup-content">
     <div class="popup-icon">✓</div>

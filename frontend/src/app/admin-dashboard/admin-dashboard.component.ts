@@ -37,8 +37,8 @@ export class AdminDashboardComponent {
   showAddCourseModal: boolean = false;
   newCourseTitle: string = '';
   showSuccessPopup: boolean = false;
-  showErrorPopup: boolean = false; // New property for error popup
-  errorMessage: string = ''; // New property to store error message
+  showErrorPopup: boolean = false; /* Eigenschaft für Fehler-Popup */
+  errorMessage: string = ''; /* Eigenschaft zur Speicherung von Fehlermeldungen */
   showDeleteConfirmation: boolean = false;
   courseToDelete: any = null;
   private destroy$: Subject<void> = new Subject<void>();
@@ -60,6 +60,7 @@ export class AdminDashboardComponent {
     this.destroy$.complete();
   }
 
+  /* Lädt alle verfügbaren Kurse vom Server */
   loadCourses(): void {
     this.courseService.getAllCourses().subscribe(
       (data) => this.courses = data,
@@ -67,15 +68,18 @@ export class AdminDashboardComponent {
     );
   }
 
+  /* Öffnet das Modal zum Hinzufügen eines neuen Kurses */
   openAddCourseModal(): void {
     this.showAddCourseModal = true;
   }
 
+  /* Schließt das Modal zum Hinzufügen eines Kurses und setzt die Eingaben zurück */
   closeAddCourseModal(): void {
     this.showAddCourseModal = false;
     this.newCourseTitle = '';
   }
 
+  /* Fügt einen neuen Kurs hinzu, nachdem Eingaben validiert wurden */
   addCourse(): void {
     if (!this.newCourseTitle.trim()) {
       this.errorMessage = 'Bitte geben Sie einen Kursnamen ein.';
@@ -94,7 +98,7 @@ export class AdminDashboardComponent {
         this.courses.push(response);
         this.closeAddCourseModal();
 
-        // Erfolgs-Popup anzeigen
+        /* Erfolgs-Popup anzeigen */
         this.showSuccessPopup = true;
         setTimeout(() => {
           this.showSuccessPopup = false;
@@ -111,22 +115,27 @@ export class AdminDashboardComponent {
     );
   }
 
+  /* Prüft, ob der aktuelle Benutzer Admin-Rechte hat */
   checkAdmin(): void {
     this.isAdmin = this.authService.getUserType() === 'admin';
   }
 
+  /* Navigiert zur Benutzeransicht eines Kurses */
   navigateToCourse(courseName: string): void {
     this.router.navigate(['/user-kurs', encodeURIComponent(courseName)]);
   }
 
+  /* Navigiert zur Admin-Ansicht eines Kurses */
   navigateToAdminKurs(courseName: string): void {
     this.router.navigate(['/admin-kurs', encodeURIComponent(courseName)]);
   }
 
+  /* Navigiert zur Benutzerverwaltung */
   navigateToUserVerwaltung(): void {
     this.router.navigate(['/user-verwaltung']);
   }
 
+  /* Löscht einen Kurs nach Bestätigung */
   deleteCourse(course: any): void {
     if (!course._id) {
       console.error('Kurs hat keine ID');
@@ -146,11 +155,13 @@ export class AdminDashboardComponent {
       });
   }
 
+  /* Zeigt den Bestätigungsdialog zum Löschen eines Kurses an */
   showDeleteConfirmationPopup(course: any): void {
     this.showDeleteConfirmation = true;
     this.courseToDelete = course;
   }
 
+  /* Bestätigt das Löschen eines Kurses */
   confirmDeleteCourse(): void {
     if (this.courseToDelete) {
       this.deleteCourse(this.courseToDelete);
@@ -158,6 +169,7 @@ export class AdminDashboardComponent {
     }
   }
 
+  /* Bricht den Löschvorgang eines Kurses ab */
   cancelDeleteCourse(): void {
     this.showDeleteConfirmation = false;
     this.courseToDelete = null;

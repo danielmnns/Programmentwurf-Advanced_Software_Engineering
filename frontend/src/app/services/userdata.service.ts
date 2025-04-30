@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -15,6 +15,7 @@ export class UserDataService {
     this.restoreUserData();
   }
 
+  /* Stellt Benutzerdaten aus dem SessionStorage wieder her */
   private restoreUserData(): void {
     const storedData = sessionStorage.getItem('userData');
     if (storedData) {
@@ -22,6 +23,7 @@ export class UserDataService {
     }
   }
 
+  /* Holt aktuelle Benutzerdaten vom Server und speichert sie */
   fetchUserData(): Observable<any> {
     return this.http.get<any>(this.apiUrl).pipe(
       tap((data) => {
@@ -31,10 +33,12 @@ export class UserDataService {
     );
   }
 
+  /* Gibt die aktuellen Benutzerdaten zurück */
   getUserData(): any {
     return this.userDataSubject.value;
   }
 
+  /* Löscht die Benutzerdaten beim Abmelden */
   clearUserData(): void {
     this.userDataSubject.next(null);
     sessionStorage.removeItem('userData');

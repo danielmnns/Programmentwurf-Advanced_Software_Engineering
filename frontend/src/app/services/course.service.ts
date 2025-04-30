@@ -14,13 +14,14 @@ export class CourseService {
   constructor(private http: HttpClient,
     private authService: AuthService) {}
 
+  /* Holt alle Kurse vom Server und markiert, ob der aktuelle Benutzer eingeschrieben ist */
   getAllCourses(): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl).pipe(
       map((courses: any[]) => {
-        // Aktuellen Benutzernamen vom AuthService holen
+        /* Aktuellen Benutzernamen vom AuthService holen */
         const currentUsername = this.authService.getUserName();
         
-        // Für jeden Kurs prüfen, ob der aktuelle Benutzer eingeschrieben ist
+        /* Für jeden Kurs prüfen, ob der aktuelle Benutzer eingeschrieben ist */
         return courses.map(course => ({
           ...course,
           enrolled: course.participants && 
@@ -31,15 +32,18 @@ export class CourseService {
     );
   }
   
+  /* Holt Kursdaten für die Benutzeransicht eines Kurses */
   getCourseData(): Observable<any> {
     const url = `${this.apiUrl}/user-kurs`;
     return this.http.get<any>(url);
   }
   
+  /* Löscht einen Kurs anhand seiner ID */
   deleteCourse(courseId: string): Observable<any> {
     return this.http.delete(`${this.apiUrl}/${courseId}`);
   }
 
+  /* Erstellt einen neuen Kurs mit dem gegebenen Titel */
   addCourse(course: { title: string }): Observable<any> {
     return this.http.post<any>(`${this.apiUrl}`, course);
   }
