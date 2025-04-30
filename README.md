@@ -95,62 +95,6 @@ Bevor Sie mit der Installation beginnen, stellen Sie sicher, dass folgende Softw
 
 4. Das Frontend ist nun unter http://localhost:4200 erreichbar
 
-## Installation mit Docker
-
-Das gesamte Projekt kann mit Docker in einer isolierten Umgebung gestartet werden. Diese Methode ist besonders für eine schnelle Einrichtung oder Produktivumgebungen geeignet.
-
-### Voraussetzungen für Docker-Installation
-
-Stellen Sie sicher, dass folgende Software auf Ihrem System installiert ist:
-
-1. *Docker* - [Download und Installation](https://www.docker.com/products/docker-desktop)
-2. *Docker Compose* - Wird normalerweise mit Docker Desktop installiert
-
-### Projekt mit Docker starten
-
-1. Navigieren Sie zum Hauptverzeichnis des Projekts, wo sich die Datei `docker-compose.yml` befindet:
-   ```sh
-   cd Programmentwurf-Advanced_Software_Engineering
-   ```
-
-2. Starten Sie die Container:
-   ```sh
-   docker-compose up -d
-   ```
-   Der Parameter `-d` startet die Container im Hintergrund (detached mode).
-
-3. Nach einigen Minuten (beim ersten Start wird es länger dauern, da die Images gebaut werden müssen) sind folgende Dienste verfügbar:
-   - Frontend: http://localhost:4200
-   - Backend-API: http://localhost:3000/api
-   - MongoDB-Datenbank: mongodb://localhost:27017 (für direkte Verbindungen)
-
-### Docker-Logs anzeigen
-
-Um zu sehen, was in den Containern passiert:
-```sh
-docker-compose logs -f
-```
-Verwenden Sie Ctrl+C, um die Log-Anzeige zu beenden.
-
-### Container stoppen
-
-Um alle Container zu stoppen, aber Daten zu behalten:
-```sh
-docker-compose down
-```
-
-### Container stoppen und Daten löschen
-
-Um alle Container zu stoppen und alle persistenten Daten (Datenbank und Uploads) zu löschen:
-```sh
-docker-compose down -v
-```
-
-### Bekannte Docker-Probleme
-
-- Falls Port 4200 oder 3000 bereits belegt sind, ändern Sie die Ports in der `docker-compose.yml` Datei.
-- Bei Speicherproblemen in Docker Desktop erhöhen Sie die zugewiesenen Ressourcen in den Docker-Einstellungen.
-
 ## Testen der Anwendung
 
 ### Backend-Tests
